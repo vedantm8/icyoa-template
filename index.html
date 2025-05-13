@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CYOA Character Builder</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+    <div class="container">
+        <!-- Upload Button -->
+        <button id="uploadBtn">Upload Character Image</button>
+        <input type="file" id="imageInput" accept="image/*" hidden />
+        <div id="imagePreview" class="image-preview"></div>
+
+        <!-- Description -->
+        <div class="description">
+            <h2>Your Journey Begins</h2>
+            <p>Choose your abilities and personality traits wisely. Each choice may cost points and some options require
+                others to be selected first.</p>
+        </div>
+
+        <!-- Accordion Content -->
+        <div class="accordion" id="accordionContainer"></div>
+
+        <!-- Points Display -->
+        <div class="points-tracker" id="pointsTracker">
+            <h3>Points Remaining:</h3>
+            <div id="pointsDisplay"></div>
+        </div>
+
+        <!-- Import/Export Buttons -->
+        <div style="margin-top: 20px;">
+            <button id="exportBtn">Export Choices</button>
+            <button id="importBtn">Import Choices</button>
+        </div>
+    </div>
+
+    <!-- Import/Export Modal -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span id="modalClose" class="modal-close">&times;</span>
+            <h3 id="modalTitle">Export/Import</h3>
+            <textarea id="modalTextarea" rows="10" style="width: 100%; font-family: monospace;"></textarea>
+            <button id="modalConfirmBtn">Confirm</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

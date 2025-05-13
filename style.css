@@ -1,0 +1,159 @@
+/* General layout */
+body {
+    font-family: sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    max-width: 700px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Buttons */
+button {
+    padding: 8px 12px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background-color: #007acc;
+    color: white;
+    margin-top: 10px;
+}
+
+button:disabled {
+    background-color: #cccccc;
+    color: #666;
+    border: 1px solid #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+button:disabled:hover {
+    background-color: #cccccc;
+}
+
+/* Image preview for character upload */
+.image-preview img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+/* Accordion layout */
+.accordion-item {
+    margin-top: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f4f4f4;
+}
+
+.accordion-header {
+    padding: 10px;
+    font-weight: bold;
+    background-color: #e0e0e0;
+    cursor: pointer;
+}
+
+.accordion-content {
+    padding: 10px;
+    display: none;
+}
+
+/* Option card layout */
+.option-wrapper {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fff;
+    margin: 8px 0;
+}
+
+.option-wrapper img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+}
+
+/* Content area beside image */
+.option-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.option-content strong {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.option-requirements {
+    font-size: 13px;
+    color: #555;
+    white-space: pre-wrap;
+    margin-bottom: 6px;
+}
+
+.option-description {
+    font-size: 13px;
+    color: #333;
+    line-height: 1.5;
+    margin-bottom: 8px;
+}
+
+.option-wrapper button {
+    align-self: flex-start;
+    padding: 6px 12px;
+    background-color: #007acc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+/* Points display */
+.points-tracker {
+    margin-top: 20px;
+    padding: 12px;
+    background: #f0f0f0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+/* Modal Styling */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.modal-close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
