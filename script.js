@@ -1,5 +1,12 @@
 const categories = [
     {
+        type: "points",
+        values: {
+            Power: 10,
+            Charisma: 5
+        }
+    },
+    {
         name: "Abilities",
         options: [
             {
@@ -71,7 +78,10 @@ const categories = [
         ]
     }
 ];
-let points = { Power: 10, Charisma: 5 };
+
+const pointsCategory = categories.find(c => c.type === "points");
+let points = pointsCategory?.values ? { ...pointsCategory.values } : {};
+
 const selectedOptions = {};
 const openCategories = new Set();
 
@@ -123,7 +133,7 @@ function toggleOption(option, button) {
 
     if (isSelected) {
         const dependent = Object.values(categories)
-            .flatMap(c => c.options)
+            .flatMap(c => c.options || [])
             .filter(o => o.prerequisites?.includes(option.id) && selectedOptions[o.id]);
 
         if (dependent.length > 0) {
@@ -154,6 +164,8 @@ function renderAccordion() {
     container.innerHTML = "";
 
     categories.forEach((cat) => {
+        if (cat.type === "points") return;
+
         const item = document.createElement("div");
         item.className = "accordion-item";
 
@@ -193,21 +205,18 @@ function renderAccordion() {
             requirements.className = "option-requirements";
             let reqText = [];
 
-            // Incompatible with (combined outgoing + incoming)
             const allConflicts = new Set();
-
-            // Outgoing
             (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
-
-            // Incoming
-            Object.values(categories).flatMap(c => c.options).forEach(other => {
-                if (other.conflictsWith?.includes(opt.id)) {
-                    allConflicts.add(other.id);
-                }
-            });
+            Object.values(categories)
+                .flatMap(c => c.options || [])
+                .forEach(other => {
+                    if (other.conflictsWith?.includes(opt.id)) {
+                        allConflicts.add(other.id);
+                    }
+                });
 
             const incompatibleNames = Array.from(allConflicts).map(id => {
-                const match = categories.flatMap(c => c.options).find(o => o.id === id);
+                const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
                 return match ? match.label : id;
             });
 
@@ -215,16 +224,14 @@ function renderAccordion() {
                 reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
             }
 
-            // Prerequisites
             if (opt.prerequisites?.length) {
                 const prereqNames = opt.prerequisites.map(id => {
-                    const match = categories.flatMap(c => c.options).find(o => o.id === id);
+                    const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
                     return match ? match.label : id;
                 });
                 reqText.push(`Requires: ${prereqNames.join(', ')}`);
             }
 
-            // Cost
             const costText = Object.entries(opt.cost).map(([type, val]) => `${type} ${val}`).join(', ');
             reqText.push(`Cost: ${costText}`);
             requirements.innerHTML = reqText.join('<br>');
@@ -342,7 +349,7 @@ modalConfirmBtn.onclick = () => {
 
 function findOptionById(id) {
     for (const category of categories) {
-        for (const option of category.options) {
+        for (const option of category.options || []) {
             if (option.id === id) return option;
         }
     }
