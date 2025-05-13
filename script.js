@@ -193,21 +193,26 @@ function renderAccordion() {
             requirements.className = "option-requirements";
             let reqText = [];
 
-            // Incompatible with: (both outgoing and incoming)
+            // Incompatible with (combined outgoing + incoming)
             const allConflicts = new Set();
+
+            // Outgoing
             (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
+
+            // Incoming
             Object.values(categories).flatMap(c => c.options).forEach(other => {
                 if (other.conflictsWith?.includes(opt.id)) {
                     allConflicts.add(other.id);
                 }
             });
 
-            if (allConflicts.size > 0) {
-                const conflictNames = Array.from(allConflicts).map(id => {
-                    const match = categories.flatMap(c => c.options).find(o => o.id === id);
-                    return match ? match.label : id;
-                });
-                reqText.push(`Incompatible: ${conflictNames.join(', ')}`);
+            const incompatibleNames = Array.from(allConflicts).map(id => {
+                const match = categories.flatMap(c => c.options).find(o => o.id === id);
+                return match ? match.label : id;
+            });
+
+            if (incompatibleNames.length > 0) {
+                reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
             }
 
             // Prerequisites
@@ -233,6 +238,7 @@ function renderAccordion() {
 
             const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
             const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
+
             const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
             const hasNoIncomingConflicts = Object.keys(selectedOptions).every((id) => {
                 const selected = findOptionById(id);
@@ -246,7 +252,7 @@ function renderAccordion() {
             if (isDisabled) {
                 if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
                     btn.classList.add("conflict");
-                    btn.title = `Incompatible with another selected option`;
+                    btn.title = `Incompatible with: ${incompatibleNames.join(', ')}`;
                 } else if (!hasPrereqs) {
                     btn.classList.add("prereq");
                     btn.title = `Requires: ${opt.prerequisites.join(', ')}`;
