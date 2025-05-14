@@ -1,0 +1,164 @@
+[
+    {
+        "type": "headerImage",
+        "url": "https://wallpapers.com/images/hd/justice-league-comics-fanart-5qbxroxkicjyforu.jpg"
+    },
+    {
+        "type": "points",
+        "values": {
+            "Power": 10,
+            "Charisma": 5
+        }
+    },
+    {
+        "name": "Abilities",
+        "options": [
+            {
+                "id": "strength",
+                "label": "Super Strength",
+                "cost": {
+                    "Power": 3
+                },
+                "img": "https://cdn.unifiedcommerce.com/content/product/large/0670889330057.jpg",
+                "description": "Grants immense strength. You can punch through walls and lift vehicles."
+            },
+            {
+                "id": "speed",
+                "label": "Super Speed",
+                "cost": {
+                    "Power": -2
+                },
+                "img": "https://i.ytimg.com/vi/aC6NwmFI99Y/maxresdefault.jpg",
+                "description": "Move faster than the eye can see. Dodge bullets and run on water."
+            },
+            {
+                "id": "flight",
+                "label": "Flight",
+                "cost": {
+                    "Power": 4
+                },
+                "prerequisites": [
+                    "strength"
+                ],
+                "img": "https://static1.colliderimages.com/wordpress/wp-content/uploads/2023/04/wonder-woman-gal-gadot.jpg",
+                "description": "Soar through the skies at incredible speed. Requires Super Strength."
+            },
+            {
+                "id": "advancedFlight",
+                "label": "Advanced Flight",
+                "cost": {
+                    "Power": 4
+                },
+                "prerequisites": [
+                    "strength",
+                    "flight"
+                ],
+                "img": "https://wallpapercave.com/wp/wp7038964.jpg",
+                "description": "Perform aerial combat maneuvers and sonic-speed bursts. Requires Flight + Strength."
+            },
+            {
+                "id": "laser",
+                "label": "Laser Vision",
+                "cost": {
+                    "Power": 3
+                },
+                "prerequisites": [
+                    "strength"
+                ],
+                "img": "https://images.hdqwalls.com/wallpapers/superman-laser-eye-0e.jpg",
+                "description": "Shoot concentrated beams of energy from your eyes. Devastating and precise."
+            },
+            {
+                "id": "pacifist",
+                "label": "Pacifist",
+                "cost": {
+                    "Power": 0
+                },
+                "conflictsWith": [
+                    "strength",
+                    "laser",
+                    "intimidation"
+                ],
+                "img": "https://www.slashfilm.com/img/gallery/superman-the-animated-series-accidentally-cast-a-real-life-couple-as-ma-and-pa-kent/l-intro-1675903144.jpg",
+                "description": "You reject violence in all forms. Cannot be combined with Super Strength, Laser Vision, or Intimidation."
+            },
+            {
+                "id": "heroicLeader",
+                "label": "Heroic Leader",
+                "cost": {
+                    "Power": 2,
+                    "Charisma": 3
+                },
+                "img": "https://vignette.wikia.nocookie.net/braveandbold/images/4/44/JLI.jpg/revision/latest?cb=20110919232901",
+                "description": "Your presence inspires and your strength leads. Costs both Power and Charisma."
+            }
+        ]
+    },
+    {
+        "name": "Personality",
+        "options": [
+            {
+                "id": "charm",
+                "label": "Charming",
+                "cost": {
+                    "Charisma": 2
+                },
+                "img": "https://i.pinimg.com/736x/b2/a5/ba/b2a5ba33839638db207ba3bc22704641.jpg",
+                "description": "You win people over with a smile. Great for diplomacy and persuasion."
+            },
+            {
+                "id": "intimidation",
+                "label": "Intimidating",
+                "cost": {
+                    "Charisma": 3
+                },
+                "conflictsWith": [
+                    "pacifist"
+                ],
+                "img": "https://www.superherodb.com/pictures2/portraits/10/050/10461.jpg",
+                "description": "Your presence alone makes enemies hesitate. Cannot be taken with Pacifist."
+            }
+        ]
+    },
+    {
+        "name": "Items",
+        "options": [
+            {
+                "id": "omnitrix",
+                "label": "Omnitrix",
+                "cost": {
+                    "Power": 5
+                },
+                "img": "https://static.wikia.nocookie.net/ben10/images/3/30/Omnitrix_OS_Model.png",
+                "description": "Unlocks the ability to transform into powerful alien forms."
+            }
+        ]
+    },
+    {
+        "name": "Omnitrix Aliens",
+        "requiresOption": [
+            "omnitrix",
+            "heroicLeader"
+        ],
+        "options": [
+            {
+                "id": "heatblast",
+                "label": "Heatblast",
+                "cost": {
+                    "Power": 2
+                },
+                "img": "https://static.wikia.nocookie.net/ben10/images/2/2e/Heatblast_Ben_10_Reboot.png",
+                "description": "Fire manipulation and flight. A classic alien with destructive potential."
+            },
+            {
+                "id": "xlr8",
+                "label": "XLR8",
+                "cost": {
+                    "Power": 3
+                },
+                "img": "https://static.wikia.nocookie.net/ben10/images/0/08/XLR8_Reboot.png",
+                "description": "Supersonic speed and agility. Outrun vehicles and reactions alike."
+            }
+        ]
+    }
+]

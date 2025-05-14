@@ -11,7 +11,6 @@ body {
     background: #ffffff;
     padding: 20px;
     padding-bottom: 80px;
-    /* ensures content isn't hidden under points bar */
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
@@ -29,13 +28,6 @@ button {
 button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
-}
-
-.image-preview img {
-    max-width: 100%;
-    height: auto;
-    margin-top: 10px;
-    border-radius: 10px;
 }
 
 .accordion-item {
@@ -102,10 +94,6 @@ button:disabled {
     opacity: 0.6;
 }
 
-.option-wrapper button[disabled]:hover {
-    background-color: #cccccc;
-}
-
 .option-requirements {
     font-size: 13px;
     color: #555;
@@ -134,12 +122,6 @@ button:disabled {
     align-items: center;
     z-index: 1000;
     box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.points-tracker h3 {
-    margin: 0;
-    margin-right: 10px;
-    font-size: 14px;
 }
 
 #modal {
@@ -193,4 +175,24 @@ button:disabled {
 
 .prereq {
     background-color: #fbc02d !important;
+}
+
+.header-image-container {
+    width: 100%;
+    max-height: 300px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.header-image-container img {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+    display: block;
 }

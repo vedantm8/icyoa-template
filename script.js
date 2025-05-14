@@ -1,126 +1,5 @@
-const categories = [
-    {
-        type: "points",
-        values: {
-            Power: 10,
-            Charisma: 5
-        }
-    },
-    {
-        name: "Abilities",
-        options: [
-            {
-                id: "strength",
-                label: "Super Strength",
-                cost: { Power: 3 },
-                img: "https://cdn.unifiedcommerce.com/content/product/large/0670889330057.jpg",
-                description: "Grants immense strength. You can punch through walls and lift vehicles."
-            },
-            {
-                id: "speed",
-                label: "Super Speed",
-                cost: { Power: -2 },
-                img: "https://i.ytimg.com/vi/aC6NwmFI99Y/maxresdefault.jpg",
-                description: "Move faster than the eye can see. Dodge bullets and run on water."
-            },
-            {
-                id: "flight",
-                label: "Flight",
-                cost: { Power: 4 },
-                prerequisites: ["strength"],
-                img: "https://static1.colliderimages.com/wordpress/wp-content/uploads/2023/04/wonder-woman-gal-gadot.jpg",
-                description: "Soar through the skies at incredible speed. Requires Super Strength."
-            },
-            {
-                id: "advancedFlight",
-                label: "Advanced Flight",
-                cost: { Power: 4 },
-                prerequisites: ["strength", "flight"],
-                img: "https://wallpapercave.com/wp/wp7038964.jpg",
-                description: "Perform aerial combat maneuvers and sonic-speed bursts. Requires Flight + Strength."
-            },
-            {
-                id: "laser",
-                label: "Laser Vision",
-                cost: { Power: 3 },
-                prerequisites: ["strength"],
-                img: "https://images.hdqwalls.com/wallpapers/superman-laser-eye-0e.jpg",
-                description: "Shoot concentrated beams of energy from your eyes. Devastating and precise."
-            },
-            {
-                id: "pacifist",
-                label: "Pacifist",
-                cost: { Power: 0 },
-                conflictsWith: ["strength", "laser", "intimidation"],
-                img: "https://www.slashfilm.com/img/gallery/superman-the-animated-series-accidentally-cast-a-real-life-couple-as-ma-and-pa-kent/l-intro-1675903144.jpg",
-                description: "You reject violence in all forms. Cannot be combined with Super Strength, Laser Vision, or Intimidation."
-            },
-            {
-                id: "heroicLeader",
-                label: "Heroic Leader",
-                cost: { Power: 2, Charisma: 3 },
-                img: "https://vignette.wikia.nocookie.net/braveandbold/images/4/44/JLI.jpg/revision/latest?cb=20110919232901",
-                description: "Your presence inspires and your strength leads. Costs both Power and Charisma."
-            }
-        ]
-    },
-    {
-        name: "Personality",
-        options: [
-            {
-                id: "charm",
-                label: "Charming",
-                cost: { Charisma: 2 },
-                img: "https://i.pinimg.com/736x/b2/a5/ba/b2a5ba33839638db207ba3bc22704641.jpg",
-                description: "You win people over with a smile. Great for diplomacy and persuasion."
-            },
-            {
-                id: "intimidation",
-                label: "Intimidating",
-                cost: { Charisma: 3 },
-                conflictsWith: ["pacifist"],
-                img: "https://www.superherodb.com/pictures2/portraits/10/050/10461.jpg",
-                description: "Your presence alone makes enemies hesitate. Cannot be taken with Pacifist."
-            }
-        ]
-    },
-    {
-        name: "Items",
-        options: [
-            {
-                id: "omnitrix",
-                label: "Omnitrix",
-                cost: { Power: 5 },
-                img: "https://static.wikia.nocookie.net/ben10/images/3/30/Omnitrix_OS_Model.png",
-                description: "Unlocks the ability to transform into powerful alien forms."
-            }
-        ]
-    },
-    {
-        name: "Omnitrix Aliens",
-        requiresOption: ["omnitrix", "heroicLeader"],
-        options: [
-            {
-                id: "heatblast",
-                label: "Heatblast",
-                cost: { Power: 2 },
-                img: "https://static.wikia.nocookie.net/ben10/images/2/2e/Heatblast_Ben_10_Reboot.png",
-                description: "Fire manipulation and flight. A classic alien with destructive potential."
-            },
-            {
-                id: "xlr8",
-                label: "XLR8",
-                cost: { Power: 3 },
-                img: "https://static.wikia.nocookie.net/ben10/images/0/08/XLR8_Reboot.png",
-                description: "Supersonic speed and agility. Outrun vehicles and reactions alike."
-            }
-        ]
-    }
-];
-
-const pointsCategory = categories.find(c => c.type === "points");
-let points = pointsCategory?.values ? { ...pointsCategory.values } : {};
-
+let categories = [];
+let points = {};
 const selectedOptions = {};
 const openCategories = new Set();
 
@@ -131,26 +10,37 @@ const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 const modalClose = document.getElementById("modalClose");
 let modalMode = null;
 
-document.getElementById("uploadBtn").onclick = () => {
-    document.getElementById("imageInput").click();
-};
+fetch("input.json")
+    .then(res => res.json())
+    .then(data => {
+        // Load header image before filtering out non-category entries
+        const headerImageEntry = data.find(entry => entry.type === "headerImage");
+        if (headerImageEntry?.url) {
+            const container = document.getElementById("headerImageContainer");
+            container.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image" />`;
+        }
 
-document.getElementById("imageInput").onchange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            document.getElementById("imagePreview").innerHTML = `<img src="${reader.result}" alt="Character Image">`;
-        };
-        reader.readAsDataURL(file);
-    }
-};
+        // Load points
+        const pointsEntry = data.find(entry => entry.type === "points");
+        points = pointsEntry?.values ? { ...pointsEntry.values } : {};
+
+        // Filter categories (exclude headerImage and points types)
+        categories = data.filter(entry => !entry.type || entry.name);
+
+        renderAccordion();
+        updatePointsDisplay();
+    })
+    .catch(err => {
+        console.error("Failed to load input.json:", err);
+        alert("Failed to load input.json.");
+    });
+
 
 function canSelect(option) {
-    const meetsPrereq = !option.prerequisites || option.prerequisites.every((id) => selectedOptions[id]);
+    const meetsPrereq = !option.prerequisites || option.prerequisites.every(id => selectedOptions[id]);
     const hasPoints = Object.entries(option.cost).every(([type, cost]) => points[type] >= cost);
     const hasNoOutgoingConflicts = !option.conflictsWith || option.conflictsWith.every(id => !selectedOptions[id]);
-    const hasNoIncomingConflicts = Object.keys(selectedOptions).every((id) => {
+    const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
         const selected = findOptionById(id);
         return !selected?.conflictsWith || !selected.conflictsWith.includes(option.id);
     });
@@ -168,7 +58,7 @@ function toggleOption(option, button) {
     const isSelected = !!selectedOptions[option.id];
 
     if (isSelected) {
-        const dependent = Object.values(categories)
+        const dependent = categories
             .flatMap(c => c.options || [])
             .filter(o => o.prerequisites?.includes(option.id) && selectedOptions[o.id]);
 
@@ -195,7 +85,7 @@ function renderAccordion() {
     container.innerHTML = "";
 
     categories.forEach((cat) => {
-        if (cat.type === "points") return;
+        if (cat.type === "points" || cat.type === "headerImage") return;
 
         const item = document.createElement("div");
         item.className = "accordion-item";
@@ -219,12 +109,7 @@ function renderAccordion() {
         };
 
         const requires = cat.requiresOption;
-        const requiredIds = Array.isArray(requires)
-            ? requires
-            : requires
-                ? [requires]
-                : [];
-
+        const requiredIds = Array.isArray(requires) ? requires : requires ? [requires] : [];
         const categoryUnlocked = requiredIds.every(id => selectedOptions[id]);
 
         if (!categoryUnlocked) {
@@ -232,7 +117,7 @@ function renderAccordion() {
             lockMsg.style.padding = "8px";
             lockMsg.style.color = "#666";
 
-            const lines = requiredIds.map((id) => {
+            const lines = requiredIds.map(id => {
                 const label = getOptionLabel(id);
                 const isSelected = selectedOptions[id];
                 const symbol = isSelected ? "✅" : "❌";
@@ -262,21 +147,19 @@ function renderAccordion() {
 
                 const allConflicts = new Set();
                 (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
-                Object.values(categories)
-                    .flatMap(c => c.options || [])
-                    .forEach(other => {
-                        if (other.conflictsWith?.includes(opt.id)) {
-                            allConflicts.add(other.id);
-                        }
-                    });
+                categories.flatMap(c => c.options || []).forEach(other => {
+                    if (other.conflictsWith?.includes(opt.id)) {
+                        allConflicts.add(other.id);
+                    }
+                });
 
-                const incompatibleNames = Array.from(allConflicts).map(id => getOptionLabel(id));
+                const incompatibleNames = Array.from(allConflicts).map(getOptionLabel);
                 if (incompatibleNames.length > 0) {
                     reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
                 }
 
                 if (opt.prerequisites?.length) {
-                    const prereqNames = opt.prerequisites.map(id => getOptionLabel(id));
+                    const prereqNames = opt.prerequisites.map(getOptionLabel);
                     reqText.push(`Requires: ${prereqNames.join(', ')}`);
                 }
 
@@ -300,7 +183,7 @@ function renderAccordion() {
                 const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
                 const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
                 const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
-                const hasNoIncomingConflicts = Object.keys(selectedOptions).every((id) => {
+                const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
                     const selected = findOptionById(id);
                     return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
                 });
@@ -414,6 +297,3 @@ function findOptionById(id) {
     }
     return null;
 }
-
-renderAccordion();
-updatePointsDisplay();
