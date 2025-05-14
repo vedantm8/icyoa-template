@@ -13,6 +13,28 @@ let modalMode = null;
 document.getElementById("exportBtn").onclick = () => openModal("export");
 document.getElementById("importBtn").onclick = () => openModal("import");
 document.getElementById("modalClose").onclick = () => closeModal();
+document.getElementById("resetBtn").onclick = () => {
+    if (!confirm("Are you sure you want to reset all selections?")) return;
+
+    // Refund all selected option costs
+    for (let id in selectedOptions) {
+        const option = findOptionById(id);
+        if (option) {
+            const count = selectedOptions[id];
+            for (let i = 0; i < count; i++) {
+                Object.entries(option.cost).forEach(([type, cost]) => {
+                    points[type] += cost;
+                });
+            }
+        }
+    }
+
+    // Clear selections and update
+    for (let key in selectedOptions) delete selectedOptions[key];
+    updatePointsDisplay();
+    renderAccordion();
+};
+
 window.onclick = (e) => { if (e.target === modal) closeModal(); };
 
 modalConfirmBtn.onclick = () => {
