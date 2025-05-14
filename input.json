@@ -28,8 +28,9 @@
                 "cost": {
                     "Power": -2
                 },
+                "maxSelections": 3,
                 "img": "https://i.ytimg.com/vi/aC6NwmFI99Y/maxresdefault.jpg",
-                "description": "Move faster than the eye can see. Dodge bullets and run on water."
+                "description": "Move faster than the eye can see. Dodge bullets and run on water. Can be selected up to 3 times."
             },
             {
                 "id": "flight",
