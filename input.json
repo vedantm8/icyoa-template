@@ -70,28 +70,14 @@
                 "description": "Shoot concentrated beams of energy from your eyes. Devastating and precise."
             },
             {
-                "id": "pacifist",
-                "label": "Pacifist",
+                "id": "energyConversion",
+                "label": "Energy Conversion",
                 "cost": {
-                    "Power": 0
+                    "Power": 3,
+                    "Charisma": -2
                 },
-                "conflictsWith": [
-                    "strength",
-                    "laser",
-                    "intimidation"
-                ],
-                "img": "https://www.slashfilm.com/img/gallery/superman-the-animated-series-accidentally-cast-a-real-life-couple-as-ma-and-pa-kent/l-intro-1675903144.jpg",
-                "description": "You reject violence in all forms. Cannot be combined with Super Strength, Laser Vision, or Intimidation."
-            },
-            {
-                "id": "heroicLeader",
-                "label": "Heroic Leader",
-                "cost": {
-                    "Power": 2,
-                    "Charisma": 3
-                },
-                "img": "https://vignette.wikia.nocookie.net/braveandbold/images/4/44/JLI.jpg/revision/latest?cb=20110919232901",
-                "description": "Your presence inspires and your strength leads. Costs both Power and Charisma."
+                "img": "https://wallpapercave.com/wp/wp3704602.jpg",
+                "description": "Convert raw power into charm. Costs Power, but grants Charisma."
             }
         ]
     },
@@ -118,6 +104,30 @@
                 ],
                 "img": "https://www.superherodb.com/pictures2/portraits/10/050/10461.jpg",
                 "description": "Your presence alone makes enemies hesitate. Cannot be taken with Pacifist."
+            },
+            {
+                "id": "heroicLeader",
+                "label": "Heroic Leader",
+                "cost": {
+                    "Power": 2,
+                    "Charisma": 3
+                },
+                "img": "https://vignette.wikia.nocookie.net/braveandbold/images/4/44/JLI.jpg/revision/latest?cb=20110919232901",
+                "description": "Your presence inspires and your strength leads. Costs both Power and Charisma."
+            },
+            {
+                "id": "pacifist",
+                "label": "Pacifist",
+                "cost": {
+                    "Power": 0
+                },
+                "conflictsWith": [
+                    "strength",
+                    "laser",
+                    "intimidation"
+                ],
+                "img": "https://www.slashfilm.com/img/gallery/superman-the-animated-series-accidentally-cast-a-real-life-couple-as-ma-and-pa-kent/l-intro-1675903144.jpg",
+                "description": "You reject violence in all forms. Cannot be combined with Super Strength, Laser Vision, or Intimidation."
             }
         ]
     },
