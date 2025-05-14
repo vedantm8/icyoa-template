@@ -32,16 +32,37 @@ fetch("input.json")
         alert("Failed to load input.json.");
     });
 
-function canSelect(option) {
-    const meetsPrereq = !option.prerequisites || option.prerequisites.every(id => selectedOptions[id]);
-    const hasPoints = Object.entries(option.cost).every(([type, cost]) => points[type] >= cost);
-    const hasNoOutgoingConflicts = !option.conflictsWith || option.conflictsWith.every(id => !selectedOptions[id]);
-    const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
-        const selected = findOptionById(id);
-        return !selected?.conflictsWith || !selected.conflictsWith.includes(option.id);
-    });
-    const currentCount = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : (selectedOptions[option.id] ? 1 : 0);
-    return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && (!option.maxSelections || currentCount < option.maxSelections);
+function removeDependentOptions(deselectedId) {
+    for (const cat of categories) {
+        for (const opt of cat.options || []) {
+            if (opt.prerequisites?.includes(deselectedId) && selectedOptions[opt.id]) {
+                removeSelection(opt);
+                removeDependentOptions(opt.id);
+            }
+        }
+    }
+}
+
+function removeSelection(option) {
+    const count = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : 1;
+    if (!selectedOptions[option.id]) return;
+    Object.entries(option.cost).forEach(([type, cost]) => (points[type] += cost));
+    if (option.maxSelections && count > 1) {
+        selectedOptions[option.id] = count - 1;
+    } else {
+        delete selectedOptions[option.id];
+        removeDependentOptions(option.id);
+    }
+    updatePointsDisplay();
+    renderAccordion();
+}
+
+function addSelection(option) {
+    const current = selectedOptions[option.id] || 0;
+    Object.entries(option.cost).forEach(([type, cost]) => (points[type] -= cost));
+    selectedOptions[option.id] = current + 1;
+    updatePointsDisplay();
+    renderAccordion();
 }
 
 function updatePointsDisplay() {
@@ -51,32 +72,38 @@ function updatePointsDisplay() {
         .join(" | ");
 }
 
-function addSelection(option) {
-    if (!canSelect(option)) return;
-    Object.entries(option.cost).forEach(([type, cost]) => (points[type] -= cost));
-    selectedOptions[option.id] = (selectedOptions[option.id] || 0) + 1;
-    updatePointsDisplay();
-    renderAccordion();
+function canSelect(option) {
+    const meetsPrereq = !option.prerequisites || option.prerequisites.every(id => selectedOptions[id]);
+    const hasPoints = Object.entries(option.cost).every(([type, cost]) => points[type] >= cost);
+    const hasNoOutgoingConflicts = !option.conflictsWith || option.conflictsWith.every(id => !selectedOptions[id]);
+    const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
+        const selected = findOptionById(id);
+        return !selected?.conflictsWith || !selected.conflictsWith.includes(option.id);
+    });
+    const max = option.maxSelections || 1;
+    const current = selectedOptions[option.id] || 0;
+    return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && current < max;
 }
 
-function removeSelection(option) {
-    const count = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : 1;
-    if (!selectedOptions[option.id]) return;
-    Object.entries(option.cost).forEach(([type, cost]) => (points[type] += cost));
-    if (count > 1) {
-        selectedOptions[option.id] = count - 1;
-    } else {
-        delete selectedOptions[option.id];
+function findOptionById(id) {
+    for (const cat of categories) {
+        for (const opt of cat.options || []) {
+            if (opt.id === id) return opt;
+        }
     }
-    updatePointsDisplay();
-    renderAccordion();
+    return null;
+}
+
+function getOptionLabel(id) {
+    const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
+    return match ? match.label : id;
 }
 
 function renderAccordion() {
     const container = document.getElementById("accordionContainer");
     container.innerHTML = "";
 
-    categories.forEach((cat) => {
+    categories.forEach(cat => {
         if (cat.type === "points" || cat.type === "headerImage") return;
 
         const item = document.createElement("div");
@@ -108,18 +135,16 @@ function renderAccordion() {
             const lockMsg = document.createElement("div");
             lockMsg.style.padding = "8px";
             lockMsg.style.color = "#666";
-
             const lines = requiredIds.map(id => {
                 const label = getOptionLabel(id);
                 const isSelected = selectedOptions[id];
                 const symbol = isSelected ? "✅" : "❌";
                 return `${symbol} ${label}`;
             });
-
             lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
             content.appendChild(lockMsg);
         } else {
-            (cat.options || []).forEach((opt) => {
+            (cat.options || []).forEach(opt => {
                 const wrapper = document.createElement("div");
                 wrapper.className = "option-wrapper";
 
@@ -164,62 +189,73 @@ function renderAccordion() {
                 if (spend.length) reqText.push(`Cost: ${spend.join(', ')}`);
 
                 requirements.innerHTML = reqText.join('<br>');
-                requirements.title = reqText.join('\n');
 
                 const desc = document.createElement("div");
                 desc.className = "option-description";
                 desc.textContent = opt.description || "";
 
-                const buttonGroup = document.createElement("div");
-                buttonGroup.style.display = "flex";
-                buttonGroup.style.gap = "10px";
-                buttonGroup.style.marginTop = "8px";
+                const count = selectedOptions[opt.id] || 0;
+                const max = opt.maxSelections || 1;
 
-                const count = typeof selectedOptions[opt.id] === 'number' ? selectedOptions[opt.id] : (selectedOptions[opt.id] ? 1 : 0);
+                const controls = document.createElement("div");
+                controls.className = "option-controls";
 
-                if (opt.maxSelections) {
+                const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
+                const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
+                const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
+                const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
+                    const selected = findOptionById(id);
+                    return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
+                });
+
+                const isDisabled = !hasPrereqs || !hasPoints || !hasNoOutgoingConflicts || !hasNoIncomingConflicts;
+
+                if (max > 1) {
                     const addBtn = document.createElement("button");
                     addBtn.textContent = "+";
-                    addBtn.title = "Add selection";
-                    addBtn.disabled = !canSelect(opt);
-                    addBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        addSelection(opt);
-                    };
+                    addBtn.disabled = isDisabled || count >= max;
+                    addBtn.title = addBtn.disabled ? "Cannot add more" : "Click to add";
+                    addBtn.onclick = () => addSelection(opt);
 
                     const removeBtn = document.createElement("button");
-                    removeBtn.textContent = "–";
-                    removeBtn.title = "Remove selection";
+                    removeBtn.textContent = "−";
                     removeBtn.disabled = count === 0;
-                    removeBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        removeSelection(opt);
-                    };
+                    removeBtn.title = count > 0 ? "Click to remove" : "Not selected";
+                    removeBtn.onclick = () => removeSelection(opt);
 
-                    buttonGroup.appendChild(addBtn);
-                    buttonGroup.appendChild(removeBtn);
+                    const countText = document.createElement("span");
+                    countText.textContent = `${count} selected`;
 
-                    const countText = document.createElement("div");
-                    countText.textContent = `${count} selected${opt.maxSelections ? ` / ${opt.maxSelections}` : ""}`;
-                    countText.style.marginTop = "8px";
-                    contentWrapper.appendChild(countText);
+                    controls.appendChild(addBtn);
+                    controls.appendChild(removeBtn);
+                    controls.appendChild(countText);
                 } else {
-                    const toggleBtn = document.createElement("button");
-                    toggleBtn.textContent = count > 0 ? "✓" : "Select";
-                    toggleBtn.title = count > 0 ? "Click to deselect" : "Click to select";
-                    toggleBtn.disabled = !canSelect(opt) && count === 0;
-                    toggleBtn.onclick = (e) => {
-                        e.stopPropagation();
-                        if (count > 0) removeSelection(opt);
-                        else addSelection(opt);
-                    };
-                    buttonGroup.appendChild(toggleBtn);
+                    const btn = document.createElement("button");
+                    btn.textContent = count > 0 ? "✓ Selected" : "Select";
+                    btn.disabled = isDisabled || count > 0;
+
+                    if (isDisabled) {
+                        if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
+                            btn.classList.add("conflict");
+                            btn.title = `Incompatible with: ${incompatibleNames.join(', ')}`;
+                        } else if (!hasPrereqs) {
+                            btn.classList.add("prereq");
+                            btn.title = `Requires: ${opt.prerequisites.join(', ')}`;
+                        } else {
+                            btn.title = `Not enough points`;
+                        }
+                    } else {
+                        btn.title = `Click to select`;
+                    }
+
+                    btn.onclick = () => addSelection(opt);
+                    controls.appendChild(btn);
                 }
 
                 contentWrapper.appendChild(label);
                 contentWrapper.appendChild(requirements);
                 contentWrapper.appendChild(desc);
-                contentWrapper.appendChild(buttonGroup);
+                contentWrapper.appendChild(controls);
 
                 wrapper.appendChild(img);
                 wrapper.appendChild(contentWrapper);
@@ -231,78 +267,4 @@ function renderAccordion() {
         item.appendChild(content);
         container.appendChild(item);
     });
-}
-
-function getOptionLabel(id) {
-    const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
-    return match ? match.label : id;
-}
-
-function openModal(mode) {
-    modalMode = mode;
-    modal.style.display = "block";
-
-    if (mode === "export") {
-        modalTitle.textContent = "Export Your Choices";
-        modalTextarea.value = JSON.stringify(selectedOptions, null, 2);
-        modalConfirmBtn.style.display = "none";
-    } else {
-        modalTitle.textContent = "Import Your Choices";
-        modalTextarea.value = "";
-        modalConfirmBtn.style.display = "inline-block";
-    }
-}
-
-function closeModal() {
-    modal.style.display = "none";
-    modalTextarea.value = "";
-    modalMode = null;
-}
-
-modalConfirmBtn.onclick = () => {
-    try {
-        const imported = JSON.parse(modalTextarea.value);
-        for (let id in selectedOptions) {
-            const option = findOptionById(id);
-            if (option) {
-                const count = typeof selectedOptions[id] === 'number' ? selectedOptions[id] : 1;
-                for (let i = 0; i < count; i++) {
-                    Object.entries(option.cost).forEach(([type, cost]) => (points[type] += cost));
-                }
-            }
-        }
-        for (let key in selectedOptions) delete selectedOptions[key];
-
-        for (let id in imported) {
-            const option = findOptionById(id);
-            const count = typeof imported[id] === 'number' ? imported[id] : 1;
-            for (let i = 0; i < count; i++) {
-                if (option && canSelect(option)) {
-                    selectedOptions[id] = typeof selectedOptions[id] === 'number' ? selectedOptions[id] + 1 : 1;
-                    Object.entries(option.cost).forEach(([type, cost]) => (points[type] -= cost));
-                }
-            }
-        }
-
-        updatePointsDisplay();
-        renderAccordion();
-        closeModal();
-        alert("Choices imported successfully.");
-    } catch (err) {
-        alert("Import failed: " + err.message);
-    }
-};
-
-document.getElementById("exportBtn").onclick = () => openModal("export");
-document.getElementById("importBtn").onclick = () => openModal("import");
-document.getElementById("modalClose").onclick = () => closeModal();
-window.onclick = (e) => { if (e.target === modal) closeModal(); };
-
-function findOptionById(id) {
-    for (const category of categories) {
-        for (const option of category.options || []) {
-            if (option.id === id) return option;
-        }
-    }
-    return null;
 }
