@@ -16,7 +16,6 @@ document.getElementById("modalClose").onclick = () => closeModal();
 document.getElementById("resetBtn").onclick = () => {
     if (!confirm("Are you sure you want to reset all selections?")) return;
 
-    // Refund all selected option costs
     for (let id in selectedOptions) {
         const option = findOptionById(id);
         if (option) {
@@ -29,7 +28,6 @@ document.getElementById("resetBtn").onclick = () => {
         }
     }
 
-    // Clear selections and update
     for (let key in selectedOptions) delete selectedOptions[key];
     updatePointsDisplay();
     renderAccordion();
@@ -44,7 +42,6 @@ modalConfirmBtn.onclick = () => {
             throw new Error("Invalid format");
         }
 
-        // Reset all
         points = { ...importedData.points };
         for (let key in selectedOptions) delete selectedOptions[key];
         Object.entries(importedData.selectedOptions).forEach(([key, val]) => {
@@ -66,7 +63,10 @@ function openModal(mode) {
 
     if (mode === "export") {
         modalTitle.textContent = "Export Your Choices";
-        modalTextarea.value = JSON.stringify({ points, selectedOptions }, null, 2);
+        modalTextarea.value = JSON.stringify({
+            selectedOptions,
+            points
+        }, null, 2);
         modalConfirmBtn.style.display = "none";
     } else {
         modalTitle.textContent = "Import Your Choices";
@@ -87,17 +87,13 @@ fetch("input.json")
         const titleEntry = data.find(entry => entry.type === "title");
         if (titleEntry?.text) {
             const titleEl = document.getElementById("cyoaTitle");
-            if (titleEl) {
-                titleEl.textContent = titleEntry.text;
-            }
+            if (titleEl) titleEl.textContent = titleEntry.text;
         }
 
         const descriptionEntry = data.find(entry => entry.type === "description");
         if (descriptionEntry?.text) {
             const descEl = document.getElementById("cyoaDescription");
-            if (descEl) {
-                descEl.textContent = descriptionEntry.text;
-            }
+            if (descEl) descEl.textContent = descriptionEntry.text;
         }
 
         const headerImageEntry = data.find(entry => entry.type === "headerImage");
