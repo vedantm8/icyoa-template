@@ -10,6 +10,55 @@ const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 const modalClose = document.getElementById("modalClose");
 let modalMode = null;
 
+document.getElementById("exportBtn").onclick = () => openModal("export");
+document.getElementById("importBtn").onclick = () => openModal("import");
+document.getElementById("modalClose").onclick = () => closeModal();
+window.onclick = (e) => { if (e.target === modal) closeModal(); };
+
+modalConfirmBtn.onclick = () => {
+    try {
+        const importedData = JSON.parse(modalTextarea.value);
+        if (typeof importedData !== 'object' || !importedData.points || !importedData.selectedOptions) {
+            throw new Error("Invalid format");
+        }
+
+        // Reset all
+        points = { ...importedData.points };
+        for (let key in selectedOptions) delete selectedOptions[key];
+        Object.entries(importedData.selectedOptions).forEach(([key, val]) => {
+            selectedOptions[key] = val;
+        });
+
+        updatePointsDisplay();
+        renderAccordion();
+        closeModal();
+        alert("Choices imported successfully.");
+    } catch (err) {
+        alert("Import failed: " + err.message);
+    }
+};
+
+function openModal(mode) {
+    modalMode = mode;
+    modal.style.display = "block";
+
+    if (mode === "export") {
+        modalTitle.textContent = "Export Your Choices";
+        modalTextarea.value = JSON.stringify({ points, selectedOptions }, null, 2);
+        modalConfirmBtn.style.display = "none";
+    } else {
+        modalTitle.textContent = "Import Your Choices";
+        modalTextarea.value = "";
+        modalConfirmBtn.style.display = "inline-block";
+    }
+}
+
+function closeModal() {
+    modal.style.display = "none";
+    modalTextarea.value = "";
+    modalMode = null;
+}
+
 fetch("input.json")
     .then(res => res.json())
     .then(data => {
