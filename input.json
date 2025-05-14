@@ -1,5 +1,13 @@
 [
     {
+        "type": "title",
+        "text": "Justice League Origins"
+    },
+    {
+        "type": "description",
+        "text": "Choose your abilities and personality traits wisely. Each choice may cost points, and some options may require others or have unique effects."
+    },
+    {
         "type": "headerImage",
         "url": "https://wallpapers.com/images/hd/justice-league-comics-fanart-5qbxroxkicjyforu.jpg"
     },

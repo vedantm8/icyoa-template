@@ -84,6 +84,22 @@ function closeModal() {
 fetch("input.json")
     .then(res => res.json())
     .then(data => {
+        const titleEntry = data.find(entry => entry.type === "title");
+        if (titleEntry?.text) {
+            const titleEl = document.getElementById("cyoaTitle");
+            if (titleEl) {
+                titleEl.textContent = titleEntry.text;
+            }
+        }
+
+        const descriptionEntry = data.find(entry => entry.type === "description");
+        if (descriptionEntry?.text) {
+            const descEl = document.getElementById("cyoaDescription");
+            if (descEl) {
+                descEl.textContent = descriptionEntry.text;
+            }
+        }
+
         const headerImageEntry = data.find(entry => entry.type === "headerImage");
         if (headerImageEntry?.url) {
             const container = document.getElementById("headerImageContainer");
