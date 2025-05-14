@@ -232,9 +232,12 @@ function renderAccordion() {
                 } else {
                     const btn = document.createElement("button");
                     btn.textContent = count > 0 ? "✓ Selected" : "Select";
-                    btn.disabled = isDisabled || count > 0;
+                    btn.disabled = false;
 
-                    if (isDisabled) {
+                    if (count > 0) {
+                        btn.onclick = () => removeSelection(opt);
+                        btn.title = "Click to deselect";
+                    } else if (isDisabled) {
                         if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
                             btn.classList.add("conflict");
                             btn.title = `Incompatible with: ${incompatibleNames.join(', ')}`;
@@ -244,11 +247,12 @@ function renderAccordion() {
                         } else {
                             btn.title = `Not enough points`;
                         }
+                        btn.disabled = true;
                     } else {
+                        btn.onclick = () => addSelection(opt);
                         btn.title = `Click to select`;
                     }
 
-                    btn.onclick = () => addSelection(opt);
                     controls.appendChild(btn);
                 }
 
