@@ -19,7 +19,7 @@ const categories = [
             {
                 id: "speed",
                 label: "Super Speed",
-                cost: { Power: 2 },
+                cost: { Power: -2 },
                 img: "https://i.ytimg.com/vi/aC6NwmFI99Y/maxresdefault.jpg",
                 description: "Move faster than the eye can see. Dodge bullets and run on water."
             },
@@ -52,8 +52,15 @@ const categories = [
                 label: "Pacifist",
                 cost: { Power: 0 },
                 conflictsWith: ["strength", "laser", "intimidation"],
-                img: "https://cdn.pixabay.com/photo/2016/01/08/18/04/dove-1126359_960_720.jpg",
+                img: "https://www.slashfilm.com/img/gallery/superman-the-animated-series-accidentally-cast-a-real-life-couple-as-ma-and-pa-kent/l-intro-1675903144.jpg",
                 description: "You reject violence in all forms. Cannot be combined with Super Strength, Laser Vision, or Intimidation."
+            },
+            {
+                id: "heroicLeader",
+                label: "Heroic Leader",
+                cost: { Power: 2, Charisma: 3 },
+                img: "https://vignette.wikia.nocookie.net/braveandbold/images/4/44/JLI.jpg/revision/latest?cb=20110919232901",
+                description: "Your presence inspires and your strength leads. Costs both Power and Charisma."
             }
         ]
     },
@@ -74,6 +81,38 @@ const categories = [
                 conflictsWith: ["pacifist"],
                 img: "https://www.superherodb.com/pictures2/portraits/10/050/10461.jpg",
                 description: "Your presence alone makes enemies hesitate. Cannot be taken with Pacifist."
+            }
+        ]
+    },
+    {
+        name: "Items",
+        options: [
+            {
+                id: "omnitrix",
+                label: "Omnitrix",
+                cost: { Power: 5 },
+                img: "https://static.wikia.nocookie.net/ben10/images/3/30/Omnitrix_OS_Model.png",
+                description: "Unlocks the ability to transform into powerful alien forms."
+            }
+        ]
+    },
+    {
+        name: "Omnitrix Aliens",
+        requiresOption: ["omnitrix", "heroicLeader"],
+        options: [
+            {
+                id: "heatblast",
+                label: "Heatblast",
+                cost: { Power: 2 },
+                img: "https://static.wikia.nocookie.net/ben10/images/2/2e/Heatblast_Ben_10_Reboot.png",
+                description: "Fire manipulation and flight. A classic alien with destructive potential."
+            },
+            {
+                id: "xlr8",
+                label: "XLR8",
+                cost: { Power: 3 },
+                img: "https://static.wikia.nocookie.net/ben10/images/0/08/XLR8_Reboot.png",
+                description: "Supersonic speed and agility. Outrun vehicles and reactions alike."
             }
         ]
     }
@@ -110,14 +149,11 @@ document.getElementById("imageInput").onchange = (e) => {
 function canSelect(option) {
     const meetsPrereq = !option.prerequisites || option.prerequisites.every((id) => selectedOptions[id]);
     const hasPoints = Object.entries(option.cost).every(([type, cost]) => points[type] >= cost);
-
     const hasNoOutgoingConflicts = !option.conflictsWith || option.conflictsWith.every(id => !selectedOptions[id]);
-
     const hasNoIncomingConflicts = Object.keys(selectedOptions).every((id) => {
         const selected = findOptionById(id);
         return !selected?.conflictsWith || !selected.conflictsWith.includes(option.id);
     });
-
     return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts;
 }
 
@@ -137,18 +173,13 @@ function toggleOption(option, button) {
             .filter(o => o.prerequisites?.includes(option.id) && selectedOptions[o.id]);
 
         if (dependent.length > 0) {
-            alert(
-                `Cannot deselect "${option.label}" because it is a prerequisite for: ${dependent
-                    .map(o => o.label)
-                    .join(', ')}`
-            );
+            alert(`Cannot deselect "${option.label}" because it is a prerequisite for: ${dependent.map(o => o.label).join(', ')}`);
             return;
         }
 
         Object.entries(option.cost).forEach(([type, cost]) => (points[type] += cost));
         delete selectedOptions[option.id];
         button.textContent = "Select";
-
     } else if (canSelect(option)) {
         Object.entries(option.cost).forEach(([type, cost]) => (points[type] -= cost));
         selectedOptions[option.id] = true;
@@ -187,103 +218,131 @@ function renderAccordion() {
             }
         };
 
-        cat.options.forEach((opt) => {
-            const wrapper = document.createElement("div");
-            wrapper.className = "option-wrapper";
+        const requires = cat.requiresOption;
+        const requiredIds = Array.isArray(requires)
+            ? requires
+            : requires
+                ? [requires]
+                : [];
 
-            const img = document.createElement("img");
-            img.src = opt.img;
-            img.alt = opt.label;
+        const categoryUnlocked = requiredIds.every(id => selectedOptions[id]);
 
-            const contentWrapper = document.createElement("div");
-            contentWrapper.className = "option-content";
+        if (!categoryUnlocked) {
+            const lockMsg = document.createElement("div");
+            lockMsg.style.padding = "8px";
+            lockMsg.style.color = "#666";
 
-            const label = document.createElement("strong");
-            label.textContent = opt.label;
-
-            const requirements = document.createElement("div");
-            requirements.className = "option-requirements";
-            let reqText = [];
-
-            const allConflicts = new Set();
-            (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
-            Object.values(categories)
-                .flatMap(c => c.options || [])
-                .forEach(other => {
-                    if (other.conflictsWith?.includes(opt.id)) {
-                        allConflicts.add(other.id);
-                    }
-                });
-
-            const incompatibleNames = Array.from(allConflicts).map(id => {
-                const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
-                return match ? match.label : id;
+            const lines = requiredIds.map((id) => {
+                const label = getOptionLabel(id);
+                const isSelected = selectedOptions[id];
+                const symbol = isSelected ? "✅" : "❌";
+                return `${symbol} ${label}`;
             });
 
-            if (incompatibleNames.length > 0) {
-                reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
-            }
+            lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
+            content.appendChild(lockMsg);
+        } else {
+            (cat.options || []).forEach((opt) => {
+                const wrapper = document.createElement("div");
+                wrapper.className = "option-wrapper";
 
-            if (opt.prerequisites?.length) {
-                const prereqNames = opt.prerequisites.map(id => {
-                    const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
-                    return match ? match.label : id;
-                });
-                reqText.push(`Requires: ${prereqNames.join(', ')}`);
-            }
+                const img = document.createElement("img");
+                img.src = opt.img;
+                img.alt = opt.label;
 
-            const costText = Object.entries(opt.cost).map(([type, val]) => `${type} ${val}`).join(', ');
-            reqText.push(`Cost: ${costText}`);
-            requirements.innerHTML = reqText.join('<br>');
+                const contentWrapper = document.createElement("div");
+                contentWrapper.className = "option-content";
 
-            const desc = document.createElement("div");
-            desc.className = "option-description";
-            desc.textContent = opt.description || "";
+                const label = document.createElement("strong");
+                label.textContent = opt.label;
 
-            const btn = document.createElement("button");
-            btn.textContent = selectedOptions[opt.id] ? "✓ Selected" : "Select";
+                const requirements = document.createElement("div");
+                requirements.className = "option-requirements";
+                let reqText = [];
 
-            const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
-            const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
+                const allConflicts = new Set();
+                (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
+                Object.values(categories)
+                    .flatMap(c => c.options || [])
+                    .forEach(other => {
+                        if (other.conflictsWith?.includes(opt.id)) {
+                            allConflicts.add(other.id);
+                        }
+                    });
 
-            const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
-            const hasNoIncomingConflicts = Object.keys(selectedOptions).every((id) => {
-                const selected = findOptionById(id);
-                return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
-            });
-
-            const isDisabled = !selectedOptions[opt.id] && (!hasPrereqs || !hasPoints || !hasNoOutgoingConflicts || !hasNoIncomingConflicts);
-            btn.disabled = isDisabled;
-            btn.classList.remove("conflict", "prereq");
-
-            if (isDisabled) {
-                if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
-                    btn.classList.add("conflict");
-                    btn.title = `Incompatible with: ${incompatibleNames.join(', ')}`;
-                } else if (!hasPrereqs) {
-                    btn.classList.add("prereq");
-                    btn.title = `Requires: ${opt.prerequisites.join(', ')}`;
-                } else {
-                    btn.title = `Not enough points`;
+                const incompatibleNames = Array.from(allConflicts).map(id => getOptionLabel(id));
+                if (incompatibleNames.length > 0) {
+                    reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
                 }
-            }
 
-            btn.onclick = () => toggleOption(opt, btn);
+                if (opt.prerequisites?.length) {
+                    const prereqNames = opt.prerequisites.map(id => getOptionLabel(id));
+                    reqText.push(`Requires: ${prereqNames.join(', ')}`);
+                }
 
-            contentWrapper.appendChild(label);
-            contentWrapper.appendChild(requirements);
-            contentWrapper.appendChild(desc);
-            contentWrapper.appendChild(btn);
+                const gain = [], spend = [];
+                Object.entries(opt.cost).forEach(([type, val]) => {
+                    if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
+                    else spend.push(`${type} ${val}`);
+                });
+                if (gain.length) reqText.push(`Gain: ${gain.join(', ')}`);
+                if (spend.length) reqText.push(`Cost: ${spend.join(', ')}`);
 
-            wrapper.appendChild(img);
-            wrapper.appendChild(contentWrapper);
-            content.appendChild(wrapper);
-        });
+                requirements.innerHTML = reqText.join('<br>');
+
+                const desc = document.createElement("div");
+                desc.className = "option-description";
+                desc.textContent = opt.description || "";
+
+                const btn = document.createElement("button");
+                btn.textContent = selectedOptions[opt.id] ? "✓ Selected" : "Select";
+
+                const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
+                const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
+                const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
+                const hasNoIncomingConflicts = Object.keys(selectedOptions).every((id) => {
+                    const selected = findOptionById(id);
+                    return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
+                });
+
+                const isDisabled = !selectedOptions[opt.id] && (!hasPrereqs || !hasPoints || !hasNoOutgoingConflicts || !hasNoIncomingConflicts);
+                btn.disabled = isDisabled;
+                btn.classList.remove("conflict", "prereq");
+
+                if (isDisabled) {
+                    if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
+                        btn.classList.add("conflict");
+                        btn.title = `Incompatible with: ${incompatibleNames.join(', ')}`;
+                    } else if (!hasPrereqs) {
+                        btn.classList.add("prereq");
+                        btn.title = `Requires: ${opt.prerequisites.join(', ')}`;
+                    } else {
+                        btn.title = `Not enough points`;
+                    }
+                }
+
+                btn.onclick = () => toggleOption(opt, btn);
+
+                contentWrapper.appendChild(label);
+                contentWrapper.appendChild(requirements);
+                contentWrapper.appendChild(desc);
+                contentWrapper.appendChild(btn);
+
+                wrapper.appendChild(img);
+                wrapper.appendChild(contentWrapper);
+                content.appendChild(wrapper);
+            });
+        }
 
         item.appendChild(header);
         item.appendChild(content);
         container.appendChild(item);
     });
+}
+
+function getOptionLabel(id) {
+    const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
+    return match ? match.label : id;
 }
 
 // Modal Logic
