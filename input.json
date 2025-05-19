@@ -1,182 +1,269 @@
 [
     {
         "type": "title",
-        "text": "Justice League Origins"
+        "text": "Galactic Origins v2"
     },
     {
         "type": "description",
-        "text": "Choose your abilities and personality traits wisely. Each choice may cost points, and some options may require others or have unique effects."
+        "text": "Build your interstellar adventurer using a blend of species, backstory, and powerful abilities."
     },
     {
         "type": "headerImage",
-        "url": "https://wallpapers.com/images/hd/justice-league-comics-fanart-5qbxroxkicjyforu.jpg"
+        "url": "https://example.com/galaxy-banner.jpg"
     },
     {
         "type": "points",
         "values": {
             "Power": 10,
+            "Wisdom": 8,
             "Charisma": 5
         }
     },
     {
+        "name": "Species",
+        "subcategories": [
+            {
+                "name": "Origin",
+                "options": [
+                    {
+                        "id": "human",
+                        "label": "Human",
+                        "cost": {
+                            "Charisma": 2
+                        },
+                        "img": "https://example.com/human.png",
+                        "description": "Adaptable and resilient. Gains bonus interaction skills.",
+                        "conflictsWith": [
+                            "cyborg"
+                        ]
+                    },
+                    {
+                        "id": "alienHybrid",
+                        "label": "Alien Hybrid",
+                        "cost": {
+                            "Power": 4,
+                            "Wisdom": 2
+                        },
+                        "img": "https://example.com/alienhybrid.png",
+                        "description": "Genetically engineered for greatness.",
+                        "prerequisites": [
+                            "charmer"
+                        ]
+                    },
+                    {
+                        "id": "cyborg",
+                        "label": "Cyborg",
+                        "cost": {
+                            "Power": 5
+                        },
+                        "img": "https://example.com/cyborg.png",
+                        "description": "Enhanced with cutting-edge technology."
+                    }
+                ],
+                "maxSelections": 1
+            }
+        ]
+    },
+    {
+        "name": "Background",
+        "subcategories": [
+            {
+                "name": "Life Path",
+                "options": [
+                    {
+                        "id": "smuggler",
+                        "label": "Smuggler",
+                        "cost": {
+                            "Power": 2
+                        },
+                        "img": "https://example.com/smuggler.png",
+                        "description": "Trained in stealth and survival."
+                    },
+                    {
+                        "id": "scholar",
+                        "label": "Scholar",
+                        "cost": {
+                            "Wisdom": 3
+                        },
+                        "img": "https://example.com/scholar.png",
+                        "description": "You know too much. Conflicts with combat abilities.",
+                        "conflictsWith": [
+                            "superStrength",
+                            "telepathy"
+                        ]
+                    },
+                    {
+                        "id": "charmer",
+                        "label": "Charmer",
+                        "cost": {
+                            "Charisma": 3
+                        },
+                        "img": "https://example.com/charmer.png",
+                        "description": "You have a way with words. Needed to unlock hybrid DNA."
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "name": "Abilities",
-        "options": [
-            {
-                "id": "strength",
-                "label": "Super Strength",
-                "cost": {
-                    "Power": 3
-                },
-                "img": "https://cdn.unifiedcommerce.com/content/product/large/0670889330057.jpg",
-                "description": "Grants immense strength. You can punch through walls and lift vehicles."
-            },
-            {
-                "id": "speed",
-                "label": "Super Speed",
-                "cost": {
-                    "Power": -2
-                },
-                "maxSelections": 3,
-                "img": "https://i.ytimg.com/vi/aC6NwmFI99Y/maxresdefault.jpg",
-                "description": "Move faster than the eye can see. Dodge bullets and run on water. Can be selected up to 3 times."
-            },
-            {
-                "id": "flight",
-                "label": "Flight",
-                "cost": {
-                    "Power": 4
-                },
-                "prerequisites": [
-                    "strength"
-                ],
-                "img": "https://static1.colliderimages.com/wordpress/wp-content/uploads/2023/04/wonder-woman-gal-gadot.jpg",
-                "description": "Soar through the skies at incredible speed. Requires Super Strength."
-            },
-            {
-                "id": "advancedFlight",
-                "label": "Advanced Flight",
-                "cost": {
-                    "Power": 4
-                },
-                "prerequisites": [
-                    "strength",
-                    "flight"
-                ],
-                "img": "https://wallpapercave.com/wp/wp7038964.jpg",
-                "description": "Perform aerial combat maneuvers and sonic-speed bursts. Requires Flight + Strength."
-            },
-            {
-                "id": "laser",
-                "label": "Laser Vision",
-                "cost": {
-                    "Power": 3
-                },
-                "prerequisites": [
-                    "strength"
-                ],
-                "img": "https://images.hdqwalls.com/wallpapers/superman-laser-eye-0e.jpg",
-                "description": "Shoot concentrated beams of energy from your eyes. Devastating and precise."
-            },
-            {
-                "id": "energyConversion",
-                "label": "Energy Conversion",
-                "cost": {
-                    "Power": 3,
-                    "Charisma": -2
-                },
-                "img": "https://wallpapercave.com/wp/wp3704602.jpg",
-                "description": "Convert raw power into charm. Costs Power, but grants Charisma."
-            }
-        ]
-    },
-    {
-        "name": "Personality",
-        "options": [
-            {
-                "id": "charm",
-                "label": "Charming",
-                "cost": {
-                    "Charisma": 2
-                },
-                "img": "https://i.pinimg.com/736x/b2/a5/ba/b2a5ba33839638db207ba3bc22704641.jpg",
-                "description": "You win people over with a smile. Great for diplomacy and persuasion."
-            },
-            {
-                "id": "intimidation",
-                "label": "Intimidating",
-                "cost": {
-                    "Charisma": 3
-                },
-                "conflictsWith": [
-                    "pacifist"
-                ],
-                "img": "https://gamingbolt.com/wp-content/uploads/2014/07/12.-Doomsday.jpg",
-                "description": "Your presence alone makes enemies hesitate. Cannot be taken with Pacifist."
-            },
-            {
-                "id": "heroicLeader",
-                "label": "Heroic Leader",
-                "cost": {
-                    "Power": 2,
-                    "Charisma": 3
-                },
-                "img": "https://vignette.wikia.nocookie.net/braveandbold/images/4/44/JLI.jpg/revision/latest?cb=20110919232901",
-                "description": "Your presence inspires and your strength leads. Costs both Power and Charisma."
-            },
-            {
-                "id": "pacifist",
-                "label": "Pacifist",
-                "cost": {
-                    "Power": 0
-                },
-                "conflictsWith": [
-                    "strength",
-                    "laser",
-                    "intimidation"
-                ],
-                "img": "https://www.slashfilm.com/img/gallery/superman-the-animated-series-accidentally-cast-a-real-life-couple-as-ma-and-pa-kent/l-intro-1675903144.jpg",
-                "description": "You reject violence in all forms. Cannot be combined with Super Strength, Laser Vision, or Intimidation."
-            }
-        ]
-    },
-    {
-        "name": "Items",
-        "options": [
-            {
-                "id": "omnitrix",
-                "label": "Omnitrix",
-                "cost": {
-                    "Power": 5
-                },
-                "img": "https://static.wikia.nocookie.net/ben10/images/3/30/Omnitrix_OS_Model.png",
-                "description": "Unlocks the ability to transform into powerful alien forms."
-            }
-        ]
-    },
-    {
-        "name": "Omnitrix Aliens",
         "requiresOption": [
-            "omnitrix",
-            "heroicLeader"
+            "alienHybrid"
         ],
-        "options": [
+        "subcategories": [
             {
-                "id": "heatblast",
-                "label": "Heatblast",
-                "cost": {
-                    "Power": 2
-                },
-                "img": "https://static.wikia.nocookie.net/ben10/images/2/2e/Heatblast_Ben_10_Reboot.png",
-                "description": "Fire manipulation and flight. A classic alien with destructive potential."
-            },
+                "name": "Powers",
+                "options": [
+                    {
+                        "id": "telepathy",
+                        "label": "Telepathy",
+                        "cost": {
+                            "Wisdom": 4
+                        },
+                        "img": "https://example.com/telepathy.png",
+                        "description": "Read and influence minds. Requires Alien Hybrid.",
+                        "prerequisites": [
+                            "alienHybrid"
+                        ],
+                        "conflictsWith": [
+                            "superStrength",
+                            "scholar"
+                        ]
+                    },
+                    {
+                        "id": "superStrength",
+                        "label": "Super Strength",
+                        "cost": {
+                            "Power": 5
+                        },
+                        "img": "https://example.com/strength.png",
+                        "description": "Unmatched power and resilience.",
+                        "conflictsWith": [
+                            "telepathy",
+                            "scholar"
+                        ]
+                    },
+                    {
+                        "id": "techMastery",
+                        "label": "Tech Mastery",
+                        "cost": {
+                            "Wisdom": 2,
+                            "Power": 2
+                        },
+                        "img": "https://example.com/techmastery.png",
+                        "description": "Master advanced alien tech.",
+                        "prerequisites": [
+                            "cyborg"
+                        ]
+                    }
+                ],
+                "maxSelections": 2
+            }
+        ]
+    },
+    {
+        "name": "Companions",
+        "requiresOption": [
+            "charmer"
+        ],
+        "subcategories": [
             {
-                "id": "xlr8",
-                "label": "XLR8",
-                "cost": {
-                    "Power": 3
-                },
-                "img": "https://static.wikia.nocookie.net/ben10/images/0/08/XLR8_Reboot.png",
-                "description": "Supersonic speed and agility. Outrun vehicles and reactions alike."
+                "name": "Allies",
+                "options": [
+                    {
+                        "id": "mechPet",
+                        "label": "Mech Pet",
+                        "cost": {
+                            "Power": 2
+                        },
+                        "img": "https://example.com/mechpet.png",
+                        "description": "Loyal and programmable.",
+                        "conflictsWith": [
+                            "rivalTurnedAlly"
+                        ]
+                    },
+                    {
+                        "id": "alienScout",
+                        "label": "Alien Scout",
+                        "cost": {
+                            "Wisdom": 3
+                        },
+                        "img": "https://example.com/scout.png",
+                        "description": "Fast and reliable messenger.",
+                        "prerequisites": [
+                            "alienHybrid"
+                        ]
+                    },
+                    {
+                        "id": "rivalTurnedAlly",
+                        "label": "Rival Turned Ally",
+                        "cost": {
+                            "Charisma": 3
+                        },
+                        "img": "https://example.com/rival.png",
+                        "description": "They once opposed you. Now they serve.",
+                        "conflictsWith": [
+                            "mechPet"
+                        ]
+                    }
+                ],
+                "maxSelections": 2
+            }
+        ]
+    },
+    {
+        "name": "Gear",
+        "subcategories": [
+            {
+                "name": "Loadout",
+                "maxSelections": 3,
+                "options": [
+                    {
+                        "id": "jetpack",
+                        "label": "Jetpack",
+                        "cost": {
+                            "Power": 2
+                        },
+                        "img": "https://example.com/jetpack.png",
+                        "description": "Fly short distances quickly."
+                    },
+                    {
+                        "id": "scanner",
+                        "label": "Scanner",
+                        "cost": {
+                            "Wisdom": 1
+                        },
+                        "img": "https://example.com/scanner.png",
+                        "description": "Detect hidden lifeforms and tech."
+                    },
+                    {
+                        "id": "plasmaRifle",
+                        "label": "Plasma Rifle",
+                        "cost": {
+                            "Power": 3
+                        },
+                        "img": "https://example.com/rifle.png",
+                        "description": "High-energy ranged weapon."
+                    },
+                    {
+                        "id": "cloakingDevice",
+                        "label": "Cloaking Device",
+                        "cost": {
+                            "Wisdom": 2
+                        },
+                        "img": "https://example.com/cloak.png",
+                        "description": "Grants temporary invisibility."
+                    },
+                    {
+                        "id": "healingKit",
+                        "label": "Healing Kit",
+                        "cost": {
+                            "Charisma": 1
+                        },
+                        "img": "https://example.com/healingkit.png",
+                        "description": "Emergency medical gear."
+                    }
+                ]
             }
         ]
     }

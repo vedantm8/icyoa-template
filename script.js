@@ -81,34 +81,124 @@ function closeModal() {
     modalMode = null;
 }
 
+function validateInputJson(data) {
+    const optionMap = new Map();
+    const dependencyGraph = new Map();
+    const errors = [];
+
+    // Step 1: Build option map and dependency graph
+    data.forEach(entry => {
+        (entry.subcategories || [{ options: entry.options || [] }]).forEach(subcat => {
+            (subcat.options || []).forEach(opt => {
+                optionMap.set(opt.id, opt);
+                dependencyGraph.set(opt.id, {
+                    prerequisites: new Set(opt.prerequisites || []),
+                    conflicts: new Set(opt.conflictsWith || [])
+                });
+            });
+        });
+
+        // Step 2: Apply requiresOption to all options in the category
+        if (entry.requiresOption) {
+            const requiredIds = Array.isArray(entry.requiresOption)
+                ? entry.requiresOption
+                : [entry.requiresOption];
+
+            (entry.subcategories || [{ options: entry.options || [] }]).forEach(subcat => {
+                (subcat.options || []).forEach(opt => {
+                    const node = dependencyGraph.get(opt.id);
+                    if (node) {
+                        requiredIds.forEach(req => node.prerequisites.add(req));
+                    }
+                });
+            });
+        }
+    });
+
+    // Step 3: Make conflicts bidirectional
+    for (let [id, node] of dependencyGraph.entries()) {
+        for (let conflictId of node.conflicts) {
+            if (!dependencyGraph.has(conflictId)) continue;
+            dependencyGraph.get(conflictId).conflicts.add(id);
+        }
+    }
+
+    // Step 4: Recursively validate option paths
+    function validateOption(id, path = new Set()) {
+        if (path.has(id)) {
+            errors.push(`Circular prerequisite detected involving "${id}"`);
+            return;
+        }
+
+        path.add(id);
+        const current = dependencyGraph.get(id);
+        if (!current) return;
+
+        for (let otherId of path) {
+            if (otherId === id) continue;
+            const other = dependencyGraph.get(otherId);
+            if (other?.conflicts.has(id) || current.conflicts.has(otherId)) {
+                errors.push(
+                    `Option "${id}" cannot be selected due to conflict with its prerequisite "${otherId}"`
+                );
+            }
+        }
+
+        for (let pre of current.prerequisites) {
+            if (!optionMap.has(pre)) {
+                errors.push(`Missing prerequisite "${pre}" for option "${id}"`);
+                continue;
+            }
+            validateOption(pre, new Set(path));
+        }
+    }
+
+    // Step 5: Validate all options
+    for (let id of optionMap.keys()) {
+        validateOption(id);
+    }
+
+    if (errors.length > 0) {
+        throw new Error("Validation Errors:\n\n" + errors.map(err => `• ${err}`).join("\n\n"));
+    }
+}
+
 fetch("input.json")
     .then(res => res.json())
     .then(data => {
-        const titleEntry = data.find(entry => entry.type === "title");
-        if (titleEntry?.text) {
-            const titleEl = document.getElementById("cyoaTitle");
-            if (titleEl) titleEl.textContent = titleEntry.text;
+        try {
+            validateInputJson(data); // Validate for logical consistency
+
+            const titleEntry = data.find(entry => entry.type === "title");
+            if (titleEntry?.text) {
+                const titleEl = document.getElementById("cyoaTitle");
+                if (titleEl) titleEl.textContent = titleEntry.text;
+            }
+
+            const descriptionEntry = data.find(entry => entry.type === "description");
+            if (descriptionEntry?.text) {
+                const descEl = document.getElementById("cyoaDescription");
+                if (descEl) descEl.textContent = descriptionEntry.text;
+            }
+
+            const headerImageEntry = data.find(entry => entry.type === "headerImage");
+            if (headerImageEntry?.url) {
+                const container = document.getElementById("headerImageContainer");
+                container.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image" />`;
+            }
+
+            const pointsEntry = data.find(entry => entry.type === "points");
+            points = pointsEntry?.values ? { ...pointsEntry.values } : {};
+
+            categories = data.filter(entry => !entry.type || entry.name);
+
+            renderAccordion();
+            updatePointsDisplay();
+        } catch (validationError) {
+            console.error("Validation error in input.json:", validationError);
+            alert("Invalid input.json: " + validationError.message);
+            throw validationError; // Prevents further loading
         }
-
-        const descriptionEntry = data.find(entry => entry.type === "description");
-        if (descriptionEntry?.text) {
-            const descEl = document.getElementById("cyoaDescription");
-            if (descEl) descEl.textContent = descriptionEntry.text;
-        }
-
-        const headerImageEntry = data.find(entry => entry.type === "headerImage");
-        if (headerImageEntry?.url) {
-            const container = document.getElementById("headerImageContainer");
-            container.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image" />`;
-        }
-
-        const pointsEntry = data.find(entry => entry.type === "points");
-        points = pointsEntry?.values ? { ...pointsEntry.values } : {};
-
-        categories = data.filter(entry => !entry.type || entry.name);
-
-        renderAccordion();
-        updatePointsDisplay();
     })
     .catch(err => {
         console.error("Failed to load input.json:", err);
@@ -227,126 +317,159 @@ function renderAccordion() {
             lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
             content.appendChild(lockMsg);
         } else {
-            (cat.options || []).forEach(opt => {
-                const wrapper = document.createElement("div");
-                wrapper.className = "option-wrapper";
+            const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
+            subcats.forEach(subcat => {
+                const subHeader = document.createElement("h4");
+                subHeader.style.display = "flex";
+                subHeader.style.justifyContent = "space-between";
+                subHeader.style.alignItems = "center";
 
-                const img = document.createElement("img");
-                img.src = opt.img;
-                img.alt = opt.label;
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = subcat.name || "Options";
 
-                const contentWrapper = document.createElement("div");
-                contentWrapper.className = "option-content";
+                subHeader.appendChild(nameSpan);
 
-                const label = document.createElement("strong");
-                label.textContent = opt.label;
-
-                const requirements = document.createElement("div");
-                requirements.className = "option-requirements";
-                let reqText = [];
-
-                const allConflicts = new Set();
-                (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
-                categories.flatMap(c => c.options || []).forEach(other => {
-                    if (other.conflictsWith?.includes(opt.id)) {
-                        allConflicts.add(other.id);
-                    }
-                });
-
-                const incompatibleNames = Array.from(allConflicts).map(getOptionLabel);
-                if (incompatibleNames.length > 0) {
-                    reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
+                // Show max selection info if it exists
+                if (subcat.maxSelections) {
+                    const limitNote = document.createElement("span");
+                    limitNote.style.fontSize = "12px";
+                    limitNote.style.color = "#666";
+                    limitNote.textContent = `Choose up to ${subcat.maxSelections}`;
+                    subHeader.appendChild(limitNote);
                 }
 
-                if (opt.prerequisites?.length) {
-                    const prereqNames = opt.prerequisites.map(getOptionLabel);
-                    reqText.push(`Requires: ${prereqNames.join(', ')}`);
-                }
+                content.appendChild(subHeader);
 
-                const gain = [], spend = [];
-                Object.entries(opt.cost).forEach(([type, val]) => {
-                    if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
-                    else spend.push(`${type} ${val}`);
-                });
-                if (gain.length) reqText.push(`Gain: ${gain.join(', ')}`);
-                if (spend.length) reqText.push(`Cost: ${spend.join(', ')}`);
 
-                requirements.innerHTML = reqText.join('<br>');
+                const subcatLimit = subcat.maxSelections || null;
+                const subcatCount = () => (subcat.options || []).reduce((sum, opt) => sum + (selectedOptions[opt.id] || 0), 0);
 
-                const desc = document.createElement("div");
-                desc.className = "option-description";
-                desc.textContent = opt.description || "";
+                (subcat.options || []).forEach(opt => {
+                    const wrapper = document.createElement("div");
+                    wrapper.className = "option-wrapper";
 
-                const count = selectedOptions[opt.id] || 0;
-                const max = opt.maxSelections || 1;
+                    const img = document.createElement("img");
+                    img.src = opt.img;
+                    img.alt = opt.label;
 
-                const controls = document.createElement("div");
-                controls.className = "option-controls";
+                    const contentWrapper = document.createElement("div");
+                    contentWrapper.className = "option-content";
 
-                const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
-                const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
-                const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
-                const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
-                    const selected = findOptionById(id);
-                    return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
-                });
+                    const label = document.createElement("strong");
+                    label.textContent = opt.label;
 
-                const isDisabled = !hasPrereqs || !hasPoints || !hasNoOutgoingConflicts || !hasNoIncomingConflicts;
+                    const requirements = document.createElement("div");
+                    requirements.className = "option-requirements";
+                    let reqText = [];
 
-                if (max > 1) {
-                    const addBtn = document.createElement("button");
-                    addBtn.textContent = "+";
-                    addBtn.disabled = isDisabled || count >= max;
-                    addBtn.title = addBtn.disabled ? "Cannot add more" : "Click to add";
-                    addBtn.onclick = () => addSelection(opt);
-
-                    const removeBtn = document.createElement("button");
-                    removeBtn.textContent = "−";
-                    removeBtn.disabled = count === 0;
-                    removeBtn.title = count > 0 ? "Click to remove" : "Not selected";
-                    removeBtn.onclick = () => removeSelection(opt);
-
-                    const countText = document.createElement("span");
-                    countText.textContent = `${count} selected`;
-
-                    controls.appendChild(addBtn);
-                    controls.appendChild(removeBtn);
-                    controls.appendChild(countText);
-                } else {
-                    const btn = document.createElement("button");
-                    btn.textContent = count > 0 ? "✓ Selected" : "Select";
-                    btn.disabled = false;
-
-                    if (count > 0) {
-                        btn.onclick = () => removeSelection(opt);
-                        btn.title = "Click to deselect";
-                    } else if (isDisabled) {
-                        if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
-                            btn.classList.add("conflict");
-                            btn.title = `Incompatible with: ${incompatibleNames.join(', ')}`;
-                        } else if (!hasPrereqs) {
-                            btn.classList.add("prereq");
-                            btn.title = `Requires: ${opt.prerequisites.join(', ')}`;
-                        } else {
-                            btn.title = `Not enough points`;
+                    const allConflicts = new Set();
+                    (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
+                    categories.flatMap(c => c.subcategories || [{ options: c.options || [] }]).flatMap(sc => sc.options || []).forEach(other => {
+                        if (other.conflictsWith?.includes(opt.id)) {
+                            allConflicts.add(other.id);
                         }
-                        btn.disabled = true;
-                    } else {
-                        btn.onclick = () => addSelection(opt);
-                        btn.title = `Click to select`;
+                    });
+
+                    const incompatibleNames = Array.from(allConflicts).map(getOptionLabel);
+                    if (incompatibleNames.length > 0) {
+                        reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
                     }
 
-                    controls.appendChild(btn);
-                }
+                    if (opt.prerequisites?.length) {
+                        const prereqNames = opt.prerequisites.map(getOptionLabel);
+                        reqText.push(`Requires: ${prereqNames.join(', ')}`);
+                    }
 
-                contentWrapper.appendChild(label);
-                contentWrapper.appendChild(requirements);
-                contentWrapper.appendChild(desc);
-                contentWrapper.appendChild(controls);
+                    const gain = [], spend = [];
+                    Object.entries(opt.cost).forEach(([type, val]) => {
+                        if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
+                        else spend.push(`${type} ${val}`);
+                    });
+                    if (gain.length) reqText.push(`Gain: ${gain.join(', ')}`);
+                    if (spend.length) reqText.push(`Cost: ${spend.join(', ')}`);
 
-                wrapper.appendChild(img);
-                wrapper.appendChild(contentWrapper);
-                content.appendChild(wrapper);
+                    requirements.innerHTML = reqText.join('<br>');
+
+                    const desc = document.createElement("div");
+                    desc.className = "option-description";
+                    desc.textContent = opt.description || "";
+
+                    const count = selectedOptions[opt.id] || 0;
+                    const max = opt.maxSelections || 1;
+
+                    const controls = document.createElement("div");
+                    controls.className = "option-controls";
+
+                    const canAdd = () => {
+                        const currentSubcatCount = subcatCount();
+                        return currentSubcatCount < (subcatLimit || Infinity);
+                    };
+
+                    const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
+                    const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
+                    const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
+                    const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
+                        const selected = findOptionById(id);
+                        return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
+                    });
+                    const isDisabled = !hasPrereqs || !hasPoints || !hasNoOutgoingConflicts || !hasNoIncomingConflicts || !canAdd();
+
+                    if (max > 1) {
+                        const addBtn = document.createElement("button");
+                        addBtn.textContent = "+";
+                        addBtn.disabled = isDisabled || count >= max;
+                        addBtn.onclick = () => addSelection(opt);
+
+                        const removeBtn = document.createElement("button");
+                        removeBtn.textContent = "−";
+                        removeBtn.disabled = count === 0;
+                        removeBtn.onclick = () => removeSelection(opt);
+
+                        const countText = document.createElement("span");
+                        countText.textContent = `${count} selected`;
+
+                        controls.appendChild(addBtn);
+                        controls.appendChild(removeBtn);
+                        controls.appendChild(countText);
+                    } else {
+                        const btn = document.createElement("button");
+                        btn.textContent = count > 0 ? "✓ Selected" : "Select";
+                        if (count > 0) {
+                            btn.onclick = () => removeSelection(opt);
+                        } else if (!isDisabled) {
+                            btn.onclick = () => addSelection(opt);
+                        }
+                        let tooltip = [];
+                        if (!hasPoints) {
+                            tooltip.push("Not enough points");
+                        }
+                        if (!hasPrereqs) {
+                            const missing = opt.prerequisites
+                                .filter(id => !selectedOptions[id])
+                                .map(getOptionLabel);
+                            tooltip.push(`Missing prerequisites: ${missing.join(', ')}`);
+                        }
+                        if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
+                            tooltip.push(`Conflicts with incompatible option(s): ${incompatibleNames.join(', ')}`);
+                        }
+                        if (!canAdd()) {
+                            tooltip.push("Max selections reached for this group");
+                        }
+
+                        btn.disabled = count === 0 && isDisabled;
+                        btn.title = tooltip.length > 0 ? tooltip.join(" | ") : (count > 0 ? "Click to deselect" : "Click to select");
+                        controls.appendChild(btn);
+                    }
+
+                    contentWrapper.appendChild(label);
+                    contentWrapper.appendChild(requirements);
+                    contentWrapper.appendChild(desc);
+                    contentWrapper.appendChild(controls);
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(contentWrapper);
+                    content.appendChild(wrapper);
+                });
             });
         }
 
