@@ -6,6 +6,8 @@ const openCategories = new Set();
 const storyInputs = {};
 let formulas = {};
 const openSubcategories = new Set();
+const attributeSliderValues = {}; 
+let originalPoints = {};
 
 
 const modal = document.getElementById("modal");
@@ -21,6 +23,18 @@ document.getElementById("modalClose").onclick = () => closeModal();
 document.getElementById("resetBtn").onclick = () => {
     if (!confirm("Are you sure you want to reset all selections?")) return;
 
+    // Refund slider-based attribute costs (optional, but you already do it)
+    for (let id in attributeSliderValues) {
+        const value = attributeSliderValues[id];
+        const option = findOptionById(id);
+        if (option && option.costPerPoint) {
+            for (let [type, costPer] of Object.entries(option.costPerPoint)) {
+                points[type] += costPer * value;
+            }
+        }
+    }
+
+    // Refund selectedOptions
     for (let id in selectedOptions) {
         const option = findOptionById(id);
         if (option) {
@@ -33,7 +47,16 @@ document.getElementById("resetBtn").onclick = () => {
         }
     }
 
+    // Clear all state
     for (let key in selectedOptions) delete selectedOptions[key];
+    for (let key in attributeSliderValues) delete attributeSliderValues[key];
+    for (let key in discountedSelections) delete discountedSelections[key];
+    for (let key in storyInputs) delete storyInputs[key];
+
+    // 🔥 Reset points to original values
+    points = { ...originalPoints };
+
+    // Recalculate and re-render
     evaluateFormulas();
     updatePointsDisplay();
     renderAccordion();
@@ -59,6 +82,10 @@ modalConfirmBtn.onclick = () => {
         Object.entries(importedData.storyInputs || {}).forEach(([key, val]) => {
             storyInputs[key] = val;
         });
+        Object.entries(importedData.attributeSliderValues || {}).forEach(([key, val]) => {
+            attributeSliderValues[key] = val;
+        });
+
 
         evaluateFormulas();
         updatePointsDisplay();
@@ -81,7 +108,9 @@ function openModal(mode) {
             points,
             discountedSelections,
             storyInputs,
-            computedPoints: Object.keys(formulas)
+            attributeSliderValues,
+            computedPoints: Object.keys(formulas),
+
         }, null, 2);
         modalConfirmBtn.style.display = "none";
     } else {
@@ -183,7 +212,7 @@ fetch("input.json")
     .then(res => res.json())
     .then(data => {
         try {
-            validateInputJson(data); 
+            validateInputJson(data);
 
             const titleEntry = data.find(entry => entry.type === "title");
             if (titleEntry?.text) {
@@ -204,7 +233,8 @@ fetch("input.json")
             }
 
             const pointsEntry = data.find(entry => entry.type === "points");
-            points = pointsEntry?.values ? { ...pointsEntry.values } : {};
+            originalPoints = pointsEntry?.values ? { ...pointsEntry.values } : {};  // ✅ Save original values
+            points = { ...originalPoints }; // ✅ Use copy of original
 
             categories = data.filter(entry => !entry.type || entry.name);
 
@@ -212,7 +242,6 @@ fetch("input.json")
             if (formulaEntry?.values) {
                 formulas = { ...formulaEntry.values };
             }
-
 
             renderAccordion();
             evaluateFormulas();
@@ -402,51 +431,31 @@ function renderAccordion() {
             content.appendChild(lockMsg);
         } else {
             const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
-            subcats.forEach(subcat => {
-                const subcatName = subcat.name || "Options";
+            subcats.forEach((subcat, subIndex) => {
+                const subcatHeader = document.createElement("div");
+                subcatHeader.className = "subcategory-header";
+                subcatHeader.style.cursor = "pointer";
+                subcatHeader.style.fontWeight = "bold";
+                subcatHeader.style.marginTop = "1em";
+                subcatHeader.textContent = subcat.name || `Options ${subIndex + 1}`;
 
-                // Subcategory header
-                const subHeader = document.createElement("h4");
-                subHeader.className = "subcategory-header";
-                subHeader.style.cursor = "pointer";
-                subHeader.style.display = "flex";
-                subHeader.style.justifyContent = "space-between";
-                subHeader.style.alignItems = "center";
+                const subcatContent = document.createElement("div");
+                subcatContent.className = "subcategory-content";
+                subcatContent.style.display = "block";
 
-                const nameSpan = document.createElement("span");
-                nameSpan.textContent = subcatName;
-
-                const toggleIndicator = document.createElement("span");
-                toggleIndicator.textContent = openSubcategories.has(subcatName) ? "▾" : "▸";
-                toggleIndicator.style.fontSize = "14px";
-
-                subHeader.appendChild(nameSpan);
-                subHeader.appendChild(toggleIndicator);
-                content.appendChild(subHeader);
-
-                // Subcategory content container
-                const subContent = document.createElement("div");
-                subContent.className = "subcategory-content";
-                subContent.style.display = openSubcategories.has(subcatName) ? "block" : "none";
-                content.appendChild(subContent);
-
-                subHeader.onclick = () => {
-                    if (openSubcategories.has(subcatName)) {
-                        openSubcategories.delete(subcatName);
-                        subContent.style.display = "none";
-                        toggleIndicator.textContent = "▸";
-                    } else {
-                        openSubcategories.add(subcatName);
-                        subContent.style.display = "block";
-                        toggleIndicator.textContent = "▾";
-                    }
+                subcatHeader.onclick = () => {
+                    const isVisible = subcatContent.style.display === "block";
+                    subcatContent.style.display = isVisible ? "none" : "block";
                 };
+
+                content.appendChild(subcatHeader);
+                content.appendChild(subcatContent);
 
                 if (subcat.type === "storyBlock") {
                     const storyText = document.createElement("div");
                     storyText.className = "story-block";
                     storyText.textContent = subcat.text || "";
-                    subContent.appendChild(storyText);
+                    subcatContent.appendChild(storyText);
 
                     if (subcat.input) {
                         const inputWrapper = document.createElement("div");
@@ -469,19 +478,16 @@ function renderAccordion() {
 
                         inputWrapper.appendChild(label);
                         inputWrapper.appendChild(input);
-                        subContent.appendChild(inputWrapper);
+                        subcatContent.appendChild(inputWrapper);
                     }
                 }
-
-                const subcatLimit = subcat.maxSelections || null;
-                const subcatCount = () => (subcat.options || []).reduce((sum, opt) => sum + (selectedOptions[opt.id] || 0), 0);
 
                 (subcat.options || []).forEach(opt => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "option-wrapper";
 
                     const img = document.createElement("img");
-                    img.src = opt.img;
+                    img.src = opt.img || "";
                     img.alt = opt.label;
 
                     const contentWrapper = document.createElement("div");
@@ -492,148 +498,106 @@ function renderAccordion() {
 
                     const requirements = document.createElement("div");
                     requirements.className = "option-requirements";
-                    let reqText = [];
-
-                    const allConflicts = new Set();
-                    (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
-                    categories.flatMap(c => c.subcategories || [{ options: c.options || [] }])
-                        .flatMap(sc => sc.options || [])
-                        .forEach(other => {
-                            if (other.conflictsWith?.includes(opt.id)) {
-                                allConflicts.add(other.id);
-                            }
-                        });
-
-                    const incompatibleNames = Array.from(allConflicts).map(getOptionLabel);
-                    if (incompatibleNames.length > 0) {
-                        reqText.push(`Incompatible with: ${incompatibleNames.join(', ')}`);
-                    }
-
-                    if (opt.prerequisites?.length) {
-                        const prereqNames = opt.prerequisites.map(getOptionLabel);
-                        reqText.push(`Requires: ${prereqNames.join(', ')}`);
-                    }
 
                     const gain = [], spend = [];
-                    Object.entries(opt.cost).forEach(([type, val]) => {
+                    Object.entries(opt.cost || {}).forEach(([type, val]) => {
                         if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
                         else spend.push(`${type} ${val}`);
                     });
-                    if (gain.length) reqText.push(`Gain: ${gain.join(', ')}`);
-                    if (spend.length) {
-                        const discounted = (() => {
-                            const subcatOptions = subcat.options || [];
-                            const currentSubcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
-                            return subcat?.discountFirstN && currentSubcatCount < subcat.discountFirstN;
-                        })();
 
-                        if (discounted) {
-                            const adjusted = Object.entries(opt.cost).map(([type, val]) => {
-                                const discount = subcat.discountAmount?.[type] || 0;
-                                const effective = Math.max(0, val - discount);
-                                return effective < val
-                                    ? `<span style="color: green;">${type} ${effective} (was ${val})</span>`
-                                    : `${type} ${val}`;
-                            });
-                            reqText.push(`Cost: ${adjusted.join(', ')}`);
-                        } else {
-                            reqText.push(`Cost: ${spend.join(', ')}`);
-                        }
-                    }
-
-                    requirements.innerHTML = reqText.join('<br>');
+                    if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
+                    if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
 
                     const desc = document.createElement("div");
                     desc.className = "option-description";
                     desc.textContent = opt.description || "";
 
-                    const count = selectedOptions[opt.id] || 0;
-                    const max = opt.maxSelections || 1;
-
-                    const controls = document.createElement("div");
-                    controls.className = "option-controls";
-
-                    const canAdd = () => {
-                        const currentSubcatCount = subcatCount();
-                        return currentSubcatCount < (subcatLimit || Infinity);
-                    };
-
-                    const hasPrereqs = !opt.prerequisites || opt.prerequisites.every(id => selectedOptions[id]);
-                    const hasPoints = Object.entries(opt.cost).every(([type, cost]) => points[type] >= cost);
-                    const hasNoOutgoingConflicts = !opt.conflictsWith || opt.conflictsWith.every(id => !selectedOptions[id]);
-                    const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
-                        const selected = findOptionById(id);
-                        return !selected?.conflictsWith || !selected.conflictsWith.includes(opt.id);
-                    });
-                    const isDisabled = !hasPrereqs || !hasPoints || !hasNoOutgoingConflicts || !hasNoIncomingConflicts || !canAdd();
-
-                    if (max > 1) {
-                        const addBtn = document.createElement("button");
-                        addBtn.textContent = "+";
-                        addBtn.disabled = isDisabled || count >= max;
-                        addBtn.onclick = () => addSelection(opt);
-
-                        const removeBtn = document.createElement("button");
-                        removeBtn.textContent = "−";
-                        removeBtn.disabled = count === 0;
-                        removeBtn.onclick = () => removeSelection(opt);
-
-                        const countText = document.createElement("span");
-                        countText.textContent = `${count} selected`;
-
-                        controls.appendChild(addBtn);
-                        controls.appendChild(removeBtn);
-                        controls.appendChild(countText);
-                    } else {
-                        const btn = document.createElement("button");
-                        btn.textContent = count > 0 ? "✓ Selected" : "Select";
-                        if (count > 0) {
-                            btn.onclick = () => removeSelection(opt);
-                        } else if (!isDisabled) {
-                            btn.onclick = () => addSelection(opt);
-                        }
-
-                        let tooltip = [];
-
-                        if (!hasPoints) tooltip.push("Not enough points");
-                        if (!hasPrereqs) {
-                            const missing = opt.prerequisites
-                                .filter(id => !selectedOptions[id])
-                                .map(getOptionLabel);
-                            tooltip.push(`Missing prerequisites: ${missing.join(', ')}`);
-                        }
-                        if (!hasNoOutgoingConflicts || !hasNoIncomingConflicts) {
-                            tooltip.push(`Conflicts with incompatible option(s): ${incompatibleNames.join(', ')}`);
-                        }
-                        if (!canAdd()) {
-                            tooltip.push("Max selections reached for this group");
-                        }
-
-                        const discounted = (() => {
-                            const subcatOptions = subcat.options || [];
-                            const currentSubcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
-                            return subcat?.discountFirstN && currentSubcatCount < subcat.discountFirstN;
-                        })();
-
-                        if (discounted) {
-                            Object.entries(subcat.discountAmount || {}).forEach(([type, val]) => {
-                                tooltip.push(`Discount: -${val} ${type}`);
-                            });
-                        }
-
-                        btn.disabled = count === 0 && isDisabled;
-                        btn.title = tooltip.join(" | ");
-                        controls.appendChild(btn);
-                    }
-
                     contentWrapper.appendChild(label);
                     contentWrapper.appendChild(requirements);
                     contentWrapper.appendChild(desc);
-                    contentWrapper.appendChild(controls);
+
+                    if (opt.inputType === "slider") {
+                        const currentValue = attributeSliderValues[opt.id] || 0;
+
+                        const sliderWrapper = document.createElement("div");
+                        sliderWrapper.className = "slider-wrapper";
+
+                        const sliderLabel = document.createElement("label");
+                        sliderLabel.textContent = `${opt.label}: ${currentValue}`;
+                        sliderLabel.htmlFor = `${opt.id}-slider`;
+
+                        const slider = document.createElement("input");
+                        slider.type = "range";
+                        slider.min = opt.min ?? 0;
+                        slider.max = opt.max ?? 40;
+                        slider.value = currentValue;
+                        slider.id = `${opt.id}-slider`;
+
+                        slider.oninput = (e) => {
+                            const newVal = parseInt(e.target.value);
+                            const oldVal = attributeSliderValues[opt.id] || 0;
+                            const diff = newVal - oldVal;
+
+                            const costPerPoint = opt.costPerPoint || {};
+                            const costTypes = Object.keys(costPerPoint);
+
+                            let canChange = true;
+
+                            for (let type of costTypes) {
+                                const cost = costPerPoint[type] * diff;
+                                if (diff > 0 && points[type] < cost) {
+                                    canChange = false;
+                                    break;
+                                }
+                            }
+
+                            if (!canChange) {
+                                e.target.value = oldVal;
+                                return;
+                            }
+
+                            costTypes.forEach(type => {
+                                const cost = costPerPoint[type] * diff;
+                                points[type] -= cost;
+                            });
+
+                            attributeSliderValues[opt.id] = newVal;
+                            sliderLabel.textContent = `${opt.label}: ${newVal}`;
+                            evaluateFormulas();
+                            updatePointsDisplay();
+                        };
+
+                        sliderWrapper.appendChild(sliderLabel);
+                        sliderWrapper.appendChild(slider);
+                        contentWrapper.appendChild(sliderWrapper);
+                    } else {
+                        const controls = document.createElement("div");
+                        controls.className = "option-controls";
+
+                        const count = selectedOptions[opt.id] || 0;
+                        const max = opt.maxSelections || 1;
+
+                        const btn = document.createElement("button");
+                        btn.textContent = count > 0 ? "✓ Selected" : "Select";
+
+                        const canAdd = canSelect(opt);
+                        btn.disabled = !canAdd && count === 0;
+
+                        btn.onclick = () => {
+                            if (count > 0) {
+                                removeSelection(opt);
+                            } else if (canAdd) {
+                                addSelection(opt);
+                            }
+                        };
+
+                        controls.appendChild(btn);
+                        contentWrapper.appendChild(controls);
+                    }
 
                     wrapper.appendChild(img);
                     wrapper.appendChild(contentWrapper);
-                    subContent.appendChild(wrapper);
+                    subcatContent.appendChild(wrapper);
                 });
             });
         }
@@ -643,4 +607,3 @@ function renderAccordion() {
         container.appendChild(item);
     });
 }
-

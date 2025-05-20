@@ -68,18 +68,24 @@
                         "id": "strengthAttribute",
                         "label": "Strength Attribute",
                         "description": "Determines Carry Weight Limit and ability to apply Grapple, Knock Out, and Stagger",
-                        "cost": {
-                            "Attribute Points": 10
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 40,
+                        "costPerPoint": {
+                            "Attribute Points": 1
                         }
                     },
                     {
                         "id": "dexterityAttribute",
                         "label": "Dexterity Attribute",
                         "description": "Determines Physical Action Speed",
-                        "cost": {
-                            "Attribute Points": 10
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 40,
+                        "costPerPoint": {
+                            "Attribute Points": 1
                         }
-                    }                    
+                    }
                 ]
             }
         ]
