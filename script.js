@@ -269,6 +269,7 @@ function removeDependentOptions(deselectedId) {
 }
 
 function removeSelection(option) {
+    const scrollY = window.scrollY;
     const count = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : 1;
     if (!selectedOptions[option.id]) return;
 
@@ -288,6 +289,7 @@ function removeSelection(option) {
     evaluateFormulas();
     updatePointsDisplay();
     renderAccordion();
+    window.scrollTo(0, scrollY); 
 }
 
 function evaluateFormulas() {
@@ -304,6 +306,7 @@ function evaluateFormulas() {
 
 
 function addSelection(option) {
+    const scrollY = window.scrollY;
     const current = selectedOptions[option.id] || 0;
     const subcat = findSubcategoryOfOption(option.id);
     const subcatOptions = subcat?.options || [];
@@ -337,6 +340,7 @@ function addSelection(option) {
     evaluateFormulas();
     updatePointsDisplay();
     renderAccordion();
+    window.scrollTo(0, scrollY);
 }
 
 
@@ -349,15 +353,30 @@ function updatePointsDisplay() {
 
 function canSelect(option) {
     const meetsPrereq = !option.prerequisites || option.prerequisites.every(id => selectedOptions[id]);
-    const hasPoints = Object.entries(option.cost).every(([type, cost]) => points[type] >= cost);
     const hasNoOutgoingConflicts = !option.conflictsWith || option.conflictsWith.every(id => !selectedOptions[id]);
     const hasNoIncomingConflicts = Object.keys(selectedOptions).every(id => {
         const selected = findOptionById(id);
         return !selected?.conflictsWith || !selected.conflictsWith.includes(option.id);
     });
-    const max = option.maxSelections || 1;
-    const current = selectedOptions[option.id] || 0;
-    return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && current < max;
+
+    const subcat = findSubcategoryOfOption(option.id);
+    const subcatOptions = subcat?.options || [];
+    const subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+    const subcatMax = subcat?.maxSelections || Infinity;
+
+    const maxPerOption = option.maxSelections || 1;
+    const currentOptionCount = selectedOptions[option.id] || 0;
+
+    // Prevent over-selection at the subcategory level
+    const underSubcatLimit = subcatCount < subcatMax;
+
+    // Prevent over-selection at the option level
+    const underOptionLimit = currentOptionCount < maxPerOption;
+
+    // Ensure you have enough points
+    const hasPoints = Object.entries(option.cost || {}).every(([type, cost]) => points[type] >= cost);
+
+    return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && underOptionLimit && underSubcatLimit;
 }
 
 function findSubcategoryOfOption(optionId) {
@@ -443,27 +462,46 @@ function renderAccordion() {
                 subcatContent.className = "subcategory-content";
                 subcatContent.style.display = "block";
 
+                const subcatKey = `${cat.name}__${subcat.name || subIndex}`;
+
+                if (openSubcategories.has(subcatKey)) {
+                    subcatContent.style.display = "block";
+                } else {
+                    subcatContent.style.display = "none";
+                }
+
                 subcatHeader.onclick = () => {
-                    const isVisible = subcatContent.style.display === "block";
-                    subcatContent.style.display = isVisible ? "none" : "block";
+                    if (openSubcategories.has(subcatKey)) {
+                        openSubcategories.delete(subcatKey);
+                        subcatContent.style.display = "none";
+                    } else {
+                        openSubcategories.add(subcatKey);
+                        subcatContent.style.display = "block";
+                    }
                 };
+
 
                 content.appendChild(subcatHeader);
                 content.appendChild(subcatContent);
 
                 if (subcat.type === "storyBlock") {
-                    const storyText = document.createElement("div");
-                    storyText.className = "story-block";
-                    storyText.textContent = subcat.text || "";
-                    subcatContent.appendChild(storyText);
+                    if (subcat.text && subcat.text.trim() !== "") {
+                        const storyText = document.createElement("div");
+                        storyText.className = "story-block";
+                        storyText.textContent = subcat.text;
+                        subcatContent.appendChild(storyText);
+                    }
 
                     if (subcat.input) {
                         const inputWrapper = document.createElement("div");
                         inputWrapper.className = "story-input-wrapper";
 
-                        const label = document.createElement("label");
-                        label.textContent = subcat.input.label || "Input:";
-                        label.setAttribute("for", subcat.input.id);
+                        if (subcat.input.label) {
+                            const label = document.createElement("label");
+                            label.textContent = subcat.input.label;
+                            label.setAttribute("for", subcat.input.id);
+                            inputWrapper.appendChild(label);
+                        }
 
                         const input = document.createElement("input");
                         input.type = "text";
@@ -476,10 +514,10 @@ function renderAccordion() {
                             storyInputs[subcat.input.id] = e.target.value;
                         });
 
-                        inputWrapper.appendChild(label);
                         inputWrapper.appendChild(input);
                         subcatContent.appendChild(inputWrapper);
                     }
+
                 }
 
                 (subcat.options || []).forEach(opt => {

@@ -1,5 +1,13 @@
 [
     {
+        "type": "title",
+        "text": "Overlord CYOA"
+    },
+    {
+        "type": "description",
+        "text": "Yggdrasil has come to an end, but some see this as a new beginning."
+    },
+    {
         "type": "points",
         "values": {
             "Levels": 0,
@@ -11,13 +19,15 @@
         "subcategories": [
             {
                 "type": "storyBlock",
-                "text": "Yggdrasil has come to an end, but some see this as a new beginning.\n\nWhat was your character?",
+                "name": "Name",
                 "input": {
                     "id": "characterName",
-                    "label": "Name your character:",
                     "placeholder": "Enter name (max 20 chars)",
                     "maxLength": 20
-                },
+                }
+            },
+            {
+                "type": "storyBlock",
                 "maxSelections": 1,
                 "name": "Difficulty",
                 "options": [
@@ -62,7 +72,7 @@
             {
                 "type": "storyBlock",
                 "name": "Attribute Allocation",
-                "text": "Attribute values have a fixed limit of 40, which represents 400% of an average human's capabilities\n\nEach attribute starts at 0, but leaving them there is Fatal\n\nFor reference, spellcasters only need 20 in their casting attribute to cast 10th-tier spells, provided they have enough mana and high enough caster level to qualify.",
+                "text": "Attribute values have a fixed limit of 40, which represents 400% of an average human's capabilities\n\nEach attribute starts at 0, but leaving them there is Fatal\n\nFor reference, spellcasters only need 20 in their casting attribute to cast 10th-tier spells, provided they have enough mana and high enough caster level to qualify.\n\nAttributes also determine your Skill potential, keep that in mind",
                 "options": [
                     {
                         "id": "strengthAttribute",
@@ -85,6 +95,66 @@
                         "costPerPoint": {
                             "Attribute Points": 1
                         }
+                    },
+                    {
+                        "id": "constitutionAttribute",
+                        "label": "Constitution Attribute",
+                        "description": "Determines Vitality Regeneration and Damage-over-Time Resistance",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 40,
+                        "costPerPoint": {
+                            "Attribute Points": 1
+                        }
+                    },
+                    {
+                        "id": "intelligenceAttribute",
+                        "label": "Intelligence Attribute",
+                        "description": "Determines Supernatural Action Speed",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 40,
+                        "costPerPoint": {
+                            "Attribute Points": 1
+                        }
+                    },     
+                    {
+                        "id": "wisdomAttribute",
+                        "label": "Wisdom Attribute",
+                        "description": "Determines the ability to Detect Hostiles Targets and Accuracy",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 40,
+                        "costPerPoint": {
+                            "Attribute Points": 1
+                        }
+                    },
+                    {
+                        "id": "charismaAttribute",
+                        "label": "Charisma Attribute",
+                        "description": "Determines ability to apply and resist Mental Status Effects",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 40,
+                        "costPerPoint": {
+                            "Attribute Points": 1
+                        }
+                    }               
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Race",
+                "text": "Choose what type of race you wish to be",
+                "options": [
+                    {
+                        "id": "humanoidRace",
+                        "label": "Humanoid",
+                        "description": "The vanilla option, having little to no innate Physical or Supernatural abilities. They had no Level cost, giving more levels to Job Classes and ensuring their popularity.",
+                        "cost": {}
+                    },
+                    {
+                        
                     }
                 ]
             }
