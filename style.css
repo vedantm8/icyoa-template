@@ -224,3 +224,13 @@ button:disabled {
     max-width: 400px;
     font-size: 14px;
 }
+
+.subcategory-header {
+    margin-top: 1rem;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.subcategory-content {
+    padding-left: 1rem;
+}

@@ -19,6 +19,7 @@
                     "maxLength": 20
                 },
                 "maxSelections": 1,
+                "name": "Difficulty",
                 "options": [
                     {
                         "id": "standardMode",
@@ -56,6 +57,29 @@
                             "Attribute Points": -60
                         }
                     }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Attribute Allocation",
+                "text": "Attribute values have a fixed limit of 40, which represents 400% of an average human's capabilities\n\nEach attribute starts at 0, but leaving them there is Fatal\n\nFor reference, spellcasters only need 20 in their casting attribute to cast 10th-tier spells, provided they have enough mana and high enough caster level to qualify.",
+                "options": [
+                    {
+                        "id": "strengthAttribute",
+                        "label": "Strength Attribute",
+                        "description": "Determines Carry Weight Limit and ability to apply Grapple, Knock Out, and Stagger",
+                        "cost": {
+                            "Attribute Points": 10
+                        }
+                    },
+                    {
+                        "id": "dexterityAttribute",
+                        "label": "Dexterity Attribute",
+                        "description": "Determines Physical Action Speed",
+                        "cost": {
+                            "Attribute Points": 10
+                        }
+                    }                    
                 ]
             }
         ]

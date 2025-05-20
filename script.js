@@ -4,6 +4,8 @@ const selectedOptions = {};
 const discountedSelections = {}; 
 const openCategories = new Set();
 const storyInputs = {};
+let formulas = {};
+const openSubcategories = new Set();
 
 
 const modal = document.getElementById("modal");
@@ -32,6 +34,7 @@ document.getElementById("resetBtn").onclick = () => {
     }
 
     for (let key in selectedOptions) delete selectedOptions[key];
+    evaluateFormulas();
     updatePointsDisplay();
     renderAccordion();
 };
@@ -57,8 +60,7 @@ modalConfirmBtn.onclick = () => {
             storyInputs[key] = val;
         });
 
-
-
+        evaluateFormulas();
         updatePointsDisplay();
         renderAccordion();
         closeModal();
@@ -78,7 +80,8 @@ function openModal(mode) {
             selectedOptions,
             points,
             discountedSelections,
-            storyInputs
+            storyInputs,
+            computedPoints: Object.keys(formulas)
         }, null, 2);
         modalConfirmBtn.style.display = "none";
     } else {
@@ -180,7 +183,7 @@ fetch("input.json")
     .then(res => res.json())
     .then(data => {
         try {
-            validateInputJson(data); // Validate for logical consistency
+            validateInputJson(data); 
 
             const titleEntry = data.find(entry => entry.type === "title");
             if (titleEntry?.text) {
@@ -205,7 +208,14 @@ fetch("input.json")
 
             categories = data.filter(entry => !entry.type || entry.name);
 
+            const formulaEntry = data.find(entry => entry.type === "formulas");
+            if (formulaEntry?.values) {
+                formulas = { ...formulaEntry.values };
+            }
+
+
             renderAccordion();
+            evaluateFormulas();
             updatePointsDisplay();
         } catch (validationError) {
             console.error("Validation error in input.json:", validationError);
@@ -246,10 +256,22 @@ function removeSelection(option) {
         delete discountedSelections[option.id];
         removeDependentOptions(option.id);
     }
-
+    evaluateFormulas();
     updatePointsDisplay();
     renderAccordion();
 }
+
+function evaluateFormulas() {
+    Object.entries(formulas).forEach(([pointType, { formula }]) => {
+        try {
+            const evalFunc = new Function("points", `return ${formula}`);
+            points[pointType] = evalFunc(points);
+        } catch (err) {
+            console.warn(`Failed to evaluate formula for ${pointType}:`, err);
+        }
+    });
+}
+
 
 
 function addSelection(option) {
@@ -283,6 +305,7 @@ function addSelection(option) {
     discountedSelections[option.id].push(actualCost);
 
     selectedOptions[option.id] = current + 1;
+    evaluateFormulas();
     updatePointsDisplay();
     renderAccordion();
 }
@@ -380,11 +403,50 @@ function renderAccordion() {
         } else {
             const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
             subcats.forEach(subcat => {
+                const subcatName = subcat.name || "Options";
+
+                // Subcategory header
+                const subHeader = document.createElement("h4");
+                subHeader.className = "subcategory-header";
+                subHeader.style.cursor = "pointer";
+                subHeader.style.display = "flex";
+                subHeader.style.justifyContent = "space-between";
+                subHeader.style.alignItems = "center";
+
+                const nameSpan = document.createElement("span");
+                nameSpan.textContent = subcatName;
+
+                const toggleIndicator = document.createElement("span");
+                toggleIndicator.textContent = openSubcategories.has(subcatName) ? "▾" : "▸";
+                toggleIndicator.style.fontSize = "14px";
+
+                subHeader.appendChild(nameSpan);
+                subHeader.appendChild(toggleIndicator);
+                content.appendChild(subHeader);
+
+                // Subcategory content container
+                const subContent = document.createElement("div");
+                subContent.className = "subcategory-content";
+                subContent.style.display = openSubcategories.has(subcatName) ? "block" : "none";
+                content.appendChild(subContent);
+
+                subHeader.onclick = () => {
+                    if (openSubcategories.has(subcatName)) {
+                        openSubcategories.delete(subcatName);
+                        subContent.style.display = "none";
+                        toggleIndicator.textContent = "▸";
+                    } else {
+                        openSubcategories.add(subcatName);
+                        subContent.style.display = "block";
+                        toggleIndicator.textContent = "▾";
+                    }
+                };
+
                 if (subcat.type === "storyBlock") {
                     const storyText = document.createElement("div");
                     storyText.className = "story-block";
                     storyText.textContent = subcat.text || "";
-                    content.appendChild(storyText);
+                    subContent.appendChild(storyText);
 
                     if (subcat.input) {
                         const inputWrapper = document.createElement("div");
@@ -405,35 +467,10 @@ function renderAccordion() {
                             storyInputs[subcat.input.id] = e.target.value;
                         });
 
-
                         inputWrapper.appendChild(label);
                         inputWrapper.appendChild(input);
-                        content.appendChild(inputWrapper);
+                        subContent.appendChild(inputWrapper);
                     }
-
-                    const subHeader = document.createElement("h4");
-                    subHeader.textContent = subcat.name || "Options";
-                    content.appendChild(subHeader);
-                } else {
-                    const subHeader = document.createElement("h4");
-                    subHeader.style.display = "flex";
-                    subHeader.style.justifyContent = "space-between";
-                    subHeader.style.alignItems = "center";
-
-                    const nameSpan = document.createElement("span");
-                    nameSpan.textContent = subcat.name || "Options";
-
-                    subHeader.appendChild(nameSpan);
-
-                    if (subcat.maxSelections) {
-                        const limitNote = document.createElement("span");
-                        limitNote.style.fontSize = "12px";
-                        limitNote.style.color = "#666";
-                        limitNote.textContent = `Choose up to ${subcat.maxSelections}`;
-                        subHeader.appendChild(limitNote);
-                    }
-
-                    content.appendChild(subHeader);
                 }
 
                 const subcatLimit = subcat.maxSelections || null;
@@ -558,9 +595,7 @@ function renderAccordion() {
 
                         let tooltip = [];
 
-                        if (!hasPoints) {
-                            tooltip.push("Not enough points");
-                        }
+                        if (!hasPoints) tooltip.push("Not enough points");
                         if (!hasPrereqs) {
                             const missing = opt.prerequisites
                                 .filter(id => !selectedOptions[id])
@@ -587,9 +622,7 @@ function renderAccordion() {
                         }
 
                         btn.disabled = count === 0 && isDisabled;
-                        btn.title = tooltip.length > 0
-                            ? tooltip.join(" | ")
-                            : (count > 0 ? "Click to deselect" : "Click to select");
+                        btn.title = tooltip.join(" | ");
                         controls.appendChild(btn);
                     }
 
@@ -600,7 +633,7 @@ function renderAccordion() {
 
                     wrapper.appendChild(img);
                     wrapper.appendChild(contentWrapper);
-                    content.appendChild(wrapper);
+                    subContent.appendChild(wrapper);
                 });
             });
         }
@@ -610,3 +643,4 @@ function renderAccordion() {
         container.appendChild(item);
     });
 }
+
