@@ -196,3 +196,31 @@ button:disabled {
     border-radius: 8px;
     display: block;
 }
+
+.story-block {
+    white-space: pre-wrap;
+    background: #f9f9f9;
+    border-left: 4px solid #ccc;
+    padding: 1em;
+    margin-bottom: 1em;
+    font-family: serif;
+    font-size: 15px;
+    color: #333;
+}
+
+.story-input-wrapper {
+    margin-bottom: 1em;
+}
+
+.story-input-wrapper label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.3em;
+}
+
+.story-input-wrapper input {
+    padding: 0.5em;
+    width: 100%;
+    max-width: 400px;
+    font-size: 14px;
+}

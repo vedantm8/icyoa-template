@@ -1,304 +1,60 @@
 [
     {
-        "type": "title",
-        "text": "Galactic Origins v3"
-    },
-    {
-        "type": "description",
-        "text": "Build your interstellar adventurer using a blend of species, backstory, and powerful abilities."
-    },
-    {
-        "type": "headerImage",
-        "url": "https://example.com/galaxy-banner.jpg"
-    },
-    {
         "type": "points",
         "values": {
-            "Power": 10,
-            "Wisdom": 8,
-            "Charisma": 5
+            "Levels": 0,
+            "Attribute Points": 0
         }
     },
     {
-        "name": "Species",
+        "name": "Intro",
         "subcategories": [
             {
-                "name": "Origin",
-                "options": [
-                    {
-                        "id": "human",
-                        "label": "Human",
-                        "cost": {
-                            "Charisma": 2
-                        },
-                        "img": "https://example.com/human.png",
-                        "description": "Adaptable and resilient. Gains bonus interaction skills.",
-                        "conflictsWith": [
-                            "cyborg"
-                        ]
-                    },
-                    {
-                        "id": "alienHybrid",
-                        "label": "Alien Hybrid",
-                        "cost": {
-                            "Power": 4,
-                            "Wisdom": 2
-                        },
-                        "img": "https://example.com/alienhybrid.png",
-                        "description": "Genetically engineered for greatness.",
-                        "prerequisites": [
-                            "charmer"
-                        ]
-                    },
-                    {
-                        "id": "cyborg",
-                        "label": "Cyborg",
-                        "cost": {
-                            "Power": 5
-                        },
-                        "img": "https://example.com/cyborg.png",
-                        "description": "Enhanced with cutting-edge technology."
-                    }
-                ],
-                "maxSelections": 1
-            }
-        ]
-    },
-    {
-        "name": "Background",
-        "subcategories": [
-            {
-                "name": "Life Path",
-                "options": [
-                    {
-                        "id": "smuggler",
-                        "label": "Smuggler",
-                        "cost": {
-                            "Power": 2
-                        },
-                        "img": "https://example.com/smuggler.png",
-                        "description": "Trained in stealth and survival."
-                    },
-                    {
-                        "id": "scholar",
-                        "label": "Scholar",
-                        "cost": {
-                            "Wisdom": 3
-                        },
-                        "img": "https://example.com/scholar.png",
-                        "description": "You know too much. Conflicts with combat abilities.",
-                        "conflictsWith": [
-                            "superStrength",
-                            "telepathy"
-                        ]
-                    },
-                    {
-                        "id": "charmer",
-                        "label": "Charmer",
-                        "cost": {
-                            "Charisma": 3
-                        },
-                        "img": "https://example.com/charmer.png",
-                        "description": "You have a way with words. Needed to unlock hybrid DNA."
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        "name": "Abilities",
-        "requiresOption": [
-            "alienHybrid"
-        ],
-        "subcategories": [
-            {
-                "name": "Powers",
-                "options": [
-                    {
-                        "id": "telepathy",
-                        "label": "Telepathy",
-                        "cost": {
-                            "Wisdom": 4
-                        },
-                        "img": "https://example.com/telepathy.png",
-                        "description": "Read and influence minds. Requires Alien Hybrid.",
-                        "prerequisites": [
-                            "alienHybrid"
-                        ],
-                        "conflictsWith": [
-                            "superStrength",
-                            "scholar"
-                        ]
-                    },
-                    {
-                        "id": "superStrength",
-                        "label": "Super Strength",
-                        "cost": {
-                            "Power": 5
-                        },
-                        "img": "https://example.com/strength.png",
-                        "description": "Unmatched power and resilience.",
-                        "conflictsWith": [
-                            "telepathy",
-                            "scholar"
-                        ]
-                    },
-                    {
-                        "id": "techMastery",
-                        "label": "Tech Mastery",
-                        "cost": {
-                            "Wisdom": 2,
-                            "Power": 2
-                        },
-                        "img": "https://example.com/techmastery.png",
-                        "description": "Master advanced alien tech.",
-                        "prerequisites": [
-                            "cyborg"
-                        ]
-                    }
-                ],
-                "maxSelections": 2
-            }
-        ]
-    },
-    {
-        "name": "Companions",
-        "requiresOption": [
-            "charmer"
-        ],
-        "subcategories": [
-            {
-                "name": "Allies",
-                "options": [
-                    {
-                        "id": "mechPet",
-                        "label": "Mech Pet",
-                        "cost": {
-                            "Power": 2
-                        },
-                        "img": "https://example.com/mechpet.png",
-                        "description": "Loyal and programmable.",
-                        "conflictsWith": [
-                            "rivalTurnedAlly"
-                        ]
-                    },
-                    {
-                        "id": "alienScout",
-                        "label": "Alien Scout",
-                        "cost": {
-                            "Wisdom": 3
-                        },
-                        "img": "https://example.com/scout.png",
-                        "description": "Fast and reliable messenger.",
-                        "prerequisites": [
-                            "alienHybrid"
-                        ]
-                    },
-                    {
-                        "id": "rivalTurnedAlly",
-                        "label": "Rival Turned Ally",
-                        "cost": {
-                            "Charisma": 3
-                        },
-                        "img": "https://example.com/rival.png",
-                        "description": "They once opposed you. Now they serve.",
-                        "conflictsWith": [
-                            "mechPet"
-                        ]
-                    }
-                ],
-                "maxSelections": 2
-            }
-        ]
-    },
-    {
-        "name": "Gear",
-        "subcategories": [
-            {
-                "name": "Loadout",
-                "maxSelections": 3,
-                "options": [
-                    {
-                        "id": "jetpack",
-                        "label": "Jetpack",
-                        "cost": {
-                            "Power": 2
-                        },
-                        "img": "https://example.com/jetpack.png",
-                        "description": "Fly short distances quickly."
-                    },
-                    {
-                        "id": "scanner",
-                        "label": "Scanner",
-                        "cost": {
-                            "Wisdom": 1
-                        },
-                        "img": "https://example.com/scanner.png",
-                        "description": "Detect hidden lifeforms and tech."
-                    },
-                    {
-                        "id": "plasmaRifle",
-                        "label": "Plasma Rifle",
-                        "cost": {
-                            "Power": 3
-                        },
-                        "img": "https://example.com/rifle.png",
-                        "description": "High-energy ranged weapon."
-                    },
-                    {
-                        "id": "cloakingDevice",
-                        "label": "Cloaking Device",
-                        "cost": {
-                            "Wisdom": 2
-                        },
-                        "img": "https://example.com/cloak.png",
-                        "description": "Grants temporary invisibility."
-                    },
-                    {
-                        "id": "healingKit",
-                        "label": "Healing Kit",
-                        "cost": {
-                            "Charisma": 1
-                        },
-                        "img": "https://example.com/healingkit.png",
-                        "description": "Emergency medical gear."
-                    }
-                ]
-            },
-            {
-                "name": "Utilities",
-                "maxSelections": 3,
-                "discountFirstN": 2,
-                "discountAmount": {
-                    "Wisdom": 1
+                "type": "storyBlock",
+                "text": "Yggdrasil has come to an end, but some see this as a new beginning.\n\nWhat was your character?",
+                "input": {
+                    "id": "characterName",
+                    "label": "Name your character:",
+                    "placeholder": "Enter name (max 20 chars)",
+                    "maxLength": 20
                 },
+                "maxSelections": 1,
                 "options": [
                     {
-                        "id": "translatorChip",
-                        "label": "Universal Translator Chip",
+                        "id": "standardMode",
+                        "label": "Standard Mode",
+                        "description": "",
                         "cost": {
-                            "Wisdom": 2
-                        },
-                        "img": "https://example.com/translator.png",
-                        "description": "Enables instant translation of alien languages."
+                            "Levels": -100,
+                            "Attribute Points": -110
+                        }
                     },
                     {
-                        "id": "sensorDrones",
-                        "label": "Sensor Drones",
+                        "id": "seedyMode",
+                        "label": "Seedy Mode",
+                        "description": "",
                         "cost": {
-                            "Wisdom": 3
-                        },
-                        "img": "https://example.com/sensordrones.png",
-                        "description": "Scouts ahead and maps terrain in real-time."
+                            "Levels": -80,
+                            "Attribute Points": -100
+                        }
                     },
                     {
-                        "id": "autoHacker",
-                        "label": "Auto-Hacker",
+                        "id": "sampleMode",
+                        "label": "Sample Mode",
+                        "description": "",
                         "cost": {
-                            "Wisdom": 2
-                        },
-                        "img": "https://example.com/autohacker.png",
-                        "description": "Cracks security systems automatically."
+                            "Levels": -30,
+                            "Attribute Points": -75
+                        }
+                    },
+                    {
+                        "id": "starterMode",
+                        "label": "Starter Mode",
+                        "description": "",
+                        "cost": {
+                            "Levels": -1,
+                            "Attribute Points": -60
+                        }
                     }
                 ]
             }

@@ -3,6 +3,7 @@ let points = {};
 const selectedOptions = {};
 const discountedSelections = {}; 
 const openCategories = new Set();
+const storyInputs = {};
 
 
 const modal = document.getElementById("modal");
@@ -52,6 +53,10 @@ modalConfirmBtn.onclick = () => {
         Object.entries(importedData.discountedSelections || {}).forEach(([key, val]) => {
             discountedSelections[key] = val;
         });
+        Object.entries(importedData.storyInputs || {}).forEach(([key, val]) => {
+            storyInputs[key] = val;
+        });
+
 
 
         updatePointsDisplay();
@@ -72,7 +77,8 @@ function openModal(mode) {
         modalTextarea.value = JSON.stringify({
             selectedOptions,
             points,
-            discountedSelections
+            discountedSelections,
+            storyInputs
         }, null, 2);
         modalConfirmBtn.style.display = "none";
     } else {
@@ -257,9 +263,19 @@ function addSelection(option) {
     const actualCost = {};
     Object.entries(option.cost).forEach(([type, cost]) => {
         const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
-        const finalCost = Math.max(0, cost - discount);
-        points[type] -= finalCost;
+        let finalCost;
+        if (cost < 0) {
+            // Gain points
+            finalCost = cost;
+            points[type] -= cost; // Subtracting a negative = adding
+        } else {
+            // Spend points (with discount if any)
+            const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
+            finalCost = Math.max(0, cost - discount);
+            points[type] -= finalCost;
+        }
         actualCost[type] = finalCost;
+
     });
 
     // Track the actual cost used
@@ -364,25 +380,61 @@ function renderAccordion() {
         } else {
             const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
             subcats.forEach(subcat => {
-                const subHeader = document.createElement("h4");
-                subHeader.style.display = "flex";
-                subHeader.style.justifyContent = "space-between";
-                subHeader.style.alignItems = "center";
+                if (subcat.type === "storyBlock") {
+                    const storyText = document.createElement("div");
+                    storyText.className = "story-block";
+                    storyText.textContent = subcat.text || "";
+                    content.appendChild(storyText);
 
-                const nameSpan = document.createElement("span");
-                nameSpan.textContent = subcat.name || "Options";
+                    if (subcat.input) {
+                        const inputWrapper = document.createElement("div");
+                        inputWrapper.className = "story-input-wrapper";
 
-                subHeader.appendChild(nameSpan);
+                        const label = document.createElement("label");
+                        label.textContent = subcat.input.label || "Input:";
+                        label.setAttribute("for", subcat.input.id);
 
-                if (subcat.maxSelections) {
-                    const limitNote = document.createElement("span");
-                    limitNote.style.fontSize = "12px";
-                    limitNote.style.color = "#666";
-                    limitNote.textContent = `Choose up to ${subcat.maxSelections}`;
-                    subHeader.appendChild(limitNote);
+                        const input = document.createElement("input");
+                        input.type = "text";
+                        input.id = subcat.input.id;
+                        input.placeholder = subcat.input.placeholder || "";
+                        input.maxLength = subcat.input.maxLength || 20;
+                        input.value = storyInputs[subcat.input.id] || "";
+
+                        input.addEventListener("input", (e) => {
+                            storyInputs[subcat.input.id] = e.target.value;
+                        });
+
+
+                        inputWrapper.appendChild(label);
+                        inputWrapper.appendChild(input);
+                        content.appendChild(inputWrapper);
+                    }
+
+                    const subHeader = document.createElement("h4");
+                    subHeader.textContent = subcat.name || "Options";
+                    content.appendChild(subHeader);
+                } else {
+                    const subHeader = document.createElement("h4");
+                    subHeader.style.display = "flex";
+                    subHeader.style.justifyContent = "space-between";
+                    subHeader.style.alignItems = "center";
+
+                    const nameSpan = document.createElement("span");
+                    nameSpan.textContent = subcat.name || "Options";
+
+                    subHeader.appendChild(nameSpan);
+
+                    if (subcat.maxSelections) {
+                        const limitNote = document.createElement("span");
+                        limitNote.style.fontSize = "12px";
+                        limitNote.style.color = "#666";
+                        limitNote.textContent = `Choose up to ${subcat.maxSelections}`;
+                        subHeader.appendChild(limitNote);
+                    }
+
+                    content.appendChild(subHeader);
                 }
-
-                content.appendChild(subHeader);
 
                 const subcatLimit = subcat.maxSelections || null;
                 const subcatCount = () => (subcat.options || []).reduce((sum, opt) => sum + (selectedOptions[opt.id] || 0), 0);
@@ -451,7 +503,6 @@ function renderAccordion() {
                             reqText.push(`Cost: ${spend.join(', ')}`);
                         }
                     }
-
 
                     requirements.innerHTML = reqText.join('<br>');
 
@@ -523,7 +574,6 @@ function renderAccordion() {
                             tooltip.push("Max selections reached for this group");
                         }
 
-                        // Add Discount Tooltip Logic
                         const discounted = (() => {
                             const subcatOptions = subcat.options || [];
                             const currentSubcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
