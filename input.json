@@ -1,7 +1,7 @@
 [
     {
         "type": "title",
-        "text": "Galactic Origins v2"
+        "text": "Galactic Origins v3"
     },
     {
         "type": "description",
@@ -262,6 +262,43 @@
                         },
                         "img": "https://example.com/healingkit.png",
                         "description": "Emergency medical gear."
+                    }
+                ]
+            },
+            {
+                "name": "Utilities",
+                "maxSelections": 3,
+                "discountFirstN": 2,
+                "discountAmount": {
+                    "Wisdom": 1
+                },
+                "options": [
+                    {
+                        "id": "translatorChip",
+                        "label": "Universal Translator Chip",
+                        "cost": {
+                            "Wisdom": 2
+                        },
+                        "img": "https://example.com/translator.png",
+                        "description": "Enables instant translation of alien languages."
+                    },
+                    {
+                        "id": "sensorDrones",
+                        "label": "Sensor Drones",
+                        "cost": {
+                            "Wisdom": 3
+                        },
+                        "img": "https://example.com/sensordrones.png",
+                        "description": "Scouts ahead and maps terrain in real-time."
+                    },
+                    {
+                        "id": "autoHacker",
+                        "label": "Auto-Hacker",
+                        "cost": {
+                            "Wisdom": 2
+                        },
+                        "img": "https://example.com/autohacker.png",
+                        "description": "Cracks security systems automatically."
                     }
                 ]
             }

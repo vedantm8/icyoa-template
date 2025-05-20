@@ -1,7 +1,9 @@
 let categories = [];
 let points = {};
 const selectedOptions = {};
+const discountedSelections = {}; 
 const openCategories = new Set();
+
 
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
@@ -47,6 +49,10 @@ modalConfirmBtn.onclick = () => {
         Object.entries(importedData.selectedOptions).forEach(([key, val]) => {
             selectedOptions[key] = val;
         });
+        Object.entries(importedData.discountedSelections || {}).forEach(([key, val]) => {
+            discountedSelections[key] = val;
+        });
+
 
         updatePointsDisplay();
         renderAccordion();
@@ -65,7 +71,8 @@ function openModal(mode) {
         modalTitle.textContent = "Export Your Choices";
         modalTextarea.value = JSON.stringify({
             selectedOptions,
-            points
+            points,
+            discountedSelections
         }, null, 2);
         modalConfirmBtn.style.display = "none";
     } else {
@@ -219,24 +226,51 @@ function removeDependentOptions(deselectedId) {
 function removeSelection(option) {
     const count = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : 1;
     if (!selectedOptions[option.id]) return;
-    Object.entries(option.cost).forEach(([type, cost]) => (points[type] += cost));
+
+    const refundCost = discountedSelections[option.id]?.pop() || option.cost;
+
+    Object.entries(refundCost).forEach(([type, cost]) => {
+        points[type] += cost;
+    });
+
     if (option.maxSelections && count > 1) {
         selectedOptions[option.id] = count - 1;
     } else {
         delete selectedOptions[option.id];
+        delete discountedSelections[option.id];
         removeDependentOptions(option.id);
     }
+
     updatePointsDisplay();
     renderAccordion();
 }
 
+
 function addSelection(option) {
     const current = selectedOptions[option.id] || 0;
-    Object.entries(option.cost).forEach(([type, cost]) => (points[type] -= cost));
+    const subcat = findSubcategoryOfOption(option.id);
+    const subcatOptions = subcat?.options || [];
+    const subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+
+    const discounted = subcat?.discountFirstN && subcatCount < subcat.discountFirstN;
+
+    const actualCost = {};
+    Object.entries(option.cost).forEach(([type, cost]) => {
+        const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
+        const finalCost = Math.max(0, cost - discount);
+        points[type] -= finalCost;
+        actualCost[type] = finalCost;
+    });
+
+    // Track the actual cost used
+    if (!discountedSelections[option.id]) discountedSelections[option.id] = [];
+    discountedSelections[option.id].push(actualCost);
+
     selectedOptions[option.id] = current + 1;
     updatePointsDisplay();
     renderAccordion();
 }
+
 
 function updatePointsDisplay() {
     const display = document.getElementById("pointsDisplay");
@@ -256,6 +290,17 @@ function canSelect(option) {
     const max = option.maxSelections || 1;
     const current = selectedOptions[option.id] || 0;
     return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && current < max;
+}
+
+function findSubcategoryOfOption(optionId) {
+    for (const cat of categories) {
+        for (const subcat of cat.subcategories || [{ options: cat.options || [] }]) {
+            if ((subcat.options || []).some(opt => opt.id === optionId)) {
+                return subcat;
+            }
+        }
+    }
+    return null;
 }
 
 function findOptionById(id) {
@@ -329,7 +374,6 @@ function renderAccordion() {
 
                 subHeader.appendChild(nameSpan);
 
-                // Show max selection info if it exists
                 if (subcat.maxSelections) {
                     const limitNote = document.createElement("span");
                     limitNote.style.fontSize = "12px";
@@ -339,7 +383,6 @@ function renderAccordion() {
                 }
 
                 content.appendChild(subHeader);
-
 
                 const subcatLimit = subcat.maxSelections || null;
                 const subcatCount = () => (subcat.options || []).reduce((sum, opt) => sum + (selectedOptions[opt.id] || 0), 0);
@@ -364,11 +407,13 @@ function renderAccordion() {
 
                     const allConflicts = new Set();
                     (opt.conflictsWith || []).forEach(id => allConflicts.add(id));
-                    categories.flatMap(c => c.subcategories || [{ options: c.options || [] }]).flatMap(sc => sc.options || []).forEach(other => {
-                        if (other.conflictsWith?.includes(opt.id)) {
-                            allConflicts.add(other.id);
-                        }
-                    });
+                    categories.flatMap(c => c.subcategories || [{ options: c.options || [] }])
+                        .flatMap(sc => sc.options || [])
+                        .forEach(other => {
+                            if (other.conflictsWith?.includes(opt.id)) {
+                                allConflicts.add(other.id);
+                            }
+                        });
 
                     const incompatibleNames = Array.from(allConflicts).map(getOptionLabel);
                     if (incompatibleNames.length > 0) {
@@ -386,7 +431,27 @@ function renderAccordion() {
                         else spend.push(`${type} ${val}`);
                     });
                     if (gain.length) reqText.push(`Gain: ${gain.join(', ')}`);
-                    if (spend.length) reqText.push(`Cost: ${spend.join(', ')}`);
+                    if (spend.length) {
+                        const discounted = (() => {
+                            const subcatOptions = subcat.options || [];
+                            const currentSubcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+                            return subcat?.discountFirstN && currentSubcatCount < subcat.discountFirstN;
+                        })();
+
+                        if (discounted) {
+                            const adjusted = Object.entries(opt.cost).map(([type, val]) => {
+                                const discount = subcat.discountAmount?.[type] || 0;
+                                const effective = Math.max(0, val - discount);
+                                return effective < val
+                                    ? `<span style="color: green;">${type} ${effective} (was ${val})</span>`
+                                    : `${type} ${val}`;
+                            });
+                            reqText.push(`Cost: ${adjusted.join(', ')}`);
+                        } else {
+                            reqText.push(`Cost: ${spend.join(', ')}`);
+                        }
+                    }
+
 
                     requirements.innerHTML = reqText.join('<br>');
 
@@ -439,7 +504,9 @@ function renderAccordion() {
                         } else if (!isDisabled) {
                             btn.onclick = () => addSelection(opt);
                         }
+
                         let tooltip = [];
+
                         if (!hasPoints) {
                             tooltip.push("Not enough points");
                         }
@@ -456,8 +523,23 @@ function renderAccordion() {
                             tooltip.push("Max selections reached for this group");
                         }
 
+                        // Add Discount Tooltip Logic
+                        const discounted = (() => {
+                            const subcatOptions = subcat.options || [];
+                            const currentSubcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+                            return subcat?.discountFirstN && currentSubcatCount < subcat.discountFirstN;
+                        })();
+
+                        if (discounted) {
+                            Object.entries(subcat.discountAmount || {}).forEach(([type, val]) => {
+                                tooltip.push(`Discount: -${val} ${type}`);
+                            });
+                        }
+
                         btn.disabled = count === 0 && isDisabled;
-                        btn.title = tooltip.length > 0 ? tooltip.join(" | ") : (count > 0 ? "Click to deselect" : "Click to select");
+                        btn.title = tooltip.length > 0
+                            ? tooltip.join(" | ")
+                            : (count > 0 ? "Click to deselect" : "Click to select");
                         controls.appendChild(btn);
                     }
 
