@@ -146,6 +146,7 @@
                 "type": "storyBlock",
                 "name": "Race",
                 "text": "Choose what type of race you wish to be",
+                "maxSelections": 1,
                 "options": [
                     {
                         "id": "humanoidRace",
@@ -154,9 +155,29 @@
                         "cost": {}
                     },
                     {
-                        
+                        "id": "demiHumanoidRace",
+                        "label": "Demi-Humanoids",
+                        "description": "Human-like creatures that possessed simple Physical Abilities",
+                        "cost": {
+                            "Levels": 10
+                        }
+                    },
+                    {
+                        "id": "heteromorphsRace",
+                        "label": "Heteromorphs",
+                        "description": "Inhuman creatures possessing a number of natural Physical and Supernatural abilities. They also came with prestige Racial Classes, giving more options to character creation at additional Level cost",
+                        "cost": {
+                            "Levels": 15
+                        }
                     }
                 ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Humanoid",
+                "requiresOption": "humanoidRace",
+                "maxSelections": 1,
+                "text": "Choose what type of race you wish to be"
             }
         ]
     }

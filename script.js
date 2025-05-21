@@ -451,6 +451,51 @@ function renderAccordion() {
         } else {
             const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
             subcats.forEach((subcat, subIndex) => {
+                const subcatRequires = subcat.requiresOption;
+                const subcatReqIds = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+                const subcatUnlocked = subcatReqIds.every(id => selectedOptions[id]);
+
+                if (!subcatUnlocked) {
+                    const subcatHeader = document.createElement("div");
+                    subcatHeader.className = "subcategory-header";
+                    subcatHeader.style.cursor = "pointer";
+                    subcatHeader.style.fontWeight = "bold";
+                    subcatHeader.style.marginTop = "1em";
+                    subcatHeader.textContent = subcat.name || `Options ${subIndex + 1}`;
+
+                    const subcatContent = document.createElement("div");
+                    subcatContent.className = "subcategory-content";
+
+                    const subcatKey = `${cat.name}__${subcat.name || subIndex}`;
+                    subcatContent.style.display = openSubcategories.has(subcatKey) ? "block" : "none";
+
+                    subcatHeader.onclick = () => {
+                        if (openSubcategories.has(subcatKey)) {
+                            openSubcategories.delete(subcatKey);
+                            subcatContent.style.display = "none";
+                        } else {
+                            openSubcategories.add(subcatKey);
+                            subcatContent.style.display = "block";
+                        }
+                    };
+
+                    const lockMsg = document.createElement("div");
+                    lockMsg.style.padding = "8px";
+                    lockMsg.style.color = "#666";
+                    const lines = subcatReqIds.map(id => {
+                        const label = getOptionLabel(id);
+                        const isSelected = selectedOptions[id];
+                        const symbol = isSelected ? "✅" : "❌";
+                        return `${symbol} ${label}`;
+                    });
+                    lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
+
+                    subcatContent.appendChild(lockMsg);
+                    content.appendChild(subcatHeader);
+                    content.appendChild(subcatContent);
+                    return; // 🔒 Skip rendering internals
+                }
+
                 const subcatHeader = document.createElement("div");
                 subcatHeader.className = "subcategory-header";
                 subcatHeader.style.cursor = "pointer";
