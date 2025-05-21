@@ -381,8 +381,8 @@ function addSelection(option) {
 function updatePointsDisplay() {
     const display = document.getElementById("pointsDisplay");
     display.innerHTML = Object.entries(points)
-        .map(([type, val]) => `<span style="white-space: nowrap;"><strong>${type}:</strong> ${val}</span>`)
-        .join(" | ");
+        .map(([type, val]) => `<span><strong>${type}:</strong> ${val}</span>`)
+        .join("");
 }
 
 function canSelect(option) {
@@ -582,7 +582,7 @@ function renderAccordion() {
                     if (subcat.text && subcat.text.trim() !== "") {
                         const storyText = document.createElement("div");
                         storyText.className = "story-block";
-                        storyText.textContent = subcat.text;
+                        storyText.innerHTML = subcat.text.replace(/\n/g, "<br>");
                         subcatContent.appendChild(storyText);
                     }
 

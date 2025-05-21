@@ -255,3 +255,28 @@ div {
     word-break: keep-all;
     overflow-wrap: break-word;
 }
+
+#pointsDisplay {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+#pointsDisplay span {
+    white-space: nowrap;
+}
+
+#pointsDisplay {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.6;
+}
+
+#pointsDisplay span {
+    white-space: nowrap;
+    font-size: 14px;
+}

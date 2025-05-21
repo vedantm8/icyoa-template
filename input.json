@@ -638,11 +638,11 @@
                         "label": "Fallen Angel",
                         "description": "Have Wings and can Fly as easily as running. Can see if a Creature is Living, Undead, or Construct. Have Divine Spellcasting (WIS or CHA). Choose one Domain, you cast spells from that Domain at halved Mana Cost.",
                         "cost": {
-                            "Martial Level": 5,
-                            "Caster Level": 20,
-                            "Vitality points": 21,
-                            "Acid": 25,
-                            "Sonic": -25,
+                            "Martial Level": -5,
+                            "Caster Level": -20,
+                            "Vitality points": -21,
+                            "Acid": -25,
+                            "Sonic": 25,
                             "Light": 50,
                             "Dark": -50
                         }
@@ -662,6 +662,7 @@
                             "Dark": 50
                         }
                     },
+                    
                     {
                         "id": "elementalSpecies",
                         "label": "Elemental",
