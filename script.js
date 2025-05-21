@@ -381,7 +381,7 @@ function addSelection(option) {
 function updatePointsDisplay() {
     const display = document.getElementById("pointsDisplay");
     display.innerHTML = Object.entries(points)
-        .map(([type, val]) => `<strong>${type}</strong>: ${val}`)
+        .map(([type, val]) => `<span style="white-space: nowrap;"><strong>${type}:</strong> ${val}</span>`)
         .join(" | ");
 }
 

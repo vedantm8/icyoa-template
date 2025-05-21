@@ -233,4 +233,25 @@ button:disabled {
 
 .subcategory-content {
     padding-left: 1rem;
+
+
+}
+
+.option-requirements,
+.story-block,
+.option-description,
+.dynamic-choice-wrapper label,
+label,
+div {
+    word-break: normal;
+    /* Don’t break mid-word */
+    overflow-wrap: break-word;
+    /* Break between words if needed */
+    white-space: normal;
+    /* Allow normal wrapping */
+}
+
+.option-requirements {
+    word-break: keep-all;
+    overflow-wrap: break-word;
 }
