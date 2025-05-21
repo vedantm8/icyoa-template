@@ -8,6 +8,7 @@ let formulas = {};
 const openSubcategories = new Set();
 const attributeSliderValues = {}; 
 let originalPoints = {};
+let allowNegativeTypes = new Set();
 
 
 const modal = document.getElementById("modal");
@@ -233,8 +234,11 @@ fetch("input.json")
             }
 
             const pointsEntry = data.find(entry => entry.type === "points");
-            originalPoints = pointsEntry?.values ? { ...pointsEntry.values } : {};  // ✅ Save original values
-            points = { ...originalPoints }; // ✅ Use copy of original
+
+            allowNegativeTypes = new Set(pointsEntry?.allowNegative || []);
+
+            originalPoints = pointsEntry?.values ? { ...pointsEntry.values } : {};
+            points = { ...originalPoints };
 
             categories = data.filter(entry => !entry.type || entry.name);
 
@@ -249,7 +253,7 @@ fetch("input.json")
         } catch (validationError) {
             console.error("Validation error in input.json:", validationError);
             alert("Invalid input.json: " + validationError.message);
-            throw validationError; // Prevents further loading
+            throw validationError;
         }
     })
     .catch(err => {
@@ -374,7 +378,11 @@ function canSelect(option) {
     const underOptionLimit = currentOptionCount < maxPerOption;
 
     // Ensure you have enough points
-    const hasPoints = Object.entries(option.cost || {}).every(([type, cost]) => points[type] >= cost);
+    const hasPoints = Object.entries(option.cost || {}).every(([type, cost]) => {
+        const projected = points[type] - cost;
+        return projected >= 0 || allowNegativeTypes.has(type);
+    });
+
 
     return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && underOptionLimit && underSubcatLimit;
 }
@@ -402,6 +410,17 @@ function findOptionById(id) {
 function getOptionLabel(id) {
     const match = categories.flatMap(c => c.options || []).find(o => o.id === id);
     return match ? match.label : id;
+}
+
+function getSubcategoryOptionLabel(id) {
+    for (const cat of categories) {
+        for (const subcat of cat.subcategories || []) {
+            for (const opt of subcat.options || []) {
+                if (opt.id === id) return opt.label || id;
+            }
+        }
+    }
+    return id; // fallback
 }
 
 function renderAccordion() {
@@ -483,7 +502,7 @@ function renderAccordion() {
                     lockMsg.style.padding = "8px";
                     lockMsg.style.color = "#666";
                     const lines = subcatReqIds.map(id => {
-                        const label = getOptionLabel(id);
+                        const label = getSubcategoryOptionLabel(id); // ✅ shows correct label
                         const isSelected = selectedOptions[id];
                         const symbol = isSelected ? "✅" : "❌";
                         return `${symbol} ${label}`;

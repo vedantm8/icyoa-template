@@ -11,8 +11,27 @@
         "type": "points",
         "values": {
             "Levels": 0,
-            "Attribute Points": 0
-        }
+            "Attribute Points": 0,
+            "Martial Level": 0,
+            "Caster Level": 0,
+            "Vitality points": 0,
+            "Heat": 0,
+            "Cold": 0,
+            "Acid": 0,
+            "Sonic": 0,
+            "Electric": 0,
+            "Light": 0,
+            "Dark": 0
+        },
+        "allowNegative": [
+            "Heat",
+            "Cold",
+            "Acid",
+            "Sonic",
+            "Electric",
+            "Light",
+            "Dark"
+        ]
     },
     {
         "name": "Intro",
@@ -145,7 +164,7 @@
             {
                 "type": "storyBlock",
                 "name": "Race",
-                "text": "Choose what type of race you wish to be",
+                "text": "Choose what type of race you wish to be\n\n\n\nRacial and Job Classes grant the users a Martial Level, a Caster Level and Vitality points.\n\nMartial Level empowers Physical Abilities, such as the use of Martial Weapons, determines your Stamina and how many Martial Skills you know\n\nCaster Level empowers Supernatural Abilities, such as the casting of Spells, and determines your Mana Pool and how many Spells you know.\n\nVitality determines how much damage a character can take before dying or being knocked out.\n\n\n\nThe Energy Types are: Heat/Cold/Acid/Sonic/Electric/Light/Dark.\n\nMany Races either have Positive% Resistances or a Negative% weakness\n\nHaving 100% Resistance means you're Immune, but only if it's gotten from Classes not equipment\n\nHaving -100% Resistance means you take double damage and are susceptible to additional effects. All Races are considered as Creatures, but\n\nCreatures may refer to Beasts or other non-playable Races\n\nLiving races are every other race except Constructs and Undead\n\nConstructs are Automatons and Golems\n\nFaefolk are Fairies and Nymphs",
                 "maxSelections": 1,
                 "options": [
                     {
@@ -177,7 +196,8 @@
                 "name": "Humanoid",
                 "requiresOption": "humanoidRace",
                 "maxSelections": 1,
-                "text": "Choose what type of race you wish to be"
+                "text": "Choose what type of humanoid race you wish to be",
+                "options": []
             }
         ]
     }
