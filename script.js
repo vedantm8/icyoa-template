@@ -9,6 +9,7 @@ const openSubcategories = new Set();
 const attributeSliderValues = {}; 
 let originalPoints = {};
 let allowNegativeTypes = new Set();
+const dynamicSelections = {}; 
 
 
 const modal = document.getElementById("modal");
@@ -53,8 +54,10 @@ document.getElementById("resetBtn").onclick = () => {
     for (let key in attributeSliderValues) delete attributeSliderValues[key];
     for (let key in discountedSelections) delete discountedSelections[key];
     for (let key in storyInputs) delete storyInputs[key];
+    for (let key in dynamicSelections) delete dynamicSelections[key];
 
-    // 🔥 Reset points to original values
+
+    // Reset points to original values
     points = { ...originalPoints };
 
     // Recalculate and re-render
@@ -86,6 +89,10 @@ modalConfirmBtn.onclick = () => {
         Object.entries(importedData.attributeSliderValues || {}).forEach(([key, val]) => {
             attributeSliderValues[key] = val;
         });
+        Object.entries(importedData.dynamicSelections || {}).forEach(([key, val]) => {
+            dynamicSelections[key] = val;
+        });
+
 
 
         evaluateFormulas();
@@ -110,6 +117,7 @@ function openModal(mode) {
             discountedSelections,
             storyInputs,
             attributeSliderValues,
+            dynamicSelections,
             computedPoints: Object.keys(formulas),
 
         }, null, 2);
@@ -305,6 +313,28 @@ function evaluateFormulas() {
             console.warn(`Failed to evaluate formula for ${pointType}:`, err);
         }
     });
+    
+    // Reset dynamic targets before applying
+    const dynamicTargetTypes = new Set();
+
+    Object.entries(dynamicSelections).forEach(([optionId, selected]) => {
+        const opt = findOptionById(optionId);
+        const config = opt?.dynamicCost;
+        if (!config) return;
+
+        const target = config.target === "attributes" ? attributeSliderValues : points;
+
+        selected.forEach((choice, i) => {
+            if (!choice) return;
+
+            const value = config.values[i];
+            if (!target.hasOwnProperty(choice)) target[choice] = 0;
+            target[choice] = (target[choice] || 0) + value;
+
+            dynamicTargetTypes.add(choice);
+        });
+    });
+
 }
 
 
@@ -695,6 +725,63 @@ function renderAccordion() {
 
                         controls.appendChild(btn);
                         contentWrapper.appendChild(controls);
+
+                        // Show dropdowns after selection and reflect point impact
+                        if (selectedOptions[opt.id] && opt.dynamicCost && Array.isArray(opt.dynamicCost.choices) && Array.isArray(opt.dynamicCost.values)) {
+                            const choiceWrapper = document.createElement("div");
+                            choiceWrapper.className = "dynamic-choice-wrapper";
+
+                            const numChoices = opt.dynamicCost.values.length;
+                            const affectedTypes = opt.dynamicCost.types || []; // Optional: define which point types are affected
+
+                            if (!dynamicSelections[opt.id]) dynamicSelections[opt.id] = Array(numChoices).fill("");
+
+                            for (let i = 0; i < numChoices; i++) {
+                                const select = document.createElement("select");
+                                select.innerHTML = `<option value="">-- Select --</option>` + opt.dynamicCost.choices
+                                    .map(choice => `<option value="${choice}">${choice}</option>`)
+                                    .join("");
+
+                                select.value = dynamicSelections[opt.id][i] || "";
+
+                                const label = document.createElement("label");
+                                label.textContent = `Affects: ${affectedTypes[i] || "Unknown"} (${opt.dynamicCost.values[i] >= 0 ? "+" : ""}${opt.dynamicCost.values[i]})`;
+                                label.style.display = "block";
+                                label.style.marginTop = "0.25em";
+
+                                select.onchange = (e) => {
+                                    const newValue = e.target.value;
+                                    const prevValue = dynamicSelections[opt.id][i];
+
+                                    // If reselecting, refund old and apply new
+                                    const target = opt.dynamicCost.target || "points";
+                                    const targetDict = target === "attributes" ? attributeSliderValues : points;
+
+                                    if (prevValue && targetDict[prevValue] !== undefined) {
+                                        targetDict[prevValue] -= opt.dynamicCost.values[i];
+                                    }
+
+                                    if (newValue && targetDict[newValue] !== undefined) {
+                                        if (dynamicSelections[opt.id].includes(newValue)) {
+                                            alert("Each selection must be unique.");
+                                            e.target.value = "";
+                                            return;
+                                        }
+                                        targetDict[newValue] += opt.dynamicCost.values[i];
+                                    }
+
+                                    dynamicSelections[opt.id][i] = newValue;
+                                    evaluateFormulas();
+                                    updatePointsDisplay();
+                                };
+
+                                choiceWrapper.appendChild(label);
+                                choiceWrapper.appendChild(select);
+                            }
+
+                            contentWrapper.appendChild(choiceWrapper);
+                        }
+
                     }
 
                     wrapper.appendChild(img);

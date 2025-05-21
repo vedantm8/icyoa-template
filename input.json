@@ -21,7 +21,13 @@
             "Sonic": 0,
             "Electric": 0,
             "Light": 0,
-            "Dark": 0
+            "Dark": 0,
+            "Strength": 0,
+            "Dexterity": 0,
+            "Constitution": 0,
+            "Intelligence": 0,
+            "Wisdom": 0,
+            "Charisma": 0
         },
         "allowNegative": [
             "Heat",
@@ -101,7 +107,8 @@
                         "min": 0,
                         "max": 40,
                         "costPerPoint": {
-                            "Attribute Points": 1
+                            "Attribute Points": 1,
+                            "Strength": -1
                         }
                     },
                     {
@@ -112,7 +119,8 @@
                         "min": 0,
                         "max": 40,
                         "costPerPoint": {
-                            "Attribute Points": 1
+                            "Attribute Points": 1,
+                            "Dexterity": -1
                         }
                     },
                     {
@@ -123,7 +131,8 @@
                         "min": 0,
                         "max": 40,
                         "costPerPoint": {
-                            "Attribute Points": 1
+                            "Attribute Points": 1,
+                            "Constitution": -1
                         }
                     },
                     {
@@ -134,9 +143,10 @@
                         "min": 0,
                         "max": 40,
                         "costPerPoint": {
-                            "Attribute Points": 1
+                            "Attribute Points": 1,
+                            "Intelligence": -1
                         }
-                    },     
+                    },
                     {
                         "id": "wisdomAttribute",
                         "label": "Wisdom Attribute",
@@ -145,7 +155,8 @@
                         "min": 0,
                         "max": 40,
                         "costPerPoint": {
-                            "Attribute Points": 1
+                            "Attribute Points": 1,
+                            "Wisdom": -1
                         }
                     },
                     {
@@ -156,11 +167,17 @@
                         "min": 0,
                         "max": 40,
                         "costPerPoint": {
-                            "Attribute Points": 1
+                            "Attribute Points": 1,
+                            "Charisma": -1
                         }
-                    }               
+                    }
                 ]
-            },
+            }
+        ]
+    },
+    {
+        "name": "Classes",
+        "subcategories": [
             {
                 "type": "storyBlock",
                 "name": "Race",
@@ -197,7 +214,485 @@
                 "requiresOption": "humanoidRace",
                 "maxSelections": 1,
                 "text": "Choose what type of humanoid race you wish to be",
-                "options": []
+                "options": [
+                    {
+                        "id": "deepDrawfSpecies",
+                        "label": "Deep Dwarf",
+                        "description": "Deep Dwarves can see in Dim Lighting",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Heat": -50,
+                            "Cold": 25,
+                            "Dark": 25
+                        }
+                    },
+                    {
+                        "id": "hillDrawfSpecies",
+                        "label": "Hill Dwarf",
+                        "description": "Hill Dwarves have +15 to one Martial Arts or Craft Skill",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Heat": -50,
+                            "Cold": 25,
+                            "Dark": 25
+                        }
+                    },
+                    {
+                        "id": "mountainDrawfSpecies",
+                        "label": "Mountain Dwarf",
+                        "description": "Mountain Dwarves are twice as hard to Knock Out or Stagger",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Heat": -50,
+                            "Cold": 25,
+                            "Dark": 25
+                        }
+                    },
+                    {
+                        "id": "subterraneanElfSpecies",
+                        "label": "Subterranean Elf",
+                        "description": "Subterranean Elves can see in Dim Lighting",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Cold": 25,
+                            "Dark": 25,
+                            "Sonic": 25,
+                            "Light": -25
+                        }
+                    },
+                    {
+                        "id": "tundraElfSpecies",
+                        "label": "Tundra Elf",
+                        "description": "Tundra Elves have +15 to one Knowledge or Craft Skill",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Cold": 25,
+                            "Dark": 25,
+                            "Sonic": 25,
+                            "Light": -25
+                        }
+                    },
+                    {
+                        "id": "forestElfSpecies",
+                        "label": "Forest Elf",
+                        "description": "Forest Elves cannot be Detected by sound, regardless of Environment",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Cold": 25,
+                            "Dark": 25,
+                            "Sonic": 25,
+                            "Light": -25
+                        }
+                    },
+                    {
+                        "id": "pureBloodHumanSpecies",
+                        "label": "Pure-Blood Human",
+                        "description": "Pure-Bloods have +15 to one Martial Arts, Knowledge, or Craft Skill",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Light": -50,
+                            "Dark": 50
+                        }
+                    },
+                    {
+                        "id": "halfBloodHumanSpecies",
+                        "label": "Half-Blood Human",
+                        "description": "Half-Bloods must choose another Race to derive their Bloodline from. Can be considered either Race. They have the first listed ability that their other Race possesses.",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Vitality points": -1,
+                            "Light": -50,
+                            "Dark": 50
+                        }
+                    },
+                    {
+                        "id": "pureBloodHumanCasterSpecies",
+                        "label": "Pure-Blood Human (Caster)",
+                        "description": "Pure-Bloods have +15 to one Martial Arts, Knowledge, or Craft Skill",
+                        "cost": {
+                            "Caster Level": -5,
+                            "Vitality points": -1,
+                            "Light": -50,
+                            "Dark": 50
+                        }
+                    },
+                    {
+                        "id": "halfBloodHumanCasterSpecies",
+                        "label": "Half-Blood Human (Caster)",
+                        "description": "Half-Bloods must choose another Race to derive their Bloodline from. Can be considered either Race. They have the first listed ability that their other Race possesses.",
+                        "cost": {
+                            "Caster Level": -5,
+                            "Vitality points": -1,
+                            "Light": -50,
+                            "Dark": 50
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Demi-Humanoids",
+                "requiresOption": "demiHumanoidRace",
+                "maxSelections": 1,
+                "text": "Choose what type of demi-humanoid race you wish to be",
+                "options": [
+                    {
+                        "id": "catLikeBeastmanSpecies",
+                        "label": "Cat-like Beastman",
+                        "description": "Cat-like forms possess Natural Weapons. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "dogLikeBeastmanSpecies",
+                        "label": "Dog-like Beastman",
+                        "description": "Dog-like forms possess Natural Weapons. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "rodentLikeBeastmanSpecies",
+                        "label": "Rodent-like Beastman",
+                        "description": "Rodent-like forms possess Natural Weapons. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "hoofedBeastmanSpecies",
+                        "label": "Hoofed Beastman",
+                        "description": "Hoofed forms receive no movement penalty regardless of Environment. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "aquaticBeastmanSpecies",
+                        "label": "Aquatic Beastman",
+                        "description": "Aquatic forms can breathe Underwater indefinitely. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "batBeastmanSpecies",
+                        "label": "Bat Beastman",
+                        "description": "Bat forms have Wings and can fly as easily as running. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "shrewBeastmanSpecies",
+                        "label": "Shrew Beastman",
+                        "description": "Shrew forms can burrow through the ground as easily as running. Beastmen can see in Complete Darkness and have heightened senses.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -14,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Sonic": 25
+                        }
+                    },
+                    {
+                        "id": "raptorBirdmanSpecies",
+                        "label": "Raptor Birdman",
+                        "description": "Raptors know how to use Ranged Weaponry. Birdmen have Wings and can fly as easily as running. They can see clearly over long distances, as such their Wisdom is considered 2x higher.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Cold": 25,
+                            "Sonic": -50,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "songbirdBirdmanSpecies",
+                        "label": "Songbird Birdman",
+                        "description": "Songbirds can use their Sing Skill to afflict Targets with Sleep or Fascination. Birdmen have Wings and can fly as easily as running. They can see clearly over long distances, as such their Wisdom is considered 2x higher.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Cold": 25,
+                            "Sonic": -50,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "serpentineLizardmanSpecies",
+                        "label": "Serpentine Lizardman",
+                        "description": "Serpentine Lizardmen possess Natural Weapons. They can choose one environment: Underground, Land, Underwater, or Air to gain a 50% bonus to movement speed. It is easier to remain undetected in Forest, Swampland, and Underwater Environments.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Heat": -25,
+                            "Cold": 25,
+                            "Acid": -25,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "reptilianLizardmanSpecies",
+                        "label": "Reptilian Lizardman",
+                        "description": "Reptilian Lizardmen possess Natural Weapons. They can choose one environment: Underground, Land, Underwater, or Air to gain a 50% bonus to movement speed. It is easier to remain undetected in Forest, Swampland, and Underwater Environments.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Heat": -25,
+                            "Cold": 25,
+                            "Acid": -25,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "amphibianLizardmanSpecies",
+                        "label": "Amphibian Lizardman",
+                        "description": "Amphibian Lizardmen can Breathe Underwater. They can choose one environment: Underground, Land, Underwater, or Air to gain a 50% bonus to movement speed. It is easier to remain undetected in Forest, Swampland, and Underwater Environments.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Heat": -25,
+                            "Cold": 25,
+                            "Acid": -25,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "jawedFishmanSpecies",
+                        "label": "Jawed Fishman",
+                        "description": "Jawed Fishmen possess Natural Weapons. They can Breathe Underwater indefinitely and see in Complete Darkness.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": -25,
+                            "Sonic": 25,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "bonyFishmanSpecies",
+                        "label": "Bony Fishman",
+                        "description": "Bony Fishmen have doubled movement speed while Underwater. They can Breathe Underwater indefinitely and see in Complete Darkness.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -10,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": -25,
+                            "Sonic": 25,
+                            "Electric": 25
+                        }
+                    },
+                    {
+                        "id": "goblinSpecies",
+                        "label": "Goblin",
+                        "description": "Goblins take 50% less fall damage. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -18,
+                            "Heat": -25,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "orcSpecies",
+                        "label": "Orc",
+                        "description": "Orcs have +15 to one Martial Arts or Craft Skill. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -18,
+                            "Heat": -25,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "trollSpecies",
+                        "label": "Troll",
+                        "description": "Trolls' limbs slowly Regenerate. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -18,
+                            "Heat": -25,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "bugbearSpecies",
+                        "label": "Bugbear",
+                        "description": "Bugbears are twice as hard to Knock Out or Stagger. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -18,
+                            "Heat": -25,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "caveGiantkinSpecies",
+                        "label": "Cave Giant",
+                        "description": "Cave Giants can see in Complete Darkness. Strength is considered 2x higher, and their limbs slowly regenerate.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -26,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "frostGiantkinSpecies",
+                        "label": "Frost Giant",
+                        "description": "Frost Giants have a +50% Resistance to Cold. Strength is considered 2x higher, and their limbs slowly regenerate.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -26,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "mountainGiantkinSpecies",
+                        "label": "Mountain Giant",
+                        "description": "Mountain Giants are twice as hard to Knock Out or Stagger. Strength is considered 2x higher, and their limbs slowly regenerate.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -26,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "seaGiantkinSpecies",
+                        "label": "Sea Giant",
+                        "description": "Sea Giants can hold their breath for up to 8 hours. Strength is considered 2x higher, and their limbs slowly regenerate.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Vitality points": -26,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Heteromorph",
+                "requiresOption": "heteromorphsRace",
+                "maxSelections": 1,
+                "text": "Choose what type of heteromorphic race you wish to be",
+                "options": [
+                    {
+                        "id": "angelSpecies",
+                        "label": "Angel",
+                        "description": "Have Wings and can Fly as easily as running. Can see if a Creature is Living, Undead, or Construct. Have Divine Spellcasting (WIS or CHA). Choose one Domain, you cast spells from that Domain at halved Mana Cost.",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Caster Level": -20,
+                            "Vitality points": -21,
+                            "Acid": -25,
+                            "Sonic": 25,
+                            "Light": -50,
+                            "Dark": 50
+                        }
+                    },
+                    {
+                        "id": "fallenAngelSpecies",
+                        "label": "Fallen Angel",
+                        "description": "Have Wings and can Fly as easily as running. Can see if a Creature is Living, Undead, or Construct. Have Divine Spellcasting (WIS or CHA). Choose one Domain, you cast spells from that Domain at halved Mana Cost.",
+                        "cost": {
+                            "Martial Level": 5,
+                            "Caster Level": 20,
+                            "Vitality points": 21,
+                            "Acid": 25,
+                            "Sonic": -25,
+                            "Light": 50,
+                            "Dark": -50
+                        }
+                    },
+                    {
+                        "id": "djinnSpecies",
+                        "label": "Djinn",
+                        "description": "Can assume an Ethereal alternate form, but only for a short time once every 24 hours. Cannot be harmed by Physical damage, and can walk through most walls and obstacles, but are still affected by magic effects and magic damage, including magic weapons. Have Arcane Spellcasting (WIS or CHA). Are Immune to Mental Status Effects. Can Detect a Target's Karma score.",
+                        "cost": {
+                            "Caster Level": -20,
+                            "Vitality points": -21,
+                            "Heat": -25,
+                            "Acid": -75,
+                            "Sonic": 75,
+                            "Electric": 25,
+                            "Light": -50,
+                            "Dark": 50
+                        }
+                    },
+                    {
+                        "id": "elementalSpecies",
+                        "label": "Elemental",
+                        "description": "Elementals are immune to one energy and weak to another.",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Caster Level": -20,
+                            "Vitality points": -21
+                        },
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": [
+                                "Heat",
+                                "Cold",
+                                "Acid",
+                                "Sonic",
+                                "Electric",
+                                "Light",
+                                "Dark"
+                            ],
+                            "values": [
+                                100,
+                                -100
+                            ],
+                            "types": [
+                                "Resistance",
+                                "Weakness"
+                            ]
+                        }
+                    }
+                ]
             }
         ]
     }
