@@ -37,7 +37,33 @@
             "Electric",
             "Light",
             "Dark"
-        ]
+        ],
+        "attributeRanges": {
+            "Strength": {
+                "min": 0,
+                "max": 40
+            },
+            "Dexterity": {
+                "min": 0,
+                "max": 40
+            },
+            "Constitution": {
+                "min": 0,
+                "max": 40
+            },
+            "Intelligence": {
+                "min": 0,
+                "max": 40
+            },
+            "Wisdom": {
+                "min": 0,
+                "max": 40
+            },
+            "Charisma": {
+                "min": 0,
+                "max": 40
+            }
+        }
     },
     {
         "name": "Intro",
@@ -662,7 +688,42 @@
                             "Dark": 50
                         }
                     },
-                    
+                    {
+                        "id": "nephilimSpecies",
+                        "label": "Nephilim",
+                        "description": "Strength is considered 2x higher. Choose 3 attributes to cap at 8 and 2 attributes to boost by 8.",
+                        "cost": {
+                            "Martial Level": -20,
+                            "Vitality points": -33,
+                            "Light": 25,
+                            "Dark": -25
+                        },
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": [
+                                "Strength",
+                                "Dexterity",
+                                "Constitution",
+                                "Intelligence",
+                                "Wisdom",
+                                "Charisma"
+                            ],
+                            "values": [
+                                "cap:8",
+                                "cap:8",
+                                "cap:8",
+                                8,
+                                8
+                            ],
+                            "types": [
+                                "Cap Attribute",
+                                "Cap Attribute",
+                                "Cap Attribute",
+                                "Boost Attribute",
+                                "Boost Attribute"
+                            ]
+                        }
+                    },
                     {
                         "id": "elementalSpecies",
                         "label": "Elemental",
