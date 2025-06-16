@@ -1050,6 +1050,19 @@
                             "Cold": -25,
                             "Light": 50
                         }
+                    },
+                    {
+                        "id": "automatonSpecies",
+                        "label": "Automaton",
+                        "description": "Cannot Regenerate Vitality naturally over time or drink Consumables, but can replace parts of their body with Tinkered Equipment DLC. Can control their limbs remotely. Are Immune to Mental Status Effects. Know how to use Martial Weaponry.",
+                        "cost": {
+                            "Martial Level": -20,
+                            "Vitality points": -27,
+                            "Heat": -50,
+                            "Acid": 25,
+                            "Sonic": -25,
+                            "Electric": 50
+                        }
                     }
                 ]
             }
