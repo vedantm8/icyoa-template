@@ -929,6 +929,20 @@
                             "Light": 75,
                             "Dark": -25
                         }
+                    },
+                    {
+                        "id": "planterranSpecies",
+                        "label": "Planterran",
+                        "description": "Vitality and Mana Regenerate faster while in direct sunlight. Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Have Nature Spellcasting (WIS or CON). Possess Natural Weapons.",
+                        "cost": {
+                            "Martial Level": -5,
+                            "Caster Level": -20,
+                            "Vitality points": -15,
+                            "Heat": 50,
+                            "Cold": 50,
+                            "Acid": -50,
+                            "Electric": -50
+                        }
                     }
                 ]
             }
