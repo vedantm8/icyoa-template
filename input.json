@@ -976,6 +976,27 @@
                             "Acid": -50,
                             "Electric": -50
                         }
+                    },
+                    {
+                        "id": "fairySpecies",
+                        "label": "Fairy",
+                        "description": "Can issue simple commands to Beast and Plant NPCs. Have Nature Spellcasting (WIS or CHA). Can slip into small openings, but Strength is considered 2x lower. Have Wings and can Fly as easily as walking.",
+                        "cost": {
+                            "Martial Level": -10,
+                            "Caster Level": -15,
+                            "Vitality points": -15,
+                            "Heat": -25,
+                            "Cold": -50,
+                            "Acid": -25,
+                            "Sonic": 100,
+                            "Electric": -25
+                        },
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Strength"],
+                            "values": [0.5],
+                            "types": ["Multiply Attribute"]
+                        }
                     }
                 ]
             }
