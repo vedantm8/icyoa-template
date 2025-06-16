@@ -899,6 +899,17 @@ function renderAccordion() {
                     if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
                     if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
 
+                    // Show prerequisites for options (like Archangel)
+                    if (opt.prerequisites && opt.prerequisites.length > 0) {
+                        const prereqLines = opt.prerequisites.map(id => {
+                            const label = getOptionLabel(id);
+                            const isSelected = selectedOptions[id];
+                            const symbol = isSelected ? "✅" : "❌";
+                            return `${symbol} ${label}`;
+                        });
+                        requirements.innerHTML += `🔒 Requires:<br>${prereqLines.join("<br>")}`;
+                    }
+
                     const desc = document.createElement("div");
                     desc.className = "option-description";
                     desc.textContent = opt.description || "";
