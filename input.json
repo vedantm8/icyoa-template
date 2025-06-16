@@ -811,9 +811,15 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Charisma"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Charisma"
+                            ],
+                            "values": [
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -831,9 +837,15 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Charisma"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Charisma"
+                            ],
+                            "values": [
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
                         }
                     }
                 ]
