@@ -1186,6 +1186,78 @@
                             "Vitality points": -3
                         },
                         "prerequisites": ["seraphSpecies"]
+                    },
+                    {
+                        "id": "infernalSpecies",
+                        "label": "Infernal",
+                        "description": "Have Immunity to Heat, but are -50% Resistant to Electricity. Can Perform an Action to inflict nearby Targets with Confusion or Fascination. Can issue simple commands to weak Demon NPCs.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -14,
+                            "Heat": -100,
+                            "Electric": 50
+                        },
+                        "prerequisites": ["demonSpecies"],
+                        "conflictsWith": ["succubusSpecies"]
+                    },
+                    {
+                        "id": "archdevilSpecies",
+                        "label": "Archdevil",
+                        "description": "Can issue simple commands to all weak NPCs. Immune to Mental Status Effects.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": ["infernalSpecies"]
+                    },
+                    {
+                        "id": "pitfiendSpecies",
+                        "label": "Pit Fiend",
+                        "description": "Can emit an Aura that increases Attributes of Demon allies. Can summon a horde of weak Demon NPCs, once every 24 hours.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": ["infernalSpecies"]
+                    },
+                    {
+                        "id": "succubusSpecies",
+                        "label": "Succubus",
+                        "description": "Can assume a Humanoid alternate form. Can Perform an Action to inflict a Target with Charm. Can absorb Vitality from a Target through touch.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": ["demonSpecies"],
+                        "conflictsWith": ["infernalSpecies"]
+                    },
+                    {
+                        "id": "lilinSpecies",
+                        "label": "Lilin",
+                        "description": "Can briefly edit an NPC's combat settings through touch. Can issue simple commands to Target afflicted with Charm.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": ["succubusSpecies"]
+                    },
+                    {
+                        "id": "omnibusSpecies",
+                        "label": "Omnibus",
+                        "description": "Can assume the form of any non-unique NPC. Targets that Detect you are afflicted with Charm, Fascination, or Confusion.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": ["succubusSpecies"]
                     }
                 ]
             }
