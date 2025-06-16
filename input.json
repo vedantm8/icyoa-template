@@ -997,6 +997,45 @@
                             "values": [0.5],
                             "types": ["Multiply Attribute"]
                         }
+                    },
+                    {
+                        "id": "nymphFlumineSpecies",
+                        "label": "Nymph (Flumine)",
+                        "description": "Flumine Nymphs have a Dolphin-like tail and can Breathe Underwater indefinitely. Being Detected can afflict Targets with Fascination. Can shift into a Unique Bestial form, in which they possess Natural Weapons. Can see in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -21,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "nymphSylvanSpecies",
+                        "label": "Nymph (Sylvan)",
+                        "description": "Sylvan Nymphs have cloven hooves and can issue simple commands to Plant NPCs. Being Detected can afflict Targets with Fascination. Can shift into a Unique Bestial form, in which they possess Natural Weapons. Can see in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -21,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
+                    },
+                    {
+                        "id": "nymphLamiaSpecies",
+                        "label": "Nymph (Lamia)",
+                        "description": "Lamia Nymphs have a snake-like lower body and receive no movement penalty regardless of Environment. Being Detected can afflict Targets with Fascination. Can shift into a Unique Bestial form, in which they possess Natural Weapons. Can see in Dim Lighting.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -21,
+                            "Heat": 25,
+                            "Cold": -50,
+                            "Acid": 25
+                        }
                     }
                 ]
             }
