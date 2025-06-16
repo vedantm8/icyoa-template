@@ -897,6 +897,38 @@
                             "Sonic": 25,
                             "Electric": 25
                         }
+                    },
+                    {
+                        "id": "doppelgangerMartialSpecies",
+                        "label": "Doppelganger (Martial)",
+                        "description": "Can assume an alternate form. This form can be any Humanoid or Demi-Humanoid NPC's appearance. While in alternate form Attributes, Resistances and Stats are changed to that of new form, adjusted to 60% of Doppelganger's Level. Can Perform a lengthy ritual to change their alternate form, but can only have one alternate form at a time. Being Detected can afflict Targets with Fear. Can Perform an action to Detect a Target's weaknesses.",
+                        "cost": {
+                            "Martial Level": -20,
+                            "Vitality points": -21,
+                            "Heat": -25,
+                            "Cold": -25,
+                            "Acid": -25,
+                            "Sonic": 50,
+                            "Electric": -25,
+                            "Light": 75,
+                            "Dark": -25
+                        }
+                    },
+                    {
+                        "id": "doppelgangerCasterSpecies",
+                        "label": "Doppelganger (Caster)",
+                        "description": "Can assume an alternate form. This form can be any Humanoid or Demi-Humanoid NPC's appearance. While in alternate form Attributes, Resistances and Stats are changed to that of new form, adjusted to 60% of Doppelganger's Level. Can Perform a lengthy ritual to change their alternate form, but can only have one alternate form at a time. Being Detected can afflict Targets with Fear. Can Perform an action to Detect a Target's weaknesses.",
+                        "cost": {
+                            "Caster Level": -20,
+                            "Vitality points": -21,
+                            "Heat": -25,
+                            "Cold": -25,
+                            "Acid": -25,
+                            "Sonic": 50,
+                            "Electric": -25,
+                            "Light": 75,
+                            "Dark": -25
+                        }
                     }
                 ]
             }
