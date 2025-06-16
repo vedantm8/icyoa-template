@@ -943,6 +943,25 @@
                             "Acid": -50,
                             "Electric": -50
                         }
+                    },
+                    {
+                        "id": "myconidSpecies",
+                        "label": "Myconid",
+                        "description": "Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Are Immune to Mental Status Effects, Blind, and Deaf, but INT and WIS are considered 2x lower. Limbs slowly Regenerate. Can inflict nearby Targets with Confusion or Revulsion.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -15,
+                            "Heat": -25,
+                            "Cold": 50,
+                            "Acid": -25
+                        },
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Intelligence", "Wisdom"],
+                            "values": [0.5, 0.5],
+                            "types": ["Multiply Attribute", "Multiply Attribute"]
+                        }
                     }
                 ]
             }
