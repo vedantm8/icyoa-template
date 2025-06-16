@@ -1102,6 +1102,15 @@
                         }
                     }
                 ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Advanced Racial Classes",
+                "text": "Can skip if not a Heteromorph. Can only pick one Level 10 Racial Class, but can pick any Level 5 you qualify after.",
+                "requiresOption": "heteromorphsRace",
+                "options": [
+                    
+                ]
             }
         ]
     }
