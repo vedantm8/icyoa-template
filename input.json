@@ -27,7 +27,8 @@
             "Sonic": 0,
             "Electric": 0,
             "Light": 0,
-            "Dark": 0
+            "Dark": 0,
+            "Ygg": 1000
         },
         "allowNegative": [
             "Heat",
