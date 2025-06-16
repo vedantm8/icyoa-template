@@ -1085,6 +1085,21 @@
                             "values": [2, 2],
                             "types": ["Multiply Attribute", "Multiply Attribute"]
                         }
+                    },
+                    {
+                        "id": "undeadSpecies",
+                        "label": "Undead",
+                        "description": "Choose a Humanoid or Demi-Humanoid base appearance, then choose your Level of Decay (Pale Skin, Rotting, or Skeletal). Can see in Complete Darkness. Have limitless Stamina and Immune to Critical Hits, but cannot Regenerate Vitality naturally over time. Immune to Mental Status Effects. Have +15 to one Knowledge or Craft Skill (not yet implemented).",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -21,
+                            "Heat": 50,
+                            "Cold": -25,
+                            "Electric": -25,
+                            "Light": 100,
+                            "Dark": -100
+                        }
                     }
                 ]
             }
