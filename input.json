@@ -1109,7 +1109,42 @@
                 "text": "Can skip if not a Heteromorph. Can only pick one Level 10 Racial Class, but can pick any Level 5 you qualify after.",
                 "requiresOption": "heteromorphsRace",
                 "options": [
-                    
+                    {
+                        "id": "archangelSpecies",
+                        "label": "Archangel",
+                        "description": "Know how to use Martial Weaponry. Can deal additional damage to Evil-karma Targets. Can detect a Target's Karma score.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": ["angelSpecies"]
+                    },
+                    {
+                        "id": "astralDevaSpecies",
+                        "label": "Astral Deva",
+                        "description": "Possess True Sight, able to see through all Illusions and see a Target's true form. Can Perform an action to Negate or Dispel a Spell or Magic effect, once every 4 hours.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": ["archangelSpecies"]
+                    },
+                    {
+                        "id": "principalitySpecies",
+                        "label": "Principality",
+                        "description": "Can emit an Aura that increases the Attributes of Good-karma allies. Can Perform an action to bestow a Target with increased Physical or Supernatural action speed, or Immunity to Fear effects, once every 6 hours.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": ["archangelSpecies"]
+                    }
                 ]
             }
         ]
