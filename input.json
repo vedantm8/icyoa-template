@@ -882,6 +882,21 @@
                             "values": [0.5, 0.5],
                             "types": ["Multiply Attribute", "Multiply Attribute"]
                         }
+                    },
+                    {
+                        "id": "roperSpecies",
+                        "label": "Roper",
+                        "description": "Being Detected can afflict Targets with Revulsion or Fear. Can Parasitize a Humanoid or Demi-Humanoid NPC below their Level to take control of their body (Uses host's stats with bonus from parasite's Level, Parasite takes 50% of damage that the Host takes). Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Can manipulate body to fit into small openings.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -15,
+                            "Heat": 25,
+                            "Cold": 25,
+                            "Acid": -100,
+                            "Sonic": 25,
+                            "Electric": 25
+                        }
                     }
                 ]
             }
