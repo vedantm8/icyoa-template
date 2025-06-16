@@ -1119,7 +1119,8 @@
                             "Caster Level": -5,
                             "Vitality points": -10
                         },
-                        "prerequisites": ["angelSpecies"]
+                        "prerequisites": ["angelSpecies"],
+                        "conflictsWith": ["seraphSpecies"]
                     },
                     {
                         "id": "astralDevaSpecies",
@@ -1144,6 +1145,47 @@
                             "Vitality points": -4
                         },
                         "prerequisites": ["archangelSpecies"]
+                    },
+                    {
+                        "id": "seraphSpecies",
+                        "label": "Seraph",
+                        "description": "Can assume a Humanoid alternate form. Spoken words can be understood by All Creatures, and are Immune to Silence. Being Detected can afflict Targets with Charm or Fascination.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": ["angelSpecies"],
+                        "conflictsWith": ["archangelSpecies"]
+                    },
+                    {
+                        "id": "cherubimSpecies",
+                        "label": "Cherubim",
+                        "description": "Can rapidly Regenerate lost limbs, as such Constitution is considered 2x higher. Can Perform an action to cure an ally of a Physical Status Effect.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": ["seraphSpecies"],
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Constitution"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "choralSpecies",
+                        "label": "Choral",
+                        "description": "Can Perform a lengthy cast time to cast a spell at halved Mana Cost. Can Perform an action to inflict a Target with Charm or Fascination.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": ["seraphSpecies"]
                     }
                 ]
             }
