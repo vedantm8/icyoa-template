@@ -1063,6 +1063,28 @@
                             "Sonic": -25,
                             "Electric": 50
                         }
+                    },
+                    {
+                        "id": "awakenedGolemSpecies",
+                        "label": "Awakened Golem",
+                        "description": "They can Perform an action to absorb their base material into Vitality. Must choose either Wood, Copper, or Clay for base material. Strength and Constitution are considered 2x higher, but cannot Regenerate Vitality naturally over time or drink Consumables. Are twice as hard to Knock Out or Stagger. Can see in a limited 360 degree FoV, granting Immunity to Critical Hits.",
+                        "cost": {
+                            "Ygg": 100,
+                            "Martial Level": -20,
+                            "Caster Level": -5,
+                            "Vitality points": -48,
+                            "Heat": -25,
+                            "Cold": -25,
+                            "Acid": -25,
+                            "Sonic": -25,
+                            "Electric": -25
+                        },
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Strength", "Constitution"],
+                            "values": [2, 2],
+                            "types": ["Multiply Attribute", "Multiply Attribute"]
+                        }
                     }
                 ]
             }
