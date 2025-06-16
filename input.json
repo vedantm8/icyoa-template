@@ -691,7 +691,7 @@
                     {
                         "id": "nephilimSpecies",
                         "label": "Nephilim",
-                        "description": "Strength is considered 2x higher. Choose 3 attributes to cap at 8 and 2 attributes to boost by 8.",
+                        "description": "Strength is considered 2x higher. Choose 3 attributes to cap at 8 and 2 attributes to boost by 8.\n\nRESET YOUR ATTRIBUTES BEFORE SELECTING THIS OPTION",
                         "cost": {
                             "Martial Level": -20,
                             "Vitality points": -33,
@@ -752,6 +752,88 @@
                                 "Resistance",
                                 "Weakness"
                             ]
+                        }
+                    },
+                    {
+                        "id": "brainEaterSpecies",
+                        "label": "Brain Eater",
+                        "description": "Can identify a Target's Supernatural Actions. Have Arcane Spellcasting (INT or WIS). Are Immune to Mental Status Effects. Can see in Complete Darkness.",
+                        "cost": {
+                            "Caster Level": -20,
+                            "Vitality points": -15,
+                            "Cold": -50,
+                            "Sonic": 50,
+                            "Electric": 25,
+                            "Light": 25,
+                            "Dark": -50
+                        }
+                    },
+                    {
+                        "id": "dragonoidSpecies",
+                        "label": "Dragonoid",
+                        "description": "Can Breathe out a cone of chosen Energy once every 4 hours. Choose two Dragon Bloodlines: Fire, Frost, Acid, Sonic, or Lightning. +50% Resistance to one Element, -50% Resistance to other Element. Possess Natural Weapons. Can see in Complete Darkness. Can assume a Humanoid alternate form.",
+                        "cost": {
+                            "Martial Level": -20,
+                            "Caster Level": -5,
+                            "Vitality points": -27
+                        },
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": [
+                                "Heat",
+                                "Cold",
+                                "Acid",
+                                "Sonic",
+                                "Lightning"
+                            ],
+                            "values": [
+                                50,
+                                -50
+                            ],
+                            "types": [
+                                "Resistance",
+                                "Weakness"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "demonSpecies",
+                        "label": "Demon",
+                        "description": "Possess Wings and can Fly as easily as running. Can reduce the Attributes of nearby Good-Karma enemies. Can see in Complete Darkness. Have an increased understanding of Mental Status Effects, Charisma is considered 2x higher.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -27,
+                            "Cold": 25,
+                            "Sonic": -25,
+                            "Light": 50,
+                            "Dark": -50
+                        },
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Charisma"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "redeemedDemonSpecies",
+                        "label": "Redeemed Demon",
+                        "description": "A Redeemed Demon reverses Light and Dark Resistances and Karma Abilities. Possess Wings and can Fly as easily as running. Can reduce the Attributes of nearby Evil-Karma enemies. Can see in Complete Darkness. Have an increased understanding of Mental Status Effects, Charisma is considered 2x higher.",
+                        "cost": {
+                            "Martial Level": -15,
+                            "Caster Level": -10,
+                            "Vitality points": -27,
+                            "Cold": 25,
+                            "Sonic": -25,
+                            "Light": -50,
+                            "Dark": 50
+                        },
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Charisma"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
                         }
                     }
                 ]

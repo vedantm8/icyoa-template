@@ -402,39 +402,37 @@ function removeSelection(option) {
     const count = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : 1;
     if (!selectedOptions[option.id]) return; // Option not selected
 
-    // Handle dynamic cost refund for Nephilim specifically
-    if (option.id === "nephilimSpecies") {
-        if (dynamicSelections[option.id]) {
-            // Create a copy to iterate, as dynamicSelections[option.id] might be modified
-            const currentDynamicSelections = [...dynamicSelections[option.id]];
-            currentDynamicSelections.forEach((choice, i) => {
-                if (!choice) return; // Skip if no choice was made for this slot
+    // Generalized dynamic cost refund for any option with dynamicCost (e.g., attribute cap/boost)
+    if (option.dynamicCost && option.dynamicCost.types && option.dynamicCost.values && dynamicSelections[option.id]) {
+        // Create a copy to iterate, as dynamicSelections[option.id] might be modified
+        const currentDynamicSelections = [...dynamicSelections[option.id]];
+        currentDynamicSelections.forEach((choice, i) => {
+            if (!choice) return; // Skip if no choice was made for this slot
 
-                const value = option.dynamicCost.values[i];
-                const type = option.dynamicCost.types[i];
+            const value = option.dynamicCost.values[i];
+            const type = option.dynamicCost.types[i];
 
-                if (type === "Cap Attribute") {
-                    // Revert the cap for the chosen attribute back to its original default max
-                    const originalDefaultMax = originalAttributeRanges[choice]?.max ?? 40; // Use originalAttributeRanges
-                    if (attributeRanges[choice]) {
-                        attributeRanges[choice].max = originalDefaultMax;
-                    }
-                } else if (type === "Boost Attribute") {
-                    // When a boost is removed, we need to subtract the boost amount.
-                    // However, we must ensure the attribute doesn't go below its natural minimum.
-                    const boostAmount = parseInt(value);
-                    if (attributeSliderValues.hasOwnProperty(choice)) {
-                        attributeSliderValues[choice] -= boostAmount;
-                        const min = originalAttributeRanges[choice]?.min ?? 0; // Use original min for natural floor
-                        if (attributeSliderValues[choice] < min) {
-                            attributeSliderValues[choice] = min;
-                        }
+            if (type === "Cap Attribute") {
+                // Revert the cap for the chosen attribute back to its original default max
+                const originalDefaultMax = originalAttributeRanges[choice]?.max ?? 40; // Use originalAttributeRanges
+                if (attributeRanges[choice]) {
+                    attributeRanges[choice].max = originalDefaultMax;
+                }
+            } else if (type === "Boost Attribute") {
+                // When a boost is removed, we need to subtract the boost amount.
+                // However, we must ensure the attribute doesn't go below its natural minimum.
+                const boostAmount = parseInt(value);
+                if (attributeSliderValues.hasOwnProperty(choice)) {
+                    attributeSliderValues[choice] -= boostAmount;
+                    const min = originalAttributeRanges[choice]?.min ?? 0; // Use original min for natural floor
+                    if (attributeSliderValues[choice] < min) {
+                        attributeSliderValues[choice] = min;
                     }
                 }
-            });
-            // Clear all dynamic selections for Nephilim
-            delete dynamicSelections[option.id];
-        }
+            }
+        });
+        // Clear all dynamic selections for this option
+        delete dynamicSelections[option.id];
     }
 
 
@@ -480,6 +478,24 @@ function evaluateFormulas() {
         }
     });
 
+    // --- Reset all dynamic resistance/weakness points to their original values before applying new effects ---
+    // Find all point types affected by dynamicCost (e.g., Fire, Frost, etc.)
+    const dynamicPointTypes = new Set();
+    Object.entries(dynamicSelections).forEach(([optionId, selectedChoices]) => {
+        const opt = findOptionById(optionId);
+        const config = opt?.dynamicCost;
+        if (!config || config.target !== "points") return;
+        config.choices.forEach(choice => {
+            if (originalPoints.hasOwnProperty(choice)) {
+                dynamicPointTypes.add(choice);
+            }
+        });
+    });
+    // Reset these points to their original values
+    dynamicPointTypes.forEach(type => {
+        points[type] = originalPoints[type];
+    });
+
     // Then, apply dynamic selections (like Nephilim's boosts/caps)
     // These modifications should happen *after* base formula evaluation but before final display.
     Object.entries(dynamicSelections).forEach(([optionId, selectedChoices]) => {
@@ -487,22 +503,20 @@ function evaluateFormulas() {
         const config = opt?.dynamicCost;
         if (!config) return;
 
-        const isAttributeTarget = config.target === "attributes"; // For attribute sliders
-        // const isPointTarget = config.target === "points"; // Not used in this context currently, but good to keep
+        const isAttributeTarget = config.target === "attributes";
+        const isPointTarget = config.target === "points";
 
         selectedChoices.forEach((choiceName, i) => {
             if (!choiceName) return; // Skip if no choice is made for this slot
 
             const value = config.values[i];
-            const type = config.types[i]; // Get the type (e.g., "Cap Attribute", "Boost Attribute")
+            const type = config.types[i];
 
             // Handle Cap Attribute
             if (type === "Cap Attribute") {
-                const cap = parseInt(String(value).replace('cap:', '')); // Ensure value is treated as string for 'cap:'
+                const cap = parseInt(String(value).replace('cap:', ''));
                 if (!attributeRanges[choiceName]) attributeRanges[choiceName] = {};
                 attributeRanges[choiceName].max = cap;
-
-                // Ensure slider value doesn't exceed new cap
                 if ((attributeSliderValues[choiceName] ?? 0) > cap) {
                     attributeSliderValues[choiceName] = cap;
                 }
@@ -511,9 +525,6 @@ function evaluateFormulas() {
             else if (type === "Boost Attribute" && isAttributeTarget) {
                 const boostAmount = parseInt(value);
                 if (isNaN(boostAmount)) return;
-
-                // Ensure the attribute slider's value is at least the boostAmount
-                // This sets a floor without accumulating.
                 if (!attributeSliderValues.hasOwnProperty(choiceName)) {
                     attributeSliderValues[choiceName] = 0;
                 }
@@ -521,8 +532,31 @@ function evaluateFormulas() {
                     attributeSliderValues[choiceName] = boostAmount;
                 }
             }
-            // If dynamic cost targets points, it should be handled in `addSelection` and `removeSelection`
-            // because point costs are transactional.
+            // Handle Resistance/Weakness for points
+            else if (isPointTarget && (type === "Resistance" || type === "Weakness")) {
+                if (!points.hasOwnProperty(choiceName)) {
+                    points[choiceName] = 0;
+                }
+                points[choiceName] += parseInt(value);
+            }
+            // Handle Multiply Attribute
+            else if (type === "Multiply Attribute" && isAttributeTarget) {
+                const multiplier = parseFloat(value);
+                if (isNaN(multiplier)) return;
+                // Find the slider value for the attribute (if present)
+                // The attributeSliderValues key is usually the lowercased attribute name + 'Attribute'
+                // We'll try both the slider and points object
+                let baseValue = 0;
+                // Try to find the slider key for this attribute
+                const sliderKey = Object.keys(attributeSliderValues).find(k => k.toLowerCase().includes(choiceName.toLowerCase()));
+                if (sliderKey && attributeSliderValues.hasOwnProperty(sliderKey)) {
+                    baseValue = attributeSliderValues[sliderKey];
+                } else if (points.hasOwnProperty(choiceName)) {
+                    baseValue = points[choiceName];
+                }
+                // Set the points value to the multiplied value
+                points[choiceName] = baseValue * multiplier;
+            }
         });
     });
 }
