@@ -1036,6 +1036,19 @@
                             "Cold": -50,
                             "Acid": 25
                         }
+                    },
+                    {
+                        "id": "lycanthropeSpecies",
+                        "label": "Lycanthrope",
+                        "description": "Choose a Beastman base appearance. Can see in Complete Darkness. Can identify a Target's Physical Actions. Possess Natural Weapons. Can assume a Humanoid alternate form.",
+                        "cost": {
+                            "Martial Level": -20,
+                            "Caster Level": -5,
+                            "Vitality points": -27,
+                            "Heat": -25,
+                            "Cold": -25,
+                            "Light": 50
+                        }
                     }
                 ]
             }
