@@ -847,6 +847,20 @@
                                 "Multiply Attribute"
                             ]
                         }
+                    },
+                    {
+                        "id": "arthropodSpecies",
+                        "label": "Arthropod",
+                        "description": "Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Can see in Complete Darkness. Possess Natural Weapons. Can Repair their Natural Weapons and Exoskeleton.",
+                        "cost": {
+                            "Martial Level": -20,
+                            "Vitality points": -33,
+                            "Heat": 25,
+                            "Cold": 25,
+                            "Acid": 50,
+                            "Electric": -50,
+                            "Dark": -50
+                        }
                     }
                 ]
             }
