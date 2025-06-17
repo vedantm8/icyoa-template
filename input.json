@@ -1330,6 +1330,62 @@
                             "Dark": -50
                         },
                         "prerequisites": "darkLord"
+                    },
+                    {
+                        "id": "genieSpecies",
+                        "label": "Genie",
+                        "description": "Ethereal alternate form becomes your base appearance, and can assume a Humanoid alternate form. Can cast any not known spell, but only at the behest of Others. This generates a spell or magical effect that will be suited to the task of accomplishing the 'wish'. Has a chance of backfiring horribly when 'wish' is worded improperly. Are specialized in the Conjuration spell school, and can cast Conjuration spells at halved Mana cost.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "djinnSpecies"
+                    },
+                    {
+                        "id": "ifritSpecies",
+                        "label": "Ifrit",
+                        "description": "Can identify a Target's Supernatural Actions. Can Cast Spells of Heat Elemental Energy at halved Mana Cost, with increased Burn DoT duration.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "genieSpecies"
+                    },
+                    {
+                        "id": "houriSpecies",
+                        "label": "Houri",
+                        "description": "Can emit an Aura that slowly restores Vitality of nearby allies. Can Perform an action to cure an ally of a Mental Status Effect.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "seraphSpecies || genieSpecies"
+                    },
+                    {
+                        "id": "shoulderDevilSpecies",
+                        "label": "Shoulder Devil",
+                        "description": "Can slip into small openings, but Strength is considered 2x lower. Can cast spells that inflict Mental Status Effects at halved Mana cost.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "succubusSpecies || genieSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": [
+                                "Strength"
+                            ],
+                            "values": [
+                                0.5
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
+                        }
                     }
                 ]
             }
