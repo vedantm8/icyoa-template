@@ -879,9 +879,18 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Intelligence", "Wisdom"],
-                            "values": [0.5, 0.5],
-                            "types": ["Multiply Attribute", "Multiply Attribute"]
+                            "choices": [
+                                "Intelligence",
+                                "Wisdom"
+                            ],
+                            "values": [
+                                0.5,
+                                0.5
+                            ],
+                            "types": [
+                                "Multiply Attribute",
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -959,9 +968,18 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Intelligence", "Wisdom"],
-                            "values": [0.5, 0.5],
-                            "types": ["Multiply Attribute", "Multiply Attribute"]
+                            "choices": [
+                                "Intelligence",
+                                "Wisdom"
+                            ],
+                            "values": [
+                                0.5,
+                                0.5
+                            ],
+                            "types": [
+                                "Multiply Attribute",
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -994,9 +1012,15 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Strength"],
-                            "values": [0.5],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Strength"
+                            ],
+                            "values": [
+                                0.5
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -1081,9 +1105,18 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Strength", "Constitution"],
-                            "values": [2, 2],
-                            "types": ["Multiply Attribute", "Multiply Attribute"]
+                            "choices": [
+                                "Strength",
+                                "Constitution"
+                            ],
+                            "values": [
+                                2,
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute",
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -1119,8 +1152,10 @@
                             "Caster Level": -5,
                             "Vitality points": -10
                         },
-                        "prerequisites": ["angelSpecies"],
-                        "conflictsWith": ["seraphSpecies"]
+                        "prerequisites": "angelSpecies",
+                        "conflictsWith": [
+                            "seraphSpecies"
+                        ]
                     },
                     {
                         "id": "astralDevaSpecies",
@@ -1132,7 +1167,7 @@
                             "Caster Level": -5,
                             "Vitality points": -4
                         },
-                        "prerequisites": ["archangelSpecies"]
+                        "prerequisites": "archangelSpecies && angelSpecies"
                     },
                     {
                         "id": "principalitySpecies",
@@ -1144,7 +1179,7 @@
                             "Caster Level": -5,
                             "Vitality points": -4
                         },
-                        "prerequisites": ["archangelSpecies"]
+                        "prerequisites": "archangelSpecies || angelSpecies"
                     },
                     {
                         "id": "seraphSpecies",
@@ -1155,8 +1190,10 @@
                             "Caster Level": -10,
                             "Vitality points": -8
                         },
-                        "prerequisites": ["angelSpecies"],
-                        "conflictsWith": ["archangelSpecies"]
+                        "prerequisites": "angelSpecies",
+                        "conflictsWith": [
+                            "archangelSpecies"
+                        ]
                     },
                     {
                         "id": "cherubimSpecies",
@@ -1168,12 +1205,18 @@
                             "Caster Level": -5,
                             "Vitality points": -3
                         },
-                        "prerequisites": ["seraphSpecies"],
+                        "prerequisites": "seraphSpecies",
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Constitution"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Constitution"
+                            ],
+                            "values": [
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -1185,7 +1228,7 @@
                             "Caster Level": -5,
                             "Vitality points": -3
                         },
-                        "prerequisites": ["seraphSpecies"]
+                        "prerequisites": "seraphSpecies"
                     },
                     {
                         "id": "infernalSpecies",
@@ -1199,8 +1242,10 @@
                             "Heat": -100,
                             "Electric": 50
                         },
-                        "prerequisites": ["demonSpecies"],
-                        "conflictsWith": ["succubusSpecies"]
+                        "prerequisites": "demonSpecies",
+                        "conflictsWith": [
+                            "succubusSpecies"
+                        ]
                     },
                     {
                         "id": "archdevilSpecies",
@@ -1211,7 +1256,7 @@
                             "Martial Level": -5,
                             "Vitality points": -4
                         },
-                        "prerequisites": ["infernalSpecies"]
+                        "prerequisites": "infernalSpecies"
                     },
                     {
                         "id": "pitfiendSpecies",
@@ -1222,7 +1267,7 @@
                             "Martial Level": -5,
                             "Vitality points": -4
                         },
-                        "prerequisites": ["infernalSpecies"]
+                        "prerequisites": "infernalSpecies"
                     },
                     {
                         "id": "succubusSpecies",
@@ -1234,8 +1279,10 @@
                             "Caster Level": -5,
                             "Vitality points": -10
                         },
-                        "prerequisites": ["demonSpecies"],
-                        "conflictsWith": ["infernalSpecies"]
+                        "prerequisites": "demonSpecies",
+                        "conflictsWith": [
+                            "infernalSpecies"
+                        ]
                     },
                     {
                         "id": "lilinSpecies",
@@ -1246,7 +1293,7 @@
                             "Caster Level": -5,
                             "Vitality points": -3
                         },
-                        "prerequisites": ["succubusSpecies"]
+                        "prerequisites": "succubusSpecies"
                     },
                     {
                         "id": "omnibusSpecies",
@@ -1257,7 +1304,7 @@
                             "Caster Level": -5,
                             "Vitality points": -3
                         },
-                        "prerequisites": ["succubusSpecies"]
+                        "prerequisites": "succubusSpecies"
                     }
                 ]
             }

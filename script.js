@@ -197,8 +197,23 @@ function validateInputJson(data, pointsEntry) {
                     errors.push(`Duplicate option ID found: "${opt.id}"`);
                 }
                 optionMap.set(opt.id, opt);
+                // Fix: Only use Set for array/object prerequisites, not for strings
+                let prereqSet;
+                if (typeof opt.prerequisites === 'string') {
+                    prereqSet = new Set(); // Handled separately in validation
+                } else if (Array.isArray(opt.prerequisites)) {
+                    prereqSet = new Set(opt.prerequisites);
+                } else if (typeof opt.prerequisites === 'object' && opt.prerequisites !== null) {
+                    // For AND/OR object style, flatten all values into a set
+                    prereqSet = new Set([
+                        ...(opt.prerequisites.and || []),
+                        ...(opt.prerequisites.or || [])
+                    ]);
+                } else {
+                    prereqSet = new Set();
+                }
                 dependencyGraph.set(opt.id, {
-                    prerequisites: new Set(opt.prerequisites || []),
+                    prerequisites: prereqSet,
                     conflicts: new Set(opt.conflictsWith || [])
                 });
             });
@@ -254,6 +269,31 @@ function validateInputJson(data, pointsEntry) {
             if (other?.conflicts.has(id) || current.conflicts.has(otherId)) {
                 errors.push(`Option "${id}" cannot be selected due to conflict with its prerequisite "${otherId}"`);
             }
+        }
+
+        // Handle string-based JS-style prerequisites
+        if (typeof current.prerequisites === 'string') {
+            // Extract all variable names (option IDs) from the expression
+            const ids = current.prerequisites.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || [];
+            // Remove JS reserved words and boolean literals
+            const reserved = new Set(['true','false','null','undefined','if','else','return','let','var','const','function','while','for','do','switch','case','break','continue','default','new','this','typeof','instanceof','void','delete','in','of','with','try','catch','finally','throw','class','extends','super','import','export','from','as','await','async','yield']);
+            for (let idRef of ids) {
+                if (!reserved.has(idRef) && !optionMap.has(idRef)) {
+                    errors.push(`Missing prerequisite option ID "${idRef}" for option "${id}"`);
+                }
+            }
+            return; // Do not iterate as array
+        }
+        // If prerequisites is an array, validate as before
+        if (Array.isArray(current.prerequisites)) {
+            for (let pre of current.prerequisites) {
+                if (!optionMap.has(pre)) {
+                    errors.push(`Missing prerequisite "${pre}" for option "${id}"`);
+                    continue;
+                }
+                validateOption(pre, new Set(path)); // Pass a new set for each recursive call
+            }
+            return;
         }
 
         for (let pre of current.prerequisites) {
@@ -621,8 +661,24 @@ function updatePointsDisplay() {
  * @returns {boolean} True if the option can be selected, false otherwise.
  */
 function canSelect(option) {
-    // Check prerequisites
-    const meetsPrereq = !option.prerequisites || option.prerequisites.every(id => selectedOptions[id]);
+    // String-based logical prerequisites
+    let meetsPrereq = true;
+    if (typeof option.prerequisites === 'string') {
+        try {
+            meetsPrereq = window.evaluatePrereqExpr(option.prerequisites, id => !!selectedOptions[id]);
+        } catch (e) {
+            console.error('Invalid prerequisite expression:', option.prerequisites, e);
+            meetsPrereq = false;
+        }
+    } else if (Array.isArray(option.prerequisites)) {
+        meetsPrereq = option.prerequisites.every(id => selectedOptions[id]);
+    } else if (typeof option.prerequisites === 'object') {
+        const andList = option.prerequisites.and || [];
+        const orList = option.prerequisites.or || [];
+        const andMet = andList.every(id => selectedOptions[id]);
+        const orMet = orList.length === 0 || orList.some(id => selectedOptions[id]);
+        meetsPrereq = andMet && orMet;
+    }
 
     // Check outgoing conflicts (option conflicts with an already selected option)
     const hasNoOutgoingConflicts = !option.conflictsWith || option.conflictsWith.every(id => !selectedOptions[id]);
@@ -901,12 +957,56 @@ function renderAccordion() {
 
                     // Show prerequisites for options (like Archangel)
                     if (opt.prerequisites && opt.prerequisites.length > 0) {
-                        const prereqLines = opt.prerequisites.map(id => {
-                            const label = getOptionLabel(id);
-                            const isSelected = selectedOptions[id];
-                            const symbol = isSelected ? "✅" : "❌";
-                            return `${symbol} ${label}`;
-                        });
+                        let prereqLines = [];
+                        if (typeof opt.prerequisites === 'string') {
+                            // Parse the string for variable names (option IDs)
+                            const ids = opt.prerequisites.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || [];
+                            // Remove JS reserved words and boolean literals
+                            const reserved = new Set(['true','false','null','undefined','if','else','return','let','var','const','function','while','for','do','switch','case','break','continue','default','new','this','typeof','instanceof','void','delete','in','of','with','try','catch','finally','throw','class','extends','super','import','export','from','as','await','async','yield']);
+                            // For OR logic: if any option is selected, mark all as accepted
+                            let isOr = opt.prerequisites.includes('||');
+                            let orAccepted = false;
+                            if (isOr) {
+                                orAccepted = ids.some(id => !reserved.has(id) && !!selectedOptions[id]);
+                            }
+                            ids.forEach(id => {
+                                if (!reserved.has(id)) {
+                                    const label = getOptionLabel(id);
+                                    let symbol;
+                                    if (isOr && orAccepted) {
+                                        symbol = "✅";
+                                    } else {
+                                        symbol = !!selectedOptions[id] ? "✅" : "❌";
+                                    }
+                                    prereqLines.push(`${symbol} ${label}`);
+                                }
+                            });
+                        } else if (Array.isArray(opt.prerequisites)) {
+                            prereqLines = opt.prerequisites.map(id => {
+                                const label = getOptionLabel(id);
+                                const isSelected = selectedOptions[id];
+                                const symbol = isSelected ? "✅" : "❌";
+                                return `${symbol} ${label}`;
+                            });
+                        } else if (typeof opt.prerequisites === 'object' && opt.prerequisites !== null) {
+                            // For legacy AND/OR object
+                            const andList = opt.prerequisites.and || [];
+                            const orList = opt.prerequisites.or || [];
+                            let orAccepted = orList.some(id => selectedOptions[id]);
+                            if (andList.length)
+                                prereqLines.push(...andList.map(id => {
+                                    const label = getOptionLabel(id);
+                                    const isSelected = selectedOptions[id];
+                                    const symbol = isSelected ? "✅" : "❌";
+                                    return `${symbol} ${label}`;
+                                }));
+                            if (orList.length)
+                                prereqLines.push(...orList.map(id => {
+                                    const label = getOptionLabel(id);
+                                    const symbol = orAccepted ? "✅" : (selectedOptions[id] ? "✅" : "❌");
+                                    return `${symbol} ${label}`;
+                                }));
+                        }
                         requirements.innerHTML += `🔒 Requires:<br>${prereqLines.join("<br>")}`;
                     }
 
