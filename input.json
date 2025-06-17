@@ -812,15 +812,9 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": [
-                                "Charisma"
-                            ],
-                            "values": [
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
+                            "choices": ["Charisma"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
                         }
                     },
                     {
@@ -838,15 +832,9 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": [
-                                "Charisma"
-                            ],
-                            "values": [
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
+                            "choices": ["Charisma"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
                         }
                     },
                     {
@@ -1105,18 +1093,9 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": [
-                                "Strength",
-                                "Constitution"
-                            ],
-                            "values": [
-                                2,
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute",
-                                "Multiply Attribute"
-                            ]
+                            "choices": ["Strength","Constitution"],
+                            "values": [2,2],
+                            "types": ["Multiply Attribute","Multiply Attribute"]
                         }
                     },
                     {
@@ -1153,9 +1132,7 @@
                             "Vitality points": -10
                         },
                         "prerequisites": "angelSpecies",
-                        "conflictsWith": [
-                            "seraphSpecies"
-                        ]
+                        "conflictsWith": ["seraphSpecies"]
                     },
                     {
                         "id": "astralDevaSpecies",
