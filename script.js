@@ -276,7 +276,7 @@ function validateInputJson(data, pointsEntry) {
             // Extract all variable names (option IDs) from the expression
             const ids = current.prerequisites.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || [];
             // Remove JS reserved words and boolean literals
-            const reserved = new Set(['true','false','null','undefined','if','else','return','let','var','const','function','while','for','do','switch','case','break','continue','default','new','this','typeof','instanceof','void','delete','in','of','with','try','catch','finally','throw','class','extends','super','import','export','from','as','await','async','yield']);
+            const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
             for (let idRef of ids) {
                 if (!reserved.has(idRef) && !optionMap.has(idRef)) {
                     errors.push(`Missing prerequisite option ID "${idRef}" for option "${id}"`);
@@ -554,7 +554,27 @@ function evaluateFormulas() {
 
             // Handle Cap Attribute
             if (type === "Cap Attribute") {
-                const cap = parseInt(String(value).replace('cap:', ''));
+                // Support both static and relative caps
+                let cap;
+                if (typeof value === "string" && value.startsWith("cap:")) {
+                    const capVal = value.slice(4);
+                    if (capVal.startsWith("-")) {
+                        // Relative reduction: lower the current cap by this amount
+                        const reduction = parseInt(capVal);
+                        const currentMax = attributeRanges[choiceName]?.max ?? originalAttributeRanges[choiceName]?.max ?? 40;
+                        cap = currentMax + reduction;
+                    } else {
+                        // Static cap
+                        cap = parseInt(capVal);
+                    }
+                } else if (typeof value === "number" && value < 0) {
+                    // Relative reduction: lower the current cap by this amount
+                    const currentMax = attributeRanges[choiceName]?.max ?? originalAttributeRanges[choiceName]?.max ?? 40;
+                    cap = currentMax + value;
+                } else {
+                    // Static cap
+                    cap = parseInt(value);
+                }
                 if (!attributeRanges[choiceName]) attributeRanges[choiceName] = {};
                 attributeRanges[choiceName].max = cap;
                 if ((attributeSliderValues[choiceName] ?? 0) > cap) {
@@ -962,7 +982,7 @@ function renderAccordion() {
                             // Parse the string for variable names (option IDs)
                             const ids = opt.prerequisites.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || [];
                             // Remove JS reserved words and boolean literals
-                            const reserved = new Set(['true','false','null','undefined','if','else','return','let','var','const','function','while','for','do','switch','case','break','continue','default','new','this','typeof','instanceof','void','delete','in','of','with','try','catch','finally','throw','class','extends','super','import','export','from','as','await','async','yield']);
+                            const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
                             // For OR logic: if any option is selected, mark all as accepted
                             let isOr = opt.prerequisites.includes('||');
                             let orAccepted = false;

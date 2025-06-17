@@ -812,9 +812,15 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Charisma"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Charisma"
+                            ],
+                            "values": [
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -832,9 +838,15 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Charisma"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Charisma"
+                            ],
+                            "values": [
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -1093,9 +1105,18 @@
                         },
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Strength","Constitution"],
-                            "values": [2,2],
-                            "types": ["Multiply Attribute","Multiply Attribute"]
+                            "choices": [
+                                "Strength",
+                                "Constitution"
+                            ],
+                            "values": [
+                                2,
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute",
+                                "Multiply Attribute"
+                            ]
                         }
                     },
                     {
@@ -1132,7 +1153,9 @@
                             "Vitality points": -10
                         },
                         "prerequisites": "angelSpecies",
-                        "conflictsWith": ["seraphSpecies"]
+                        "conflictsWith": [
+                            "seraphSpecies"
+                        ]
                     },
                     {
                         "id": "astralDevaSpecies",
@@ -1376,9 +1399,74 @@
                         "prerequisites": "succubusSpecies || genieSpecies",
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": ["Strength"],
-                            "values": [0.5],
-                            "types": ["Multiply Attribute"]
+                            "choices": [
+                                "Strength"
+                            ],
+                            "values": [
+                                0.5
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "titanSpecies",
+                        "label": "Titan",
+                        "description": "Colossal beings of immense power. Choose one attribute: its maximum is reduced by 2, but you gain unique Titan abilities. If your current value exceeds the new cap, excess points are refunded for redistribution. RESET YOUR ATTRIBUTES BEFORE SELECTING THIS OPTION",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -15,
+                            "Vitality points": -16,
+                            "Attribute Points": -2
+                        },
+                        "prerequisites": "nephilimSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": [
+                                "Strength",
+                                "Dexterity",
+                                "Constitution",
+                                "Intelligence",
+                                "Wisdom",
+                                "Charisma"
+                            ],
+                            "values": [
+                                "cap:-2"
+                            ],
+                            "types": [
+                                "Cap Attribute"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "asuraSpecies",
+                        "label": "Asura",
+                        "description": "Fierce demigods of war and chaos. Choose one attribute: its maximum is reduced by 2, but you gain unique Asura abilities. If your current value exceeds the new cap, excess points are refunded for redistribution. RESET YOUR ATTRIBUTES BEFORE SELECTING THIS OPTION",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -10,
+                            "Attribute Points": -2
+                        },
+                        "prerequisites": "titanSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": [
+                                "Strength",
+                                "Dexterity",
+                                "Constitution",
+                                "Intelligence",
+                                "Wisdom",
+                                "Charisma"
+                            ],
+                            "values": [
+                                "cap:-2"
+                            ],
+                            "types": [
+                                "Cap Attribute"
+                            ]
                         }
                     }
                 ]
