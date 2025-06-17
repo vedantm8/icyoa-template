@@ -1305,6 +1305,54 @@
                             "Vitality points": -3
                         },
                         "prerequisites": "succubusSpecies"
+                    },
+                    {
+                        "id": "brightLord",
+                        "label": "Bright Lord",
+                        "description": "Can issue simple commands to Good-Karma NPCs below your Level. Light (and Radiant) spells deal additional damage to Evil-Karma NPCs. Can Purchase radiant Spells from the Yggdrasil Cash Shop.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": "(angelSpecies && !fallenAngelSpecies) || redeemedDemonSpecies"
+                    },
+                    {
+                        "id": "radiantLord",
+                        "label": "Radiant Lord",
+                        "description": "Gain +50% Resistance (Immunity) to Light Elemental damage, but gain -50% weakness to Dark. Can cast Light (and Radiant) spells 50% faster.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3,
+                            "Light": -50,
+                            "Dark": 50
+                        },
+                        "prerequisites": "brightLord"
+                    },
+                    {
+                        "id": "darkLord",
+                        "label": "Dark Lord",
+                        "description": "Can issue simple commands to Evil-Karma NPCs below your Level. Dark (and Shadow) Spells deal additional damage to Good-Karma Targets. Can Purchase shadow Spell from the Yggdrasil Cash Shop.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": "fallenAngelSpecies || (demonSpecies && !redeemedDemonSpecies)"
+                    },
+                    {
+                        "id": "shadowLord",
+                        "label": "Shadow Lord",
+                        "description": "Gain +50% Resistance (Immunity) to Dark Elemental damage, but gain -50% weakness to Light. Can cast Dark (and Shadow) spells 50% faster.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3,
+                            "Light": 50,
+                            "Dark": -50
+                        },
+                        "prerequisites": "darkLord"
                     }
                 ]
             }
