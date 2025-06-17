@@ -1468,6 +1468,63 @@
                                 "Cap Attribute"
                             ]
                         }
+                    },
+                    {
+                        "id": "enlightenedOneSpecies",
+                        "label": "Enlightened One",
+                        "description": "Can consume the brain of a slain Humanoid or Demi-Humanoid in order to learn one additional Arcane Spell. Can briefly edit an NPC's combat settings through touch. Can issue simple commands to weak NPCs.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": "brainEaterSpecies"
+                    },
+                    {
+                        "id": "oldOneSpecies",
+                        "label": "Old One",
+                        "description": "Choose one spell school to specialize in, you cast spells from that school at halved Mana cost. Being Detected can afflict Targets with Fear, Despair, or Revulsion.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "enlightenedOneSpecies"
+                    },
+                    {
+                        "id": "mindflayerSpecies",
+                        "label": "Mindflayer",
+                        "description": "Can Perform an Action to inflict a Target with a Mental Status Effect. Can issue simple commands to weak NPCs. Specialized in Enchantment spell school, you cast spells from that school at halved Mana cost.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "brainEaterSpecies"
+                    },
+                    {
+                        "id": "souldrinkerSpecies",
+                        "label": "Souldrinker",
+                        "description": "Can Perform an Action to drain Vitality and Mana on touch. Can briefly edit an NPC's combat settings through touch.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "mindflayerSpecies"
+                    },
+                    {
+                        "id": "deepOneSpecies",
+                        "label": "Deep One",
+                        "description": "Gain +50% Resistance (Immunity) to Dark Elemental damage, but gain -25% weakness to Light. Can breathe Underwater indefinitely, and are Immune to Deep Underwater Environment Status Effects.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3,
+                            "Dark": -50,
+                            "Light": 25
+                        },
+                        "prerequisites": "enlightenedOneSpecies || mindflayerSpecies"
                     }
                 ]
             }
