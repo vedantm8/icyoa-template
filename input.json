@@ -1167,7 +1167,7 @@
                             "Caster Level": -5,
                             "Vitality points": -4
                         },
-                        "prerequisites": "archangelSpecies && angelSpecies"
+                        "prerequisites": "archangelSpecies"
                     },
                     {
                         "id": "principalitySpecies",
@@ -1179,7 +1179,7 @@
                             "Caster Level": -5,
                             "Vitality points": -4
                         },
-                        "prerequisites": "archangelSpecies || angelSpecies"
+                        "prerequisites": "archangelSpecies"
                     },
                     {
                         "id": "seraphSpecies",
