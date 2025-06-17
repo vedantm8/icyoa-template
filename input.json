@@ -1376,15 +1376,9 @@
                         "prerequisites": "succubusSpecies || genieSpecies",
                         "dynamicCost": {
                             "target": "attributes",
-                            "choices": [
-                                "Strength"
-                            ],
-                            "values": [
-                                0.5
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
+                            "choices": ["Strength"],
+                            "values": [0.5],
+                            "types": ["Multiply Attribute"]
                         }
                     }
                 ]
