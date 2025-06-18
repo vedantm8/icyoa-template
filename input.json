@@ -772,7 +772,7 @@
                     {
                         "id": "dragonoidSpecies",
                         "label": "Dragonoid",
-                        "description": "Can Breathe out a cone of chosen Energy once every 4 hours. Choose two Dragon Bloodlines: Fire, Frost, Acid, Sonic, or Lightning. +50% Resistance to one Element, -50% Resistance to other Element. Possess Natural Weapons. Can see in Complete Darkness. Can assume a Humanoid alternate form.",
+                        "description": "Can Breathe out a cone of chosen Energy once every 4 hours. Choose two Dragon Bloodlines: Fire, Frost, Acid, Sonic, or Electric. +50% Resistance to one Element, -50% Resistance to other Element. Possess Natural Weapons. Can see in Complete Darkness. Can assume a Humanoid alternate form.",
                         "cost": {
                             "Martial Level": -20,
                             "Caster Level": -5,
@@ -785,7 +785,7 @@
                                 "Cold",
                                 "Acid",
                                 "Sonic",
-                                "Lightning"
+                                "Electric"
                             ],
                             "values": [
                                 50,
@@ -1525,6 +1525,71 @@
                             "Light": 25
                         },
                         "prerequisites": "enlightenedOneSpecies || mindflayerSpecies"
+                    },
+                    {
+                        "id": "ascendantSpecies",
+                        "label": "Ascendant",
+                        "description": "+50% Resistance (Immunity) to Bloodline's Energy type, damage taken of Bloodline's energy gets converted into Vitality. Can sprout Wings and can fly as easily as running. Possess scales as strong as Medium Armor.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -14
+                        },
+                        "prerequisites": "dragonoidSpecies",
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": [
+                                "Heat",
+                                "Cold",
+                                "Acid",
+                                "Sonic",
+                                "Electric"
+                            ],
+                            "values": [
+                                50
+                            ],
+                            "types": [
+                                "Resistance"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "wyrmLordSpecies",
+                        "label": "Wyrm Lord",
+                        "description": "Can assume the form of an adult Dragon once every 168 hours. While shapeshifted, all Attributes receive an effective +8 bonus, and can use your breath attack at-will. Are Immune to Sleep and Paralysis.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "ascendantSpecies"
+                    },
+                    {
+                        "id": "angelDemonBloodSpecies",
+                        "label": "Angel-Blood / Demon-Blood",
+                        "description": "Replace your Bloodline's Energy type with either Light or Dark. Resistances change accordingly, but you gain +25% Resistance of your previous Bloodline (e.g., if you had 100% Heat, -50% Cold and pick Light, you have 25% Heat, 100% Light, -50% Dark). Breath attack is now a wide beam of your new Energy, with a longer range but a smaller hitbox, usable every 2 hours.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "ascendantSpecies",
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": [
+                                "Light", 
+                                "Dark",
+                                "Heat",
+                                "Cold",
+                                "Acid",
+                                "Sonic",
+                                "Electric"
+                            ],
+                            "values": [100, -75],
+                            "types": ["Resistance", "Resistance"]
+                        }
                     }
                 ]
             }
