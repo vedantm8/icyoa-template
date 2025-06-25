@@ -1975,6 +1975,286 @@
                             "Vitality points": -2
                         },
                         "prerequisites": "flySpecies"
+                    },
+                    {
+                        "id": "leechSpecies",
+                        "label": "Leech",
+                        "description": "  Can breathe Underwater indefinitely. Can see in Complete Darkness. Can absorb Vitality from a Target using your mouth (while Grappling)",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "vermesSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies"]
+                    },
+                    {
+                        "id": "bloodletterSpecies",
+                        "label": "Bloodletter",
+                        "description": "Harder to Detect while Underwater. Twice as hard to Knock Out or Stagger",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "leechSpecies"
+                    },
+                    {
+                        "id": "earthwormSpecies",
+                        "label": "Earthworm",
+                        "description": "Can burrow through the ground as easily as running. You are harder to Detect while Underground. Remaining motionless while Underground Enhances Stamina and Mana Regeneration.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "vermesSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies"]
+                    },
+                    {
+                        "id": "sandwormSpecies",
+                        "label": "Sandworm",
+                        "description": "Can now burrow through the ground 50% faster. Strength is considered 2x higher",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "earthWormSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Strength"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "herroperSpecies",
+                        "label": "Herroper",
+                        "description": "Possess tentacle Natural Weapons that have a change to inflict Poison DoT or Disease DoT on Targets. Twice as easy to Grapple Targets. Can Perform an Action to inflict Fascination on a Target, once every 4 hours",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -7
+                        },
+                        "prerequisites": "roperSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies"]
+                    },
+                    {
+                        "id": "livingCurseSpecies",
+                        "label": "Living Curse",
+                        "description": "Can possess inanimate Armor not bigger than oneself. Gain Natural Armor as strong as possessed Armor. Know how to use Martial Weaponry",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "herroperSpecies"
+                    },
+                    {
+                        "id": "greaterDoppelgangerSpecies",
+                        "label": "Greater Doppelganger",
+                        "description": "Alternate form can now be any non-unique NPC. Can assume any number of alternate forms, and can change alternate forms at-will. While in alternate form Attributes, Resistances and Stats are changed to that of new form, adjusted to 80% of Doppelganger's Level",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -5,
+                            "Caster Level": -10,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "doppelgangerSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies"]
+                    },
+                    {
+                        "id": "changelingSpecies",
+                        "label": "Changeling",
+                        "description": "Alternate forms can now be any Humanoid, Demi-Humanoid, or Heteromorphic Races. Can assume the form of any Creature for a short time, Stats and Resistances are changed to that of new form.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "greaterDoppelgangerSpecies"
+                    },
+                    {
+                        "id": "mimicSpecies",
+                        "label": "Mimic",
+                        "description": "Can assume the form an inanimate Objects not bigger than oneself. While in the form of an Object and motionless you are Invisible to Perception passive Detection",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "greaterDoppelgangerSpecies || herroperSpecies"
+                    },
+                    {
+                        "id": "deathVineSpecies",
+                        "label": "Death Vine",
+                        "description": "Natural Weapons secrete a Poison DoT\n  Can breathe a cone of noxious fumes that applies a Poison DoT, once every 4 hours\n  Can Grapple a Target to inflict Poison DoT damage",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -14
+                        },
+                        "prerequisites": "planterranSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies", "greaterDoppelgangerSpecies"]
+                    },
+                    {
+                        "id": "medusoidSpecies",
+                        "label": "Medusoid",
+                        "description": "Natural Weapons and breath attack have a chance to inflict Petrification. Breath attacks have a chance of Ignoring a Target's Resistances",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "deathVineSpecies"
+                    },
+                    {
+                        "id": "shamblingMossSpecies",
+                        "label": "Shambling Moss",
+                        "description": "Can rapidly Regenerate lost limbs, as such Constitution is considered 2x higher. Have double success rate on Actions that use Climb or Grapple. Can breathe Underwater indefinitely",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -5,
+                            "Caster Level": -10,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "planterranSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies", "greaterDoppelgangerSpecies", "deathVineSpecies"]
+                    },
+                    {
+                        "id": "lurkerSpecies",
+                        "label": "Lurker",
+                        "description": "While remaining motionless in Forest or Swampland Environment become Invisible to Perception passive Detection. While remaining motionless in Forest or Swampland Environment Mana Regeneration is Enhanced",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "shamblingMossSpecies"
+                    },
+                    {
+                        "id": "dryadSpecies",
+                        "label": "Dryad",
+                        "description": "While remaining motionless in Forest or Swampland Environment become Invisible to Perception passive Detection.  Have Bark as Natural Armor that is as strong as Light Armor.  Natural Weapons deal additional Acid damage.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": "planterranSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies", "greaterDoppelgangerSpecies", "deathVineSpecies", "shamblingMossSpecies"]
+                    },
+                    {
+                        "id": "sprigganSpecies",
+                        "label": "Spriggan",
+                        "description": "Can Perform an Action to restore Vitality and remove a Mental Status Effect on a Target. Can issue simple commands to Beast and Plant NPCs",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "dryadSpecies"
+                    },
+                    {
+                        "id": "alrauneSpecies",
+                        "label": "Alraune",
+                        "description": "While remaining motionless in Forest or Swampland Environment Mana Regeneration is Enhanced. Can assume a Humanoid alternate form. Can Perform an Action to inflict a Target with Confusion, Charm, or Fascination Mental Status Effects.",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": "planterranSpecies",
+                        "conflictsWith": [
+                            "arachnidSpecies",
+                            "crustaceanSpecies",
+                            "dictyopterranSpecies",
+                            "hymenopterranSpecies",
+                            "cricketSpecies",
+                            "odonateSpecies",
+                            "flySpecies",
+                            "leechSpecies",
+                            "earthwormSpecies",
+                            "herroperSpecies",
+                            "greaterDoppelgangerSpecies",
+                            "deathVineSpecies",
+                            "shamblingMossSpecies",
+                            "dryadSpecies"
+                        ]
+                    },
+                    {
+                        "id": "alrauneQueenSpecies",
+                        "label": "Alraune Queen",
+                        "description": "Can emit an Aura that restores the Vitality and grants Immunity to Cold for nearby Plants. Can issue simple commands to Plant NPCs, and Faefolk NPCs become a Summoner option.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "alrauneSpecies"
+                    },
+                    {
+                        "id": "treantSpecies",
+                        "label": "Treant",
+                        "description": "Have Bark as Natural Armor that is as strong as Medium Armor. Strength and Constitution are considered 2x higher, but Dexterity is considered 2x lower. Are twice as hard to Knock Out or Stagger",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -22
+                        },
+                        "prerequisites": "planterranSpecies",
+                        "conflictsWith": [
+                            "arachnidSpecies",
+                            "crustaceanSpecies",
+                            "dictyopterranSpecies",
+                            "hymenopterranSpecies",
+                            "cricketSpecies",
+                            "odonateSpecies",
+                            "flySpecies",
+                            "leechSpecies",
+                            "earthwormSpecies",
+                            "herroperSpecies",
+                            "greaterDoppelgangerSpecies",
+                            "deathVineSpecies",
+                            "shamblingMossSpecies",
+                            "dryadSpecies",
+                            "alrauneSpecies"
+                        ],
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Strength", "Constitution", "Dexterity"],
+                            "values": [2, 2, 0.5],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "treeKingSpecies",
+                        "label": "Tree King",
+                        "description": "Can create a small Forest Environment at surrounded location, once every 72 hours. While remaining motionless in Forest or Swampland Environment become Invisible to Perception passive Detection",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "treantSpecies"
+                    },
+                    {
+                        "id": "puffballSpecies",
+                        "label": "Puffball",
+                        "description": "While remaining motionless in Forest or Swampland Environment Mana Regeneration is Enhanced. Can emit an Aura that inflicts random Mental Status Effects on Targets, once an hour. Can emit an Aura that inflicts Poison DoT on Targets",
+                        "cost": {
+                            "Levels": 10,
+                            "Caster Level": -10,
+                            "Vitality points": -8
+                        },
+                        "prerequisites": "myconidSpecies"
                     }
                 ]
             }
