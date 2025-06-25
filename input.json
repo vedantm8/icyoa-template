@@ -28,7 +28,8 @@
             "Electric": 0,
             "Light": 0,
             "Dark": 0,
-            "Ygg": 1000
+            "Ygg": 1000,
+            "COIDL": 0
         },
         "allowNegative": [
             "Heat",
@@ -1590,6 +1591,390 @@
                             "values": [100, -75],
                             "types": ["Resistance", "Resistance"]
                         }
+                    },
+                    {
+                        "id": "arachnidSpecies",
+                        "label": "Arachnid",
+                        "description": "Can walk or run normally on walls and ceilings. Exoskeleton is as strong as Light Armor. Natural Weapon secretes a Poison DoT",
+                        "prerequisites": "arthropodSpecies",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -10
+                        },
+                        "conflictsWith": ["crustaceanSpecies"]
+                    },
+                    {
+                        "id": "ariadneSpecies",
+                        "label": "Ariadne",
+                        "description": "Can assume a Humanoid alternate form. Can produce a silk-like thread that can be woven into webs (that Slow or Stop) or Crafted Objects. These Crafted Objects have an inherent Data Level of [(Total Level/10)+1]",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": ["COIDL"],
+                            "values": ["(points['Levels']/10)+1"],
+                            "types": ["Formula Cost"]
+                        },
+                        "prerequisites": "arachnidSpecies"
+                    },
+                    {
+                        "id": "scorpionesSpecies",
+                        "label": "Scorpiones",
+                        "description": "Possess an additional Natural Weapon. Secondary Natural Weapon can cause Charm or Confusion, while Primary Natural Weapon deals additional damage. Secondary Natural Weapon doesn't secrete a Poison DoT.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "arachnidSpecies"
+                    },
+                    {
+                        "id": "vinegaroonSpecies",
+                        "label": "Vinegaroon",
+                        "description": "Natural Weapons deal additional Acid damage and make it twice as easy to Grapple Targets. Movement speed scales with unused Carry Weight Limit.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "arachnidSpecies"
+                    },
+                    {
+                        "id": "crustaceanSpecies",
+                        "label": "Crustacean",
+                        "description": "Have an additional pair of arms, as such can dual-wield on the same side of arms. Exoskeleton is as strong as Heavy Armor, but can't equip normal Armor. Can breathe Underwater indefinitely.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -16
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies"]
+                    },
+                    {
+                        "id": "cancerSpecies",
+                        "label": "Cancer",
+                        "description": "Receive a bonus to your Natural Armor rating that scales with Constitution. Can molt armor, losing Natural Armor protection for 24 hours, molted exoskeleton can be repurposed into Crafted Objects. These Crafted Objects have an inherent Data Level of [(Total Level/10)+1] (COIDL).\n\nDeselect COIDL from the dropdown if you want to de-select this option.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "crustaceanSpecies",
+                        "dynamicCost": {
+                            "target": "points",
+                            "choices": ["COIDL"],
+                            "values": ["(points['Levels']/10)+1"],
+                            "types": ["Formula Cost"]
+                        }
+                    },
+                    {
+                        "id": "mantisShrimpSpecies",
+                        "label": "Mantis Shrimp",
+                        "description": "Can Perform an attack Action to inflict Target with Blind or Stun, once every hour. Natural Weapons deal additional Sonic damage.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "crustaceanSpecies"
+                    },
+                    {
+                        "id": "barnacleMassSpecies",
+                        "label": "Barnacle Mass",
+                        "description": "Can rapidly Regenerate lost limbs, as such Constitution is considered 2x higher. Immune to instant Death and Doom, but gain -75% Resistance to Heat.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -5,
+                            "Heat": 75
+                        },
+                        "prerequisites": "crustaceanSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Constitution"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "dictyopterranSpecies",
+                        "label": "Dictyopterran",
+                        "description": "Can consume Junk items to restore Vitality. Exoskeleton is as strong as Light Armor. Movement speed scales with Carry Weight Limit.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies"]
+                    },
+                    {
+                        "id": "mantisSpecies",
+                        "label": "Mantis",
+                        "description": "Can Perform an action to inflict Fear or Fascination on a Target. Deal double damage to Targets that do not Detect you.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "dictyopterranSpecies"
+                    },
+                    {
+                        "id": "roachSpecies",
+                        "label": "Roach",
+                        "description": "Constitution is considered 2x higher. Are able to slip into tight spaces.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -7
+                        },
+                        "prerequisites": "dictyopterranSpecies"
+                    },
+                    {
+                        "id": "termiteSpecies",
+                        "label": "Termite",
+                        "description": "Deal triple damage to structures with Natural Weapons. Immune to Blind and Deafness.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "dictyopterranSpecies"
+                    },
+                    {
+                        "id": "hymenopterranSpecies",
+                        "label": "Hymenopterran",
+                        "description": "Have Wings and can fly as easily as running.Exoskeleton is as strong as Medium ArmorNatural Weapon secretes a Poison DoT.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies"]
+                    },
+                    {
+                        "id": "antSpecies",
+                        "label": "Ant",
+                        "description": "Can walk or run normally on walls. Strength is considered 2x higher.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -7
+                        },
+                        "prerequisites": "hymenopterranSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Strength"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "waspSpecies",
+                        "label": "Wasp",
+                        "description": "Natural Weapons can Sap DoT and it's 50% easier to Grapple Targets. Movement speed scales with unused Carry Weight Limit.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "hymenopterranSpecies"
+                    },
+                    {
+                        "id": "beeSpecies",
+                        "label": "Bee",
+                        "description": "It's twice as hard for a Grappled Target to escape once Grappled. Can create a honey-like substance that acts as a strong healing potion when consumed.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "hymenopterranSpecies"
+                    },
+                    {
+                        "id": "cricketSpecies",
+                        "label": "Cricket",
+                        "description": "Have an additional pair of arms, as such can dual-wield on the same side of arms. Exoskeleton is as strong as Light Armor. Can Jump up to five times higher by preparing for a moment.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -14
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies"]
+                    },
+                    {
+                        "id": "grasshopperSpecies",
+                        "label": "Grasshopper",
+                        "description": "Have Wings and can fly as easily as running. Deal 50% increased damage when attacking while jumping or flying",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "cricketSpecies"
+                    },
+                    {
+                        "id": "moleCricketSpecies",
+                        "label": "Mole Cricket",
+                        "description": "Can burrow through the ground as easily as running. Can Perform an Action to inflict Sleep on a Target, once every hour.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "cricketSpecies"
+                    },
+                    {
+                        "id": "locustSpecies",
+                        "label": "Locust",
+                        "description": "Receive no movement penalty regardless of Environment. Can Perform an Action to summon a horde of locusts that inflict Disease DoT AoE, once every 24 hours",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "cricketSpecies"
+                    },
+                    {
+                        "id": "scarabSpecies",
+                        "label": "Scarab",
+                        "description": "Have an additional pair of arms, as such can dual-wield on the same side of arms. Exoskeleton is as strong as Heavy Armor, but can't equip normal Armor . Are twice as hard to Knock Out or Stagger",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -16
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies"]
+                    },
+                    {
+                        "id": "herculesSpecies",
+                        "label": "Hercules",
+                        "description": "Can cast Spells while simultaneously wielding a Weapon. Strength is considered 2x higher.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "scarabSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": ["Strength"],
+                            "values": [2],
+                            "types": ["Multiply Attribute"]
+                        }
+                    },
+                    {
+                        "id": "goliathSpecies",
+                        "label": "Goliath",
+                        "description": "Can Perform other Physical Actions at no penalty while Grappling a Target. When Grappling can use all four arms to deal additional damage that scales with Strength",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -7
+                        },
+                        "prerequisites": "scarabSpecies"
+                    },
+                    {
+                        "id": "odonateSpecies",
+                        "label": "Odonate",
+                        "description": "Have Wings and can fly as easily as running. Exoskeleton is as strong as Light Armor. Know how to use Ranged Weaponry.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies"]
+                    },
+                    {
+                        "id": "dragonflySpecies",
+                        "label": "Dragonfly",
+                        "description": "Gain an additional 50% Resistance to an Elemental Energy Type of your choice. Can imbue your Ranged attacks with that Energy type",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "odonateSpecies"
+                    },
+                    {
+                        "id": "damselflySpecies",
+                        "label": "Damselfly",
+                        "description": "While Flying you are 25% harder to hit with Ranged attacks or 'Ray'-type spells. Movement speed scale with unused Carry Weight Limit",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "odonateSpecies"
+                    },
+                    {
+                        "id": "flySpecies",
+                        "label": "Fly",
+                        "description": "Have Wings and can fly as easily as running. Exoskeleton is as strong as Light Armor. While flying you are 25% harder to hit with Ranged attacks and 'Ray'-type spells.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Caster Level": -5,
+                            "Vitality points": -10
+                        },
+                        "prerequisites": "arthropodSpecies",
+                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies"]
+                    },
+                    {
+                        "id": "butterflySpecies",
+                        "label": "Butterfly",
+                        "description": "Gain 25% Light damage Resistance and Mana Regeneration is Enhanced during the day. Can Perform an action to inflict a Target with Panic or Charm",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "flySpecies"
+                    },
+                    {
+                        "id": "mothSpecies",
+                        "label": "Moth",
+                        "description": "Gain 25% Dark damage Resistance and Mana Regeneration is Enhanced during the night. Can Perform an action to inflict a Target with Confusion or Sleep",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "flySpecies"
+                    },
+                    {
+                        "id": "caddisflySpecies",
+                        "label": "Caddisfly",
+                        "description": "Can Breathe Underwater indefinitely. Can Perform an action to Enhance Natural Armor to be as strong as Medium Armor, once every 8 hours",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -4
+                        },
+                        "prerequisites": "flySpecies"
+                    },
+                    {
+                        "id": "mosquitoSpecies",
+                        "label": "Mosquito",
+                        "description": "Can absorb Vitality from a Target using stinger-like mouth (while Grappling). Any DoT effects inflicted on a Target last much longer, and Natural Weapons cause Bleed DoT",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -2
+                        },
+                        "prerequisites": "flySpecies"
                     }
                 ]
             }

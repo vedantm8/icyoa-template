@@ -473,6 +473,15 @@ function removeSelection(option) {
         });
         // Clear all dynamic selections for this option
         delete dynamicSelections[option.id];
+        // Remove any dynamic point types added by Formula Cost if not in originalPoints
+        option.dynamicCost.types.forEach((type, i) => {
+            if (type === "Formula Cost") {
+                const pointType = option.dynamicCost.choices[i];
+                if (!originalPoints.hasOwnProperty(pointType)) {
+                    delete points[pointType];
+                }
+            }
+        });
     }
 
 
@@ -616,6 +625,22 @@ function evaluateFormulas() {
                 }
                 // Set the points value to the multiplied value
                 points[choiceName] = baseValue * multiplier;
+            }
+            // Handle Formula Cost for dynamic points (e.g., COIDL)
+            else if (isPointTarget && type === "Formula Cost") {
+                try {
+                    // If the point type doesn't exist, add it
+                    if (!points.hasOwnProperty(choiceName)) {
+                        points[choiceName] = 0;
+                    }
+                    // Evaluate the formula in the context of points
+                    const evalFunc = new Function("points", `return ${value}`);
+                    const result = evalFunc(points);
+                    // Add to the current value instead of setting
+                    points[choiceName] += result;
+                } catch (err) {
+                    console.warn(`Failed to evaluate dynamic formula for ${choiceName}:`, err);
+                }
             }
         });
     });
