@@ -2064,7 +2064,7 @@
                             "Caster Level": -10,
                             "Vitality points": -10
                         },
-                        "prerequisites": "doppelgangerSpecies",
+                        "prerequisites": "doppelgangerMartialSpecies || doppelgangerCasterSpecies",
                         "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies"]
                     },
                     {
@@ -2254,7 +2254,221 @@
                             "Caster Level": -10,
                             "Vitality points": -8
                         },
-                        "prerequisites": "myconidSpecies"
+                        "prerequisites": "myconidSpecies",
+                        "conflictsWith": [
+                            "arachnidSpecies",
+                            "crustaceanSpecies",
+                            "dictyopterranSpecies",
+                            "hymenopterranSpecies",
+                            "cricketSpecies",
+                            "odonateSpecies",
+                            "flySpecies",
+                            "leechSpecies",
+                            "earthwormSpecies",
+                            "herroperSpecies",
+                            "greaterDoppelgangerSpecies",
+                            "deathVineSpecies",
+                            "shamblingMossSpecies",
+                            "dryadSpecies",
+                            "alrauneSpecies",
+                            "treantSpecies"
+                        ]
+                    },
+                    {
+                        "id": "stinkballSpecies",
+                        "label": "Stinkball",
+                        "description": "While remaining motionless in Forest or Swampland Environment Mana Regenerates twice as fast. AoE attacks deal 50% increased damage and last longer.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -3
+                        },
+                        "prerequisites": "puffballSpecies"
+                    },
+                    {
+                        "id": "boleteSpecies",
+                        "label": "Bolete",
+                        "description": "Strength is considered 2x higher. Know how to use Unarmed Strikes lethally. Are twice as hard to Knock Out or Stagger.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -18
+                        },
+                        "prerequisites": "myconidSpecies",
+                        "conflictsWith": [
+                            "arachnidSpecies",
+                            "crustaceanSpecies",
+                            "dictyopterranSpecies",
+                            "hymenopterranSpecies",
+                            "cricketSpecies",
+                            "odonateSpecies",
+                            "flySpecies",
+                            "leechSpecies",
+                            "earthwormSpecies",
+                            "herroperSpecies",
+                            "greaterDoppelgangerSpecies",
+                            "deathVineSpecies",
+                            "shamblingMossSpecies",
+                            "dryadSpecies",
+                            "alrauneSpecies",
+                            "treantSpecies",
+                            "puffballSpecies"
+                        ],
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": [
+                                "Strength"
+                            ],
+                            "values": [
+                                2
+                            ],
+                            "types": [
+                                "Multiply Attribute"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "kingBoletusSpecies",
+                        "label": "King Boletus",
+                        "description": "Strength and Constitution are considered 2x higher, but Dexterity is considered 2x lower. If you have Bolete, your Strength is now 3x higher (Bolete’s 2x × King Boletus’s 1.5x). Almost impossible to Stagger.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "boleteSpecies",
+                        "dynamicCost": {
+                            "target": "attributes",
+                            "choices": [
+                                "Strength",
+                                "Constitution",
+                                "Dexterity"
+                            ],
+                            "values": [
+                                1.5,
+                                2,
+                                0.5
+                            ],
+                            "types": [
+                                "Multiply Attribute",
+                                "Multiply Attribute",
+                                "Multiply Attribute"
+                            ]
+                        }
+                    },
+                    {
+                        "id": "blackOozeSpecies",
+                        "label": "Black Ooze",
+                        "description": "Gain +50% Acid (Immunity) damage Resistance, but gain -25% Sonic damage weakness. Can deal Acid damage on touch. Can Grapple a smaller Target to engulf them, slowing or stopping their Physical Actions.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -10,
+                            "Vitality points": -16,
+                            "Acid": -50,
+                            "Sonic": 25
+                        },
+                        "prerequisites": "slimeSpecies",
+                        "conflictsWith": [
+                            "arachnidSpecies",
+                            "crustaceanSpecies",
+                            "dictyopterranSpecies",
+                            "hymenopterranSpecies",
+                            "cricketSpecies",
+                            "odonateSpecies",
+                            "flySpecies",
+                            "leechSpecies",
+                            "earthwormSpecies",
+                            "herroperSpecies",
+                            "greaterDoppelgangerSpecies",
+                            "deathVineSpecies",
+                            "shamblingMossSpecies",
+                            "dryadSpecies",
+                            "alrauneSpecies",
+                            "treantSpecies",
+                            "puffballSpecies",
+                            "boleteSpecies"
+                        ]
+                    },
+                    {
+                        "id": "tarJellySpecies",
+                        "label": "Tar Jelly",
+                        "description": "Acid damage to a Target always reduces their equipment durability. Grappling a Target stacks an additional Acid Corrosion effect.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "blackOozeSpecies"
+                    },
+                    {
+                        "id": "voidJellySpecies",
+                        "label": "Void Jelly",
+                        "description": "Gain +100% Resistance (Immunity) to Dark Elemental damage, but gain -100% weakness to Light. Separate Inventory is expanded, it is now a large Inventory instead of a small Inventory.",
+                        "cost": {
+                            "Levels": 5,
+                            "Caster Level": -5,
+                            "Vitality points": -4,
+                            "Dark": -100,
+                            "Light": 100
+                        },
+                        "prerequisites": "blackOozeSpecies"
+                    },
+                    {
+                        "id": "blueOozeSpecies",
+                        "label": "Blue Ooze",
+                        "description": "Possess Natural Weapons that mimic Martial Weaponry (allows bypassing Classes with Martial Weaponry requirements). Know how to Sneak attack to deal increased damage to Targets who have not Detected them. Can Perform an Action to poach a Monster at critical Vitality to learn an additional Skill/Spell.",
+                        "cost": {
+                            "Levels": 10,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -12
+                        },
+                        "prerequisites": "slimeSpecies",
+                        "conflictsWith": [
+                            "arachnidSpecies",
+                            "crustaceanSpecies",
+                            "dictyopterranSpecies",
+                            "hymenopterranSpecies",
+                            "cricketSpecies",
+                            "odonateSpecies",
+                            "flySpecies",
+                            "leechSpecies",
+                            "earthwormSpecies",
+                            "herroperSpecies",
+                            "greaterDoppelgangerSpecies",
+                            "deathVineSpecies",
+                            "shamblingMossSpecies",
+                            "dryadSpecies",
+                            "alrauneSpecies",
+                            "treantSpecies",
+                            "puffballSpecies",
+                            "boleteSpecies",
+                            "blackOozeSpecies"
+                        ]
+                    },
+                    {
+                        "id": "shoggothSpecies",
+                        "label": "Shoggoth",
+                        "description": "Can store a Humanoid or Demi-Humanoid NPC within your separate Inventory to assume their form. Being Detected can afflict Targets with Fear, Revulsion, or Despair.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "blueOozeSpecies"
+                    },
+                    {
+                        "id": "monsterJellySpecies",
+                        "label": "Monster Jelly",
+                        "description": "Can store any Creature NPC small enough to fit in your separate Inventory to assume their form. Can sprout Wings to fly, and Natural Weapons can now also mimic the Natural Weapons of the Creature stored.",
+                        "cost": {
+                            "Levels": 5,
+                            "Martial Level": -5,
+                            "Caster Level": -5,
+                            "Vitality points": -5
+                        },
+                        "prerequisites": "blueOozeSpecies"
                     }
                 ]
             }
