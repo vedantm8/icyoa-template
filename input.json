@@ -1,119 +1,76 @@
 [
     {
         "type": "title",
-        "text": "Naruto Isekai CYOA"
+        "text": "Naruto Jumpchain CYOA"
     },
     {
         "type": "description",
-        "text": "You have been reincarnated into the Naruto universe."
+        "text": "Welcome to the world of Naruto! This is a world of action and adventure. Of Ninja and Samurai. Of hidden darkness and\u2026aliens?\n\nWhatever it includes, it begins on a continent composed of the Elemental Nations. Within most of these nations are special cities called Hidden Villages, which are run by Ninja, mercenaries trained to use the power of Chakra to perform superhuman feats such as enhancing speed and strength, manifesting the five elements, creating illusions, and much, much more. This is a world that is fraught with danger and conflict, though it currently enjoys a somewhat strained peace. Not for long, however. There are powerful forces stirring in the shadows. Hidden Sand and Hidden Sound are preparing for their assault on Konoha, and the Akatsuki have begun to move. You begin your journey in this world the day before Naruto\u2019s graduation exam."
     },
     {
         "type": "points",
         "values": {
-            "Stat Points": 15,
-            "Strength": 0,
-            "Dexterity": 0,
-            "Chakra": 0,
-            "Intelligence": 0,
-            "Luck": 0,
-            "Charisma": 0
+            "CP": 1000,
+            "Race Points": 1,
+            "Specialization Points": 1
         },
-        "allowNegative": [],
-        "attributeRanges": {
-            "Strength": {
-                "min": 0,
-                "max": 10
-            },
-            "Dexterity": {
-                "min": 0,
-                "max": 10
-            },
-            "Chakra": {
-                "min": 0,
-                "max": 10
-            },
-            "Intelligence": {
-                "min": 0,
-                "max": 10
-            },
-            "Luck": {
-                "min": 0,
-                "max": 10
-            },
-            "Charisma": {
-                "min": 0,
-                "max": 10
-            }
-        }
-    },
-    {
-        "name": "Game Mode",
-        "subcategories": [
-            {
-                "type": "storyBlock",
-                "name": "Select Your World",
-                "text": "Choose how closely this Naruto world follows canon.",
-                "maxSelections": 1,
-                "options": [
-                    {
-                        "id": "canonMode",
-                        "label": "Canon",
-                        "description": "The world appears mostly as it does in canon with perhaps a few very minor changes here and there to accommodate the selections made in this document. But by and large, it will be virtually indistinguishable from the world created by Kishimoto.",
-                        "cost": {}
-                    },
-                    {
-                        "id": "homebrewMode",
-                        "label": "Homebrew",
-                        "description": "The world has been noticeably modified in some way. This includes small changes such as aging up the main cast to world-bending changes such as becoming a Naruto/One Piece crossover.",
-                        "cost": {}
-                    }
-                ]
-            }
+        "allowNegative": [
+            "Race Points"
         ]
     },
     {
-        "name": "Time and Location",
+        "name": "Starting Options",
         "subcategories": [
             {
                 "type": "storyBlock",
-                "name": "Starting Era",
-                "text": "You may choose to arrive at any time, but here are some defined eras to help you decide. You can also optionally take Butterfly Insurance to ensure that your actions in the past don't result in unintended outcomes. So kicking over a random rock won't mean that Hinata is never born.",
+                "name": "Background",
+                "text": "The 100 CP perk of your background is free while the rest are discounted by 50%. Your age will be set to 12 upon your arrival but you may freely choose your gender.",
                 "maxSelections": 1,
                 "options": [
                     {
-                        "id": "eraSageOfSixPaths",
-                        "label": "Sage of Six Paths Era",
-                        "description": "From Kaguya's arrival to the death of Hagoromo.",
+                        "id": "backgroundDropIn",
+                        "label": "Drop-In",
+                        "description": "You appear in your designated village with no new memories or relationships to help you. You are provided with a Village ID card and all standard documentation that will prevent you from getting a one-way ticket to Torture and Interrogation. You can optionally choose whether to be enlisted in your village as a ninja or if you enter as a civilian."
+                    },
+                    {
+                        "id": "backgroundGenius",
+                        "label": "Genius",
+                        "description": "In a world of child soldiers it didn\u2019t take long for your teachers to realize that you were a prodigy. Perhaps you come from a prestigious clan where you received special training, or you were simply born with talents and intellect that set you apart. Either way, your peers know that you\u2019re something special."
+                    },
+                    {
+                        "id": "backgroundMedic",
+                        "label": "Medic",
+                        "description": "This world is dangerous, and people are going to get hurt. That\u2019s where you come in. You were enrolled in a medical training course while still in the Academy and you graduated with basic medical knowledge, enough to tend basic wounds, treat common poisons, and diagnose common ailments. Whether you use your medical knowledge to help or to harm is up to you."
+                    },
+                    {
+                        "id": "backgroundVillain",
+                        "label": "Villain",
+                        "description": "The path to peace is not always sunshine and rainbows. In a war-torn world such as this, you\u2019ve come to realize that the only true path to peace is through power. Power to manipulate. Power to control. Power to decide your own fate. You are free to choose whether you begin your jump in your village\u2019s good graces or if you\u2019ve already abandoned them to pursue your own ends."
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Gender",
+                "text": "Choose the gender you will inhabit during this jump.",
+                "maxSelections": 1,
+                "options": [
+                    {
+                        "id": "genderMale",
+                        "label": "Male",
+                        "description": "You arrive as male.",
                         "cost": {}
                     },
                     {
-                        "id": "eraWarringStates",
-                        "label": "Warring States Era",
-                        "description": "From the death of Hagoromo to the formation of Konoha.",
+                        "id": "genderFemale",
+                        "label": "Female",
+                        "description": "You arrive as female.",
                         "cost": {}
                     },
                     {
-                        "id": "eraSanin",
-                        "label": "Sanin Era",
-                        "description": "From the formation of Konoha to the start of the Third Shinobi War.",
-                        "cost": {}
-                    },
-                    {
-                        "id": "eraKakashiGaiden",
-                        "label": "Kakashi Gaiden Era",
-                        "description": "Any time during the Third Shinobi War.",
-                        "cost": {}
-                    },
-                    {
-                        "id": "eraNaruto",
-                        "label": "Naruto Era",
-                        "description": "From the end of the Third Shinobi War to Naruto becoming Hokage.",
-                        "cost": {}
-                    },
-                    {
-                        "id": "eraBoruto",
-                        "label": "Boruto Era",
-                        "description": "Any time after Naruto becomes Hokage.",
+                        "id": "genderOther",
+                        "label": "Other",
+                        "description": "You arrive embodying another gender expression of your choice.",
                         "cost": {}
                     }
                 ]
@@ -121,146 +78,695 @@
             {
                 "type": "storyBlock",
                 "name": "Location",
-                "text": "Select your starting location. You can choose to live anywhere within your location's country, not just in the village itself. If you chose an era where the selected village does not exist, you are instead in the general geographic location of where the country will eventually be. If you do not like any of these locations, you can select your own. Perhaps in the Tailed Beast Temple on Genbu or a country beyond the sea?",
+                "text": "Choose your starting village or roll to gain 100 CP.",
                 "maxSelections": 1,
+                "random": {
+                    "label": "Roll Random Location (+100 CP)",
+                    "reward": {
+                        "CP": 100
+                    }
+                },
                 "options": [
                     {
-                        "id": "locKonoha",
-                        "label": "Konoha",
-                        "description": "Konohagakure, or the 'Village Hidden by Leaves', is the hidden village of the Land of Fire. Konoha is hidden by a forest and is generally seen as the most powerful of the ninja villages. Many Konohagakure ninja specialize in Fire Release techniques.",
+                        "id": "locationKonoha",
+                        "label": "Konohagakure",
+                        "description": "Konohagakure, or the \"Village Hidden by Leaves\", is the hidden village of the Land of Fire. Konoha is currently ruled by the Third Hokage and is hidden deep within a forest. It is generally seen as the most powerful of the ninja villages. Because of this, Konoha has enjoyed many years of relative peace and stability. Many Konohagakure ninja specialize in the use of Fire Release techniques.",
                         "cost": {}
                     },
                     {
-                        "id": "locKumo",
-                        "label": "Kumo",
-                        "description": "Kumogakure, or the 'Village Hidden by Clouds', is the hidden village of the Land of Lightning. Kumo is hidden in a cloudy range of tall mountains. Many Kumogakure ninja use Lightning Release techniques.",
+                        "id": "locationKumo",
+                        "label": "Kumogakure",
+                        "description": "Kumogakure, or the \u201cVillage Hidden by Clouds\u201d, is the hidden village of the Land of Lightning. Kumo is currently ruled by the Fourth Raikage and is hidden in a cloudy range of tall mountains. Many Kumogakure ninja use Lightning Release techniques.",
                         "cost": {}
                     },
                     {
-                        "id": "locIwa",
-                        "label": "Iwa",
-                        "description": "Iwagakure, or the 'Village Hidden by Rocks', is the hidden village of the Land of Earth. Iwa is hidden in a rocky mountain range. Many Iwagakure ninja use Earth Release techniques.",
+                        "id": "locationIwa",
+                        "label": "Iwagakure",
+                        "description": "Iwagakure, or the \u201cVillage Hidden by Rocks\u201d, is the hidden village of the Land of Earth. Iwa is currently ruled by the Third Tsuchikage. The rocky mountain ranges that surround the village provide a natural stronghold that it is very proud of. Many Iwagakure ninja use Earth Release techniques. Iwagakure is well-known for the rock-hard attitude of its shinobi; as soon as the Tsuchikage gives an order, the Iwa-nin follow it without hesitation, even if it means death.",
                         "cost": {}
                     },
                     {
-                        "id": "locSuna",
-                        "label": "Suna",
-                        "description": "Sunagakure, or 'Village Hidden by Sand', is the hidden village of the Land of Wind. Suna is hidden by the shifting desert sands. Many Sunagakure ninja are puppet masters or use Wind Release techniques.",
+                        "id": "locationSuna",
+                        "label": "Sunagakure",
+                        "description": "Sunagakure, or \u201cVillage Hidden by Sand\u201d, is the hidden village of the Land of Wind. Suna is currently ruled by the Fourth Kazekage. Being surrounded by desert offers the village a natural deterrent against invasion. Many Sunagakure ninja use Wind Release techniques and relentlessly pursue victory.",
                         "cost": {}
                     },
                     {
-                        "id": "locKiri",
-                        "label": "Kiri",
-                        "description": "Kirigakure, or the 'Village Hidden by Mist', is the hidden village of the Land of Water. Kiri is hidden by a thick mist and mountains. Many Kiri ninja use Water Release techniques.",
+                        "id": "locationKiri",
+                        "label": "Kirigakure",
+                        "description": "Kirigakure, or the \u201cVillage Hidden by Mist\u201d, is the hidden village of the Land of Water. Kiri is currently ruled by the Fifth Mizukage. The village is shrouded in a thick mist and surrounded by mountains. Many Kiri ninja use Water Release techniques, and while its past is bloody, reform is underway.",
                         "cost": {}
                     },
                     {
-                        "id": "locAme",
-                        "label": "Ame",
-                        "description": "Amegakure, or the 'Village Hidden by Rain', is a small but highly industrialized hidden village located in an unnamed country that is always blanketed by clouds and heavy rain.",
+                        "id": "locationAme",
+                        "label": "Amegakure",
+                        "description": "Amegakure, or the \u201cVillage Hidden by Rain\u201d, is a small but highly industrialized hidden village located in an unnamed country. Rain falls almost constantly and collects in a massive lake surrounding the settlement. Ame is frequently hired for assassination missions and secretly houses the Akatsuki.",
                         "cost": {}
                     },
                     {
-                        "id": "locOto",
-                        "label": "Oto",
-                        "description": "Otogakure, or the 'Village Hidden by Sound', is the personal village of Orochimaru in the Land of Sound, formerly known as the Land of Rice Fields before it was conquered by Orochimaru.",
-                        "cost": {}
-                    },
-                    {
-                        "id": "locLandOfIron",
+                        "id": "locationIron",
                         "label": "Land of Iron",
-                        "description": "The Land of Iron is an icy, snow-covered country located among three mountains. Unlike other countries of the world whose militaries use ninja, the Land of Iron's military is made up of samurai.",
+                        "description": "The Land of Iron is an icy, snow-covered country located among three mountains. Its military is composed of samurai rather than shinobi, and longstanding neutrality accords keep ninja from interfering. Diplomatic summits are often held here.",
                         "cost": {}
                     },
                     {
-                        "id": "locSageLands",
-                        "label": "Sage Lands",
-                        "description": "The various lands belonging to the different animal summons. While these lands are accessible by foot via secret paths, most people can only find them when reverse summoned by one of the inhabitants.",
+                        "id": "locationFreeChoice",
+                        "label": "Free Choice",
+                        "description": "How about literally anywhere? Pick any location in the Naruto world as your starting point.",
                         "cost": {}
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Race",
+                "text": "Select your starting race.",
+                "maxSelections": 99,
+                "options": [
+                    {
+                        "id": "raceHuman",
+                        "label": "Human [FREE]",
+                        "description": "A standard human. Nothing particularly special, but it\u2019s free.",
+                        "cost": {
+                            "Race Points": 1
+                        },
+                        "conflictsWith": [
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceAnimalSummon100",
+                        "label": "Animal Summon [100 CP]",
+                        "description": "An animal companion that grows in power and size, gaining species-based supernatural abilities. Base size comparable to a normal specimen.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 100
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceAnimalSummon200",
+                        "label": "Animal Summon [200 CP]",
+                        "description": "As above, but you begin much larger\u2014nearly the size of a small house, with significant physical might.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 200
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceAnimalSummon300",
+                        "label": "Animal Summon [300 CP]",
+                        "description": "A gargantuan summon rivaling Gamabunta or Manda, or a transformation to reach that size at will. Grants a discount on the Sage Mode perk.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 300
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceMechaHuman300",
+                        "label": "Mecha-Human [300 CP]",
+                        "description": "Become a mecha-fied human with flight, modular weaponry, chakra absorption, and other machine advantages, but requiring repairs instead of natural healing.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 300
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceMechaHuman400",
+                        "label": "Mecha-Human [400 CP]",
+                        "description": "All the benefits of a magic robot body with drawbacks nullified\u2014heal and improve naturally while retaining all mechanical upgrades. Works with Hybrid for cyborg adaptations.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 400
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceZetsuWhite",
+                        "label": "Zetsu [White, 400 CP]",
+                        "description": "A White Zetsu with flawless transformations, chakra-draining spores, and persistent parasite clones. Discount on Regeneration Kekkei Genkai.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 400
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceZetsuBlack",
+                        "label": "Zetsu [Black, 400 CP]",
+                        "description": "A Black Zetsu with a malleable body, possession abilities, perfect sensory recording, free Chakra Sensing Kekkei Genkai, and Wood Release without prerequisites.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 400
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceZetsuHybrid",
+                        "label": "Zetsu [White & Black, 600 CP]",
+                        "description": "Half White, half Black\u2014split into two autonomous bodies. Perks apply to both halves, and either can regenerate the other if destroyed.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 600
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceOtsutsuki800",
+                        "label": "\u014ctsutsuki [800 CP]",
+                        "description": "Celestial being with overwhelming strength, durability, vast chakra reserves, enhanced Byakugan that reads fate, and K\u0101ma-based resurrection.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 800
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki1200",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceOtsutsuki1200",
+                        "label": "\u014ctsutsuki [1200 CP]",
+                        "description": "\u014ctsutsuki who has consumed a Chakra Fruit\u2014gain Rinnegan or Isshiki\u2019s d\u014djutsu, flight, Yomotsu Hirasaka, and chakra reserves surpassing J\u016bbi Madara.",
+                        "cost": {
+                            "Race Points": 1,
+                            "CP": 1200
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceHybrid"
+                        ]
+                    },
+                    {
+                        "id": "raceHybrid",
+                        "label": "Hybrid [Variable]",
+                        "description": "Combine two or more races. Pay the full CP cost for each race plus +100 CP per additional race beyond the first two. Gains all racial traits and discounts.",
+                        "cost": {
+                            "Race Points": -1,
+                            "CP": 100
+                        },
+                        "conflictsWith": [
+                            "raceHuman",
+                            "raceAnimalSummon100",
+                            "raceAnimalSummon200",
+                            "raceAnimalSummon300",
+                            "raceMechaHuman300",
+                            "raceMechaHuman400",
+                            "raceZetsuWhite",
+                            "raceZetsuBlack",
+                            "raceZetsuHybrid",
+                            "raceOtsutsuki800",
+                            "raceOtsutsuki1200"
+                        ]
                     }
                 ]
             }
         ]
     },
     {
-        "name": "Attributes",
+        "name": "Perks/Abilities",
         "subcategories": [
             {
                 "type": "storyBlock",
-                "name": "Stat Allocation",
-                "text": "Distribute your 15 stat points across your core attributes. Each attribute ranges from 0 to 10.",
+                "name": "General Perks & Abilities",
+                "text": "Broaden your power set with chakra techniques, jutsu training, and other enhancements.",
                 "options": [
                     {
-                        "id": "strengthAttribute",
-                        "label": "Strength",
-                        "description": "Determines raw power output, speed, carrying capacity, and durability.\n0 - Far below average civilian physique; bruise easily.\n1 - Average civilian strength and toughness.\n2 - Genin-tier physicality; comparable to an athlete and can take a punch.\n3 - Chunin-tier physique; peak human and can withstand several blows.\n4 - Special Jonin-tier; beyond peak human, shrug off dozens of hits.\n5 - Jonin-tier; punch through trees and endure being slammed through one.\n6 - Kage-tier; break thick stone walls and keep fighting.\n7 - High-end Kage; shatter massive boulders without slowing down.\n8 - Bijuu-tier; level buildings in a single blow and survive the same.\n9 - Juubi-tier; deliver or tank country-ending strikes.\n10 - Otsutsuki-tier; cleave the moon and withstand moon-splitting attacks.",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 10,
-                        "costPerPoint": {
-                            "Stat Points": 1,
-                            "Strength": -1
+                        "id": "perkChakraFree",
+                        "label": "Chakra [FREE]",
+                        "description": "Begin with chakra reserves equal to an average J\u014dnin. In future Jumps you can awaken chakra pathways in others by channeling your energy.",
+                        "cost": {
+                            "CP": 0
+                        },
+                        "conflictsWith": [
+                            "perkChakra100",
+                            "perkChakra200"
+                        ]
+                    },
+                    {
+                        "id": "perkChakra100",
+                        "label": "Chakra [100 CP]",
+                        "description": "Start with chakra reserves comparable to an average Kage.",
+                        "cost": {
+                            "CP": 100
+                        },
+                        "conflictsWith": [
+                            "perkChakraFree",
+                            "perkChakra200"
+                        ]
+                    },
+                    {
+                        "id": "perkChakra200",
+                        "label": "Chakra [200 CP]",
+                        "description": "Possess immense chakra on par with Kisame Hoshigaki, the 'Tailless Tailed Beast'.",
+                        "cost": {
+                            "CP": 200
+                        },
+                        "conflictsWith": [
+                            "perkChakraFree",
+                            "perkChakra100"
+                        ]
+                    },
+                    {
+                        "id": "perkAcademyTraining",
+                        "label": "Academy Training [FREE]",
+                        "description": "Graduate-level shinobi fundamentals: survival, stealth, trap-making, basic tools, three Academy jutsu, taijutsu forms, and chakra control for reinforced strength/speed and genjutsu dispels.",
+                        "cost": {
+                            "CP": 0
                         }
                     },
                     {
-                        "id": "dexterityAttribute",
-                        "label": "Dexterity",
-                        "description": "Determines reflexes, speed, and overall agility.\n0 - Far below civilian speed; fumble weapons and self-injure.\n1 - Average civilian quickness; basic kunai handling with poor accuracy.\n2 - Genin-tier dexterity; wield basic weapons and hit visible targets.\n3 - Chunin-tier; proficient with specialized weapons and moving targets.\n4 - Special Jonin-tier; move faster than civilians can see and dodge most attacks you notice.\n5 - Jonin-tier; strike unseen targets with trick throws and match Kakashi-level reactions.\n6 - Kage-tier; Gai-level speed, blitz nearly all sub-Jonin foes.\n7 - High-end Kage; Minato-level speed, among the fastest humans alive.\n8 - War-arc Naruto-tier; instinctively dodge even unseen assaults.\n9 - Hokage Naruto-tier; outpace anyone lacking Otsutsuki heritage.\n10 - Isshiki Otsutsuki-tier; blitz most other Otsutsuki.",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 10,
-                        "costPerPoint": {
-                            "Stat Points": 1,
-                            "Dexterity": -1
+                        "id": "perkNatureFree",
+                        "label": "Nature Affinity [FREE]",
+                        "description": "Gain one elemental or Yin/Yang chakra nature affinity. Doubles affinity strength with matching dojutsu-based bloodlines.",
+                        "cost": {
+                            "CP": 0
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "perkNatureAdditional",
+                        "label": "Additional Nature Affinity [50 CP]",
+                        "description": "Acquire another chakra nature affinity (limit seven total).",
+                        "cost": {
+                            "CP": 50
+                        },
+                        "maxSelections": 6
+                    },
+                    {
+                        "id": "perkJutsuFree",
+                        "label": "Jutsu Technique [FREE]",
+                        "description": "Know any one E-rank technique at Academy graduate mastery.",
+                        "cost": {
+                            "CP": 0
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkJutsuD",
+                        "label": "Jutsu Technique [50 CP]",
+                        "description": "Master a D-rank technique (e.g., Body Flicker).",
+                        "cost": {
+                            "CP": 50
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkJutsuC",
+                        "label": "Jutsu Technique [100 CP]",
+                        "description": "Master a C-rank technique (e.g., Lee's Drunken Fist).",
+                        "cost": {
+                            "CP": 100
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkJutsuB",
+                        "label": "Jutsu Technique [200 CP]",
+                        "description": "Master a B-rank technique (e.g., Kurenai's Tree Binding Death).",
+                        "cost": {
+                            "CP": 200
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkJutsuA",
+                        "label": "Jutsu Technique [300 CP]",
+                        "description": "Master an A-rank technique (e.g., Chidori).",
+                        "cost": {
+                            "CP": 300
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkJutsuS",
+                        "label": "Jutsu Technique [400 CP]",
+                        "description": "Master an S-rank technique (e.g., Flying Thunder God). Over-purchasing adds mastery; prerequisites must still be met.",
+                        "cost": {
+                            "CP": 400
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkJutsuSPlus",
+                        "label": "Jutsu Technique [500 CP]",
+                        "description": "Over-purchase to elevate a technique to S+ mastery, removing drawbacks and granting total control.",
+                        "cost": {
+                            "CP": 500
+                        },
+                        "maxSelections": 99,
+                        "discountType": "jutsu"
+                    },
+                    {
+                        "id": "perkAnimeStyle",
+                        "label": "Anime Style [50 CP]",
+                        "description": "Toggle the aesthetic of each Jump to match any anime art style.",
+                        "cost": {
+                            "CP": 50
                         }
                     },
                     {
-                        "id": "chakraAttribute",
-                        "label": "Chakra",
-                        "description": "Determines endurance, chakra reserves, and life force.\n0 - Crippled coils; cannot project chakra and tire after 5 minutes of exertion.\n1 - Civilian pool; 5 E-rank jutsu or 30 minutes of strain exhaust you.\n2 - Genin pool; 5 D-rank jutsu, 2 hours of strain.\n3 - Chunin pool; 5 C-rank jutsu, 5 hours of strain.\n4 - Special Jonin pool; 5 B-rank jutsu, 8 hours of strain.\n5 - Jonin pool; 5 A-rank jutsu, 12 hours of strain.\n6 - Kage pool; 5 S-rank jutsu, 24 hours of strain.\n7 - High-end Kage pool; only city-scale jutsu sap you, 3 days of strain.\n8 - Bijuu pool; country-scale jutsu, 1 week of strain.\n9 - Juubi pool; world-scale jutsu required, practically tireless.\n10 - Otsutsuki with chakra fruit; multiple world-scale jutsu needed to exhaust you.",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 10,
-                        "costPerPoint": {
-                            "Stat Points": 1,
-                            "Chakra": -1
+                        "id": "perkUltimateNinjaStyle",
+                        "label": "Ultimate Ninja Style [50 CP]",
+                        "description": "Make your techniques dramatically stylish without altering their power. Can extend to teammates.",
+                        "cost": {
+                            "CP": 50
                         }
                     },
                     {
-                        "id": "intelligenceAttribute",
-                        "label": "Intelligence",
-                        "description": "Determines learning talent, battle IQ, and chakra control. High or extreme effort lets you learn 1-2 ranks above the listed caps.\n0 - Far below average; poor memory, need high effort for E-rank, abysmal control.\n1 - Average mind; E-rank learned with effort, 20% chakra control.\n2 - Slightly above average; E-rank easy, D-rank with effort, 40% control.\n3 - Moderately above average; D-rank easy, C-rank with effort, 60% control.\n4 - Near-genius; C-rank easy, B-rank with effort, 80% control.\n5 - Exceptional processing; B-rank easy, A-rank with effort, perfect control.\n6 - Eidetic recall; A-rank easy, S-rank with effort.\n7 - Vast knowledge; learn S-rank easily, craft B-rank with effort.\n8 - Inventive prodigy; create B-rank easily, design A-rank with effort.\n9 - Master strategist; craft A-rank easily, shape S-rank with effort.\n10 - Transcendent planner; improvise and enhance S-rank techniques instantly.",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 10,
-                        "costPerPoint": {
-                            "Stat Points": 1,
-                            "Intelligence": -1
+                        "id": "perkCraftyBasic",
+                        "label": "Crafty [50 CP]",
+                        "description": "Learn to forge and craft mission-essential ninja supplies on the go.",
+                        "cost": {
+                            "CP": 50
                         }
                     },
                     {
-                        "id": "luckAttribute",
-                        "label": "Luck",
-                        "description": "Determines fortune in life, missions, and wealth; seldom direct in combat but shapes circumstances.\n0 - Calamitous luck; destined for titles like 'Legendary Sucker'.\n1 - Average luck; outcomes balance between good and bad.\n2 - Slightly lucky; small gambling profits at even odds.\n3 - Fortunate life; random tragedy rarely strikes you or loved ones.\n4 - Noticeably lucky; profit even with modestly unfavorable odds.\n5 - Serendipitous; challenges match your skills and allies arrive when needed.\n6 - Winning streak star; most games favor you and casinos eye you warily.\n7 - Fortuity as teacher; every hardship yields growth and rewards.\n8 - Storybook luck; stumble upon treasures weekly and win lotteries monthly.\n9 - Luck aura; allies avoid permanent harm unless you will otherwise.\n10 - Fate bends; you secure desired outcomes even against cheaters.",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 10,
-                        "costPerPoint": {
-                            "Stat Points": 1,
-                            "Luck": -1
+                        "id": "perkCraftyAdvanced",
+                        "label": "Crafty [100 CP]",
+                        "description": "Produce items of commercial quality and build gear supporting any perk-based skills (e.g., puppets, medical tools).",
+                        "cost": {
+                            "CP": 100
                         }
                     },
                     {
-                        "id": "charismaAttribute",
-                        "label": "Charisma",
-                        "description": "Determines physical appeal, communication skill, and likeability.\n0 - Socially and physically off-putting to most.\n1 - Unremarkable; easy to overlook but not offensive.\n2 - Pleasant; people approach you more readily and conversation flows.\n3 - Charming; friendships form easily and small lies fool the unwary.\n4 - Attractive; romantic interest is frequently initiated or reciprocated.\n5 - Magnetic; authority figures overlook minor faults and grant chances.\n6 - Glamorous; attract devoted admirers and romance comes effortlessly.\n7 - Compelling; sway the vulnerable to obey and deceive even the suspicious.\n8 - Disarming; talk foes down mid-fight and maintain impossible good looks.\n9 - Diplomatic legend; broker peace among bitter enemies and master politics.\n10 - Irresistible; inspire obsession and near-unconditional loyalty.",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 10,
-                        "costPerPoint": {
-                            "Stat Points": 1,
-                            "Charisma": -1
+                        "id": "perkGoodLooking50",
+                        "label": "Good Looking [50 CP]",
+                        "description": "Improve your appearance to a 9/10; does not include appearance change.",
+                        "cost": {
+                            "CP": 50
+                        },
+                        "conflictsWith": [
+                            "perkGoodLooking100"
+                        ]
+                    },
+                    {
+                        "id": "perkGoodLooking100",
+                        "label": "Good Looking [100 CP]",
+                        "description": "Become an 11/10 beauty with a free appearance change of choice.",
+                        "cost": {
+                            "CP": 100
+                        },
+                        "conflictsWith": [
+                            "perkGoodLooking50"
+                        ]
+                    },
+                    {
+                        "id": "perkStingsALittle50",
+                        "label": "Stings A Little [50 CP]",
+                        "description": "Gain significantly heightened pain tolerance, shrugging off punishment far better than average shinobi.",
+                        "cost": {
+                            "CP": 50
+                        },
+                        "conflictsWith": [
+                            "perkStingsALittle100"
+                        ]
+                    },
+                    {
+                        "id": "perkStingsALittle100",
+                        "label": "Stings A Little [100 CP]",
+                        "description": "Near-total physical pain immunity\u2014torture feels no worse than a paper cut (mental trauma still possible).",
+                        "cost": {
+                            "CP": 100
+                        },
+                        "conflictsWith": [
+                            "perkStingsALittle50"
+                        ]
+                    },
+                    {
+                        "id": "perkTsunadeStrength",
+                        "label": "Tsunade\u2019s Strength [100 CP]",
+                        "description": "Possess immense raw strength: crack terrain with a finger, shatter Sannin, or breach Susanoo with a handful of blows.",
+                        "cost": {
+                            "CP": 100
                         }
+                    },
+                    {
+                        "id": "perkSpecialistPaid",
+                        "label": "Specialist [200 CP]",
+                        "description": "Acquire additional specialties or styles, each granting rapid mastery in the chosen field. Can mix focuses (e.g., Nin-Taijutsu).",
+                        "cost": {
+                            "CP": 200,
+                            "Specialization Points": -1
+                        },
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "perkUnsealable",
+                        "label": "Unsealable [200 CP]",
+                        "description": "Immune to sealing techniques; your powers cannot be suppressed or imprisoned by f\u016binjutsu (extends to other methods post-Jump).",
+                        "cost": {
+                            "CP": 200
+                        }
+                    },
+                    {
+                        "id": "perkMyWorld",
+                        "label": "My World [200 CP]",
+                        "description": "Total immunity to hallucinations and illusions, including Tsukuyomi and Infinite Tsukuyomi.",
+                        "cost": {
+                            "CP": 200
+                        }
+                    },
+                    {
+                        "id": "perkWhatsMine",
+                        "label": "What\u2019s Mine Is Mine [200 CP]",
+                        "description": "Your DNA is undecipherable and immune to cloning. Toggle to allow or deny access at will.",
+                        "cost": {
+                            "CP": 200
+                        }
+                    },
+                    {
+                        "id": "perkHanzosTouch",
+                        "label": "Hanz\u014d\u2019s Touch [300 CP]",
+                        "description": "Implanted with a lethal salamander venom sac; exhale targeted toxins causing agony and death within days, with antidote provided.",
+                        "cost": {
+                            "CP": 300
+                        }
+                    },
+                    {
+                        "id": "perkSupremeKekkei",
+                        "label": "Supreme Kekkei Genkai [400 CP]",
+                        "description": "Encode any abilities into your genetics, ensuring they breed true (or under conditions you set) and combine into new bloodlines at will.",
+                        "cost": {
+                            "CP": 400
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Discounted Techniques ",
+                "text": "If you have a specialization, you may discount any one jutsu within your specialization\u2019s category. D-rank discounts make the jutsu free. World\u2019s Greatest Medic-Nin grants medical/regeneration/reincarnation techniques for free.",
+                "maxSelections": 99,
+                "options": [
+                    {
+                        "id": "discountJutsuD",
+                        "label": "Discounted Jutsu Technique [D-Rank]",
+                        "description": "Halve the cost of a D-rank technique (50\u21920 CP). Requires a specialization.",
+                        "cost": {
+                            "CP": 0,
+                            "Specialization Points": 1
+                        },
+                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "discountJutsuC",
+                        "label": "Discounted Jutsu Technique [C-Rank]",
+                        "description": "Halve the cost of a C-rank technique (100\u219250 CP). Requires a specialization.",
+                        "cost": {
+                            "CP": 50,
+                            "Specialization Points": 1
+                        },
+                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "discountJutsuB",
+                        "label": "Discounted Jutsu Technique [B-Rank]",
+                        "description": "Halve the cost of a B-rank technique (200\u2192100 CP). Requires a specialization.",
+                        "cost": {
+                            "CP": 100,
+                            "Specialization Points": 1
+                        },
+                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "discountJutsuA",
+                        "label": "Discounted Jutsu Technique [A-Rank]",
+                        "description": "Halve the cost of an A-rank technique (300\u2192150 CP). Requires a specialization.",
+                        "cost": {
+                            "CP": 150,
+                            "Specialization Points": 1
+                        },
+                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "discountJutsuS",
+                        "label": "Discounted Jutsu Technique [S-Rank]",
+                        "description": "Halve the cost of an S-rank technique (400\u2192200 CP). Requires a specialization.",
+                        "cost": {
+                            "CP": 200,
+                            "Specialization Points": 1
+                        },
+                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "discountJutsuSPlus",
+                        "label": "Discounted Jutsu Technique [S+ Rank]",
+                        "description": "Halve the cost of over-purchasing an S-rank technique to S+ mastery (500\u2192250 CP). Requires a specialization.",
+                        "cost": {
+                            "CP": 250,
+                            "Specialization Points": 1
+                        },
+                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "medicSPlusUpgrade",
+                        "label": "Medical Technique Upgrade [100 CP]",
+                        "description": "Requires World\u2019s Greatest Medic-Nin. Upgrade any medical, regeneration, or healing reincarnation technique to S+ mastery.",
+                        "cost": {
+                            "CP": 100
+                        },
+                        "prerequisites": "perkWorldsGreatestMedicNin",
+                        "maxSelections": 99
                     }
                 ]
             }

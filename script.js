@@ -1242,7 +1242,12 @@ function renderAccordion() {
                         const max = opt.maxSelections || 1;
 
                         const btn = document.createElement("button");
-                        btn.textContent = count > 0 ? "✓ Selected" : "Select";
+                        if (count > 0) {
+                            const maxLabel = max === Infinity ? "" : ` / ${max}`;
+                            btn.textContent = `✓ Selected (${count}${maxLabel})`;
+                        } else {
+                            btn.textContent = "Select";
+                        }
 
                         const canAdd = canSelect(opt);
                         // Disable if cannot select AND nothing is already selected (prevent adding)
