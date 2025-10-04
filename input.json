@@ -1,2474 +1,266 @@
 [
     {
         "type": "title",
-        "text": "Overlord CYOA"
+        "text": "Naruto Isekai CYOA"
     },
     {
         "type": "description",
-        "text": "Yggdrasil has come to an end, but some see this as a new beginning."
+        "text": "You have been reincarnated into the Naruto universe."
     },
     {
         "type": "points",
         "values": {
-            "Levels": 0,
-            "Attribute Points": 0,
+            "Stat Points": 15,
             "Strength": 0,
             "Dexterity": 0,
-            "Constitution": 0,
+            "Chakra": 0,
             "Intelligence": 0,
-            "Wisdom": 0,
-            "Charisma": 0,
-            "Martial Level": 0,
-            "Caster Level": 0,
-            "Vitality points": 0,
-            "Heat": 0,
-            "Cold": 0,
-            "Acid": 0,
-            "Sonic": 0,
-            "Electric": 0,
-            "Light": 0,
-            "Dark": 0,
-            "Ygg": 1000,
-            "COIDL": 0
+            "Luck": 0,
+            "Charisma": 0
         },
-        "allowNegative": [
-            "Heat",
-            "Cold",
-            "Acid",
-            "Sonic",
-            "Electric",
-            "Light",
-            "Dark"
-        ],
+        "allowNegative": [],
         "attributeRanges": {
             "Strength": {
                 "min": 0,
-                "max": 40
+                "max": 10
             },
             "Dexterity": {
                 "min": 0,
-                "max": 40
+                "max": 10
             },
-            "Constitution": {
+            "Chakra": {
                 "min": 0,
-                "max": 40
+                "max": 10
             },
             "Intelligence": {
                 "min": 0,
-                "max": 40
+                "max": 10
             },
-            "Wisdom": {
+            "Luck": {
                 "min": 0,
-                "max": 40
+                "max": 10
             },
             "Charisma": {
                 "min": 0,
-                "max": 40
+                "max": 10
             }
         }
     },
     {
-        "name": "Intro",
+        "name": "Game Mode",
         "subcategories": [
             {
                 "type": "storyBlock",
-                "name": "Name",
-                "input": {
-                    "id": "characterName",
-                    "placeholder": "Enter name (max 20 chars)",
-                    "maxLength": 20
-                }
-            },
-            {
-                "type": "storyBlock",
+                "name": "Select Your World",
+                "text": "Choose how closely this Naruto world follows canon.",
                 "maxSelections": 1,
-                "name": "Difficulty",
                 "options": [
                     {
-                        "id": "standardMode",
-                        "label": "Standard Mode",
-                        "description": "",
-                        "cost": {
-                            "Levels": -100,
-                            "Attribute Points": -110
-                        }
+                        "id": "canonMode",
+                        "label": "Canon",
+                        "description": "The world appears mostly as it does in canon with perhaps a few very minor changes here and there to accommodate the selections made in this document. But by and large, it will be virtually indistinguishable from the world created by Kishimoto.",
+                        "cost": {}
                     },
                     {
-                        "id": "seedyMode",
-                        "label": "Seedy Mode",
-                        "description": "",
-                        "cost": {
-                            "Levels": -80,
-                            "Attribute Points": -100
-                        }
-                    },
-                    {
-                        "id": "sampleMode",
-                        "label": "Sample Mode",
-                        "description": "",
-                        "cost": {
-                            "Levels": -30,
-                            "Attribute Points": -75
-                        }
-                    },
-                    {
-                        "id": "starterMode",
-                        "label": "Starter Mode",
-                        "description": "",
-                        "cost": {
-                            "Levels": -1,
-                            "Attribute Points": -60
-                        }
-                    }
-                ]
-            },
-            {
-                "type": "storyBlock",
-                "name": "Attribute Allocation",
-                "text": "Attribute values have a fixed limit of 40, which represents 400% of an average human's capabilities\n\nEach attribute starts at 0, but leaving them there is Fatal\n\nFor reference, spellcasters only need 20 in their casting attribute to cast 10th-tier spells, provided they have enough mana and high enough caster level to qualify.\n\nAttributes also determine your Skill potential, keep that in mind",
-                "options": [
-                    {
-                        "id": "strengthAttribute",
-                        "label": "Strength Attribute",
-                        "description": "Determines Carry Weight Limit and ability to apply Grapple, Knock Out, and Stagger",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 40,
-                        "costPerPoint": {
-                            "Attribute Points": 1,
-                            "Strength": -1
-                        }
-                    },
-                    {
-                        "id": "dexterityAttribute",
-                        "label": "Dexterity Attribute",
-                        "description": "Determines Physical Action Speed",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 40,
-                        "costPerPoint": {
-                            "Attribute Points": 1,
-                            "Dexterity": -1
-                        }
-                    },
-                    {
-                        "id": "constitutionAttribute",
-                        "label": "Constitution Attribute",
-                        "description": "Determines Vitality Regeneration and Damage-over-Time Resistance",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 40,
-                        "costPerPoint": {
-                            "Attribute Points": 1,
-                            "Constitution": -1
-                        }
-                    },
-                    {
-                        "id": "intelligenceAttribute",
-                        "label": "Intelligence Attribute",
-                        "description": "Determines Supernatural Action Speed",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 40,
-                        "costPerPoint": {
-                            "Attribute Points": 1,
-                            "Intelligence": -1
-                        }
-                    },
-                    {
-                        "id": "wisdomAttribute",
-                        "label": "Wisdom Attribute",
-                        "description": "Determines the ability to Detect Hostiles Targets and Accuracy",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 40,
-                        "costPerPoint": {
-                            "Attribute Points": 1,
-                            "Wisdom": -1
-                        }
-                    },
-                    {
-                        "id": "charismaAttribute",
-                        "label": "Charisma Attribute",
-                        "description": "Determines ability to apply and resist Mental Status Effects",
-                        "inputType": "slider",
-                        "min": 0,
-                        "max": 40,
-                        "costPerPoint": {
-                            "Attribute Points": 1,
-                            "Charisma": -1
-                        }
+                        "id": "homebrewMode",
+                        "label": "Homebrew",
+                        "description": "The world has been noticeably modified in some way. This includes small changes such as aging up the main cast to world-bending changes such as becoming a Naruto/One Piece crossover.",
+                        "cost": {}
                     }
                 ]
             }
         ]
     },
     {
-        "name": "Classes",
+        "name": "Time and Location",
         "subcategories": [
             {
                 "type": "storyBlock",
-                "name": "Race",
-                "text": "Choose what type of race you wish to be\n\n\n\nRacial and Job Classes grant the users a Martial Level, a Caster Level and Vitality points.\n\nMartial Level empowers Physical Abilities, such as the use of Martial Weapons, determines your Stamina and how many Martial Skills you know\n\nCaster Level empowers Supernatural Abilities, such as the casting of Spells, and determines your Mana Pool and how many Spells you know.\n\nVitality determines how much damage a character can take before dying or being knocked out.\n\n\n\nThe Energy Types are: Heat/Cold/Acid/Sonic/Electric/Light/Dark.\n\nMany Races either have Positive% Resistances or a Negative% weakness\n\nHaving 100% Resistance means you're Immune, but only if it's gotten from Classes not equipment\n\nHaving -100% Resistance means you take double damage and are susceptible to additional effects. All Races are considered as Creatures, but\n\nCreatures may refer to Beasts or other non-playable Races\n\nLiving races are every other race except Constructs and Undead\n\nConstructs are Automatons and Golems\n\nFaefolk are Fairies and Nymphs",
+                "name": "Starting Era",
+                "text": "You may choose to arrive at any time, but here are some defined eras to help you decide. You can also optionally take Butterfly Insurance to ensure that your actions in the past don't result in unintended outcomes. So kicking over a random rock won't mean that Hinata is never born.",
                 "maxSelections": 1,
                 "options": [
                     {
-                        "id": "humanoidRace",
-                        "label": "Humanoid",
-                        "description": "The vanilla option, having little to no innate Physical or Supernatural abilities. They had no Level cost, giving more levels to Job Classes and ensuring their popularity.",
+                        "id": "eraSageOfSixPaths",
+                        "label": "Sage of Six Paths Era",
+                        "description": "From Kaguya's arrival to the death of Hagoromo.",
                         "cost": {}
                     },
                     {
-                        "id": "demiHumanoidRace",
-                        "label": "Demi-Humanoids",
-                        "description": "Human-like creatures that possessed simple Physical Abilities",
-                        "cost": {
-                            "Levels": 10
-                        }
+                        "id": "eraWarringStates",
+                        "label": "Warring States Era",
+                        "description": "From the death of Hagoromo to the formation of Konoha.",
+                        "cost": {}
                     },
                     {
-                        "id": "heteromorphsRace",
-                        "label": "Heteromorphs",
-                        "description": "Inhuman creatures possessing a number of natural Physical and Supernatural abilities. They also came with prestige Racial Classes, giving more options to character creation at additional Level cost",
-                        "cost": {
-                            "Levels": 15
-                        }
+                        "id": "eraSanin",
+                        "label": "Sanin Era",
+                        "description": "From the formation of Konoha to the start of the Third Shinobi War.",
+                        "cost": {}
+                    },
+                    {
+                        "id": "eraKakashiGaiden",
+                        "label": "Kakashi Gaiden Era",
+                        "description": "Any time during the Third Shinobi War.",
+                        "cost": {}
+                    },
+                    {
+                        "id": "eraNaruto",
+                        "label": "Naruto Era",
+                        "description": "From the end of the Third Shinobi War to Naruto becoming Hokage.",
+                        "cost": {}
+                    },
+                    {
+                        "id": "eraBoruto",
+                        "label": "Boruto Era",
+                        "description": "Any time after Naruto becomes Hokage.",
+                        "cost": {}
                     }
                 ]
             },
             {
                 "type": "storyBlock",
-                "name": "Humanoid",
-                "requiresOption": "humanoidRace",
+                "name": "Location",
+                "text": "Select your starting location. You can choose to live anywhere within your location's country, not just in the village itself. If you chose an era where the selected village does not exist, you are instead in the general geographic location of where the country will eventually be. If you do not like any of these locations, you can select your own. Perhaps in the Tailed Beast Temple on Genbu or a country beyond the sea?",
                 "maxSelections": 1,
-                "text": "Choose what type of humanoid race you wish to be",
                 "options": [
                     {
-                        "id": "deepDrawfSpecies",
-                        "label": "Deep Dwarf",
-                        "description": "Deep Dwarves can see in Dim Lighting",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Heat": -50,
-                            "Cold": 25,
-                            "Dark": 25
-                        }
+                        "id": "locKonoha",
+                        "label": "Konoha",
+                        "description": "Konohagakure, or the 'Village Hidden by Leaves', is the hidden village of the Land of Fire. Konoha is hidden by a forest and is generally seen as the most powerful of the ninja villages. Many Konohagakure ninja specialize in Fire Release techniques.",
+                        "cost": {}
                     },
                     {
-                        "id": "hillDrawfSpecies",
-                        "label": "Hill Dwarf",
-                        "description": "Hill Dwarves have +15 to one Martial Arts or Craft Skill",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Heat": -50,
-                            "Cold": 25,
-                            "Dark": 25
-                        }
+                        "id": "locKumo",
+                        "label": "Kumo",
+                        "description": "Kumogakure, or the 'Village Hidden by Clouds', is the hidden village of the Land of Lightning. Kumo is hidden in a cloudy range of tall mountains. Many Kumogakure ninja use Lightning Release techniques.",
+                        "cost": {}
                     },
                     {
-                        "id": "mountainDrawfSpecies",
-                        "label": "Mountain Dwarf",
-                        "description": "Mountain Dwarves are twice as hard to Knock Out or Stagger",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Heat": -50,
-                            "Cold": 25,
-                            "Dark": 25
-                        }
+                        "id": "locIwa",
+                        "label": "Iwa",
+                        "description": "Iwagakure, or the 'Village Hidden by Rocks', is the hidden village of the Land of Earth. Iwa is hidden in a rocky mountain range. Many Iwagakure ninja use Earth Release techniques.",
+                        "cost": {}
                     },
                     {
-                        "id": "subterraneanElfSpecies",
-                        "label": "Subterranean Elf",
-                        "description": "Subterranean Elves can see in Dim Lighting",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Cold": 25,
-                            "Dark": 25,
-                            "Sonic": 25,
-                            "Light": -25
-                        }
+                        "id": "locSuna",
+                        "label": "Suna",
+                        "description": "Sunagakure, or 'Village Hidden by Sand', is the hidden village of the Land of Wind. Suna is hidden by the shifting desert sands. Many Sunagakure ninja are puppet masters or use Wind Release techniques.",
+                        "cost": {}
                     },
                     {
-                        "id": "tundraElfSpecies",
-                        "label": "Tundra Elf",
-                        "description": "Tundra Elves have +15 to one Knowledge or Craft Skill",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Cold": 25,
-                            "Dark": 25,
-                            "Sonic": 25,
-                            "Light": -25
-                        }
+                        "id": "locKiri",
+                        "label": "Kiri",
+                        "description": "Kirigakure, or the 'Village Hidden by Mist', is the hidden village of the Land of Water. Kiri is hidden by a thick mist and mountains. Many Kiri ninja use Water Release techniques.",
+                        "cost": {}
                     },
                     {
-                        "id": "forestElfSpecies",
-                        "label": "Forest Elf",
-                        "description": "Forest Elves cannot be Detected by sound, regardless of Environment",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Cold": 25,
-                            "Dark": 25,
-                            "Sonic": 25,
-                            "Light": -25
-                        }
+                        "id": "locAme",
+                        "label": "Ame",
+                        "description": "Amegakure, or the 'Village Hidden by Rain', is a small but highly industrialized hidden village located in an unnamed country that is always blanketed by clouds and heavy rain.",
+                        "cost": {}
                     },
                     {
-                        "id": "pureBloodHumanSpecies",
-                        "label": "Pure-Blood Human",
-                        "description": "Pure-Bloods have +15 to one Martial Arts, Knowledge, or Craft Skill",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Light": -50,
-                            "Dark": 50
-                        }
+                        "id": "locOto",
+                        "label": "Oto",
+                        "description": "Otogakure, or the 'Village Hidden by Sound', is the personal village of Orochimaru in the Land of Sound, formerly known as the Land of Rice Fields before it was conquered by Orochimaru.",
+                        "cost": {}
                     },
                     {
-                        "id": "halfBloodHumanSpecies",
-                        "label": "Half-Blood Human",
-                        "description": "Half-Bloods must choose another Race to derive their Bloodline from. Can be considered either Race. They have the first listed ability that their other Race possesses.",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Vitality points": -1,
-                            "Light": -50,
-                            "Dark": 50
-                        }
+                        "id": "locLandOfIron",
+                        "label": "Land of Iron",
+                        "description": "The Land of Iron is an icy, snow-covered country located among three mountains. Unlike other countries of the world whose militaries use ninja, the Land of Iron's military is made up of samurai.",
+                        "cost": {}
                     },
                     {
-                        "id": "pureBloodHumanCasterSpecies",
-                        "label": "Pure-Blood Human (Caster)",
-                        "description": "Pure-Bloods have +15 to one Martial Arts, Knowledge, or Craft Skill",
-                        "cost": {
-                            "Caster Level": -5,
-                            "Vitality points": -1,
-                            "Light": -50,
-                            "Dark": 50
-                        }
-                    },
-                    {
-                        "id": "halfBloodHumanCasterSpecies",
-                        "label": "Half-Blood Human (Caster)",
-                        "description": "Half-Bloods must choose another Race to derive their Bloodline from. Can be considered either Race. They have the first listed ability that their other Race possesses.",
-                        "cost": {
-                            "Caster Level": -5,
-                            "Vitality points": -1,
-                            "Light": -50,
-                            "Dark": 50
-                        }
+                        "id": "locSageLands",
+                        "label": "Sage Lands",
+                        "description": "The various lands belonging to the different animal summons. While these lands are accessible by foot via secret paths, most people can only find them when reverse summoned by one of the inhabitants.",
+                        "cost": {}
                     }
                 ]
-            },
+            }
+        ]
+    },
+    {
+        "name": "Attributes",
+        "subcategories": [
             {
                 "type": "storyBlock",
-                "name": "Demi-Humanoids",
-                "requiresOption": "demiHumanoidRace",
-                "maxSelections": 1,
-                "text": "Choose what type of demi-humanoid race you wish to be",
+                "name": "Stat Allocation",
+                "text": "Distribute your 15 stat points across your core attributes. Each attribute ranges from 0 to 10.",
                 "options": [
                     {
-                        "id": "catLikeBeastmanSpecies",
-                        "label": "Cat-like Beastman",
-                        "description": "Cat-like forms possess Natural Weapons. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
+                        "id": "strengthAttribute",
+                        "label": "Strength",
+                        "description": "Determines raw power output, speed, carrying capacity, and durability.\n0 - Far below average civilian physique; bruise easily.\n1 - Average civilian strength and toughness.\n2 - Genin-tier physicality; comparable to an athlete and can take a punch.\n3 - Chunin-tier physique; peak human and can withstand several blows.\n4 - Special Jonin-tier; beyond peak human, shrug off dozens of hits.\n5 - Jonin-tier; punch through trees and endure being slammed through one.\n6 - Kage-tier; break thick stone walls and keep fighting.\n7 - High-end Kage; shatter massive boulders without slowing down.\n8 - Bijuu-tier; level buildings in a single blow and survive the same.\n9 - Juubi-tier; deliver or tank country-ending strikes.\n10 - Otsutsuki-tier; cleave the moon and withstand moon-splitting attacks.",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 10,
+                        "costPerPoint": {
+                            "Stat Points": 1,
+                            "Strength": -1
                         }
                     },
                     {
-                        "id": "dogLikeBeastmanSpecies",
-                        "label": "Dog-like Beastman",
-                        "description": "Dog-like forms possess Natural Weapons. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
+                        "id": "dexterityAttribute",
+                        "label": "Dexterity",
+                        "description": "Determines reflexes, speed, and overall agility.\n0 - Far below civilian speed; fumble weapons and self-injure.\n1 - Average civilian quickness; basic kunai handling with poor accuracy.\n2 - Genin-tier dexterity; wield basic weapons and hit visible targets.\n3 - Chunin-tier; proficient with specialized weapons and moving targets.\n4 - Special Jonin-tier; move faster than civilians can see and dodge most attacks you notice.\n5 - Jonin-tier; strike unseen targets with trick throws and match Kakashi-level reactions.\n6 - Kage-tier; Gai-level speed, blitz nearly all sub-Jonin foes.\n7 - High-end Kage; Minato-level speed, among the fastest humans alive.\n8 - War-arc Naruto-tier; instinctively dodge even unseen assaults.\n9 - Hokage Naruto-tier; outpace anyone lacking Otsutsuki heritage.\n10 - Isshiki Otsutsuki-tier; blitz most other Otsutsuki.",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 10,
+                        "costPerPoint": {
+                            "Stat Points": 1,
+                            "Dexterity": -1
                         }
                     },
                     {
-                        "id": "rodentLikeBeastmanSpecies",
-                        "label": "Rodent-like Beastman",
-                        "description": "Rodent-like forms possess Natural Weapons. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
+                        "id": "chakraAttribute",
+                        "label": "Chakra",
+                        "description": "Determines endurance, chakra reserves, and life force.\n0 - Crippled coils; cannot project chakra and tire after 5 minutes of exertion.\n1 - Civilian pool; 5 E-rank jutsu or 30 minutes of strain exhaust you.\n2 - Genin pool; 5 D-rank jutsu, 2 hours of strain.\n3 - Chunin pool; 5 C-rank jutsu, 5 hours of strain.\n4 - Special Jonin pool; 5 B-rank jutsu, 8 hours of strain.\n5 - Jonin pool; 5 A-rank jutsu, 12 hours of strain.\n6 - Kage pool; 5 S-rank jutsu, 24 hours of strain.\n7 - High-end Kage pool; only city-scale jutsu sap you, 3 days of strain.\n8 - Bijuu pool; country-scale jutsu, 1 week of strain.\n9 - Juubi pool; world-scale jutsu required, practically tireless.\n10 - Otsutsuki with chakra fruit; multiple world-scale jutsu needed to exhaust you.",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 10,
+                        "costPerPoint": {
+                            "Stat Points": 1,
+                            "Chakra": -1
                         }
                     },
                     {
-                        "id": "hoofedBeastmanSpecies",
-                        "label": "Hoofed Beastman",
-                        "description": "Hoofed forms receive no movement penalty regardless of Environment. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
+                        "id": "intelligenceAttribute",
+                        "label": "Intelligence",
+                        "description": "Determines learning talent, battle IQ, and chakra control. High or extreme effort lets you learn 1-2 ranks above the listed caps.\n0 - Far below average; poor memory, need high effort for E-rank, abysmal control.\n1 - Average mind; E-rank learned with effort, 20% chakra control.\n2 - Slightly above average; E-rank easy, D-rank with effort, 40% control.\n3 - Moderately above average; D-rank easy, C-rank with effort, 60% control.\n4 - Near-genius; C-rank easy, B-rank with effort, 80% control.\n5 - Exceptional processing; B-rank easy, A-rank with effort, perfect control.\n6 - Eidetic recall; A-rank easy, S-rank with effort.\n7 - Vast knowledge; learn S-rank easily, craft B-rank with effort.\n8 - Inventive prodigy; create B-rank easily, design A-rank with effort.\n9 - Master strategist; craft A-rank easily, shape S-rank with effort.\n10 - Transcendent planner; improvise and enhance S-rank techniques instantly.",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 10,
+                        "costPerPoint": {
+                            "Stat Points": 1,
+                            "Intelligence": -1
                         }
                     },
                     {
-                        "id": "aquaticBeastmanSpecies",
-                        "label": "Aquatic Beastman",
-                        "description": "Aquatic forms can breathe Underwater indefinitely. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
+                        "id": "luckAttribute",
+                        "label": "Luck",
+                        "description": "Determines fortune in life, missions, and wealth; seldom direct in combat but shapes circumstances.\n0 - Calamitous luck; destined for titles like 'Legendary Sucker'.\n1 - Average luck; outcomes balance between good and bad.\n2 - Slightly lucky; small gambling profits at even odds.\n3 - Fortunate life; random tragedy rarely strikes you or loved ones.\n4 - Noticeably lucky; profit even with modestly unfavorable odds.\n5 - Serendipitous; challenges match your skills and allies arrive when needed.\n6 - Winning streak star; most games favor you and casinos eye you warily.\n7 - Fortuity as teacher; every hardship yields growth and rewards.\n8 - Storybook luck; stumble upon treasures weekly and win lotteries monthly.\n9 - Luck aura; allies avoid permanent harm unless you will otherwise.\n10 - Fate bends; you secure desired outcomes even against cheaters.",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 10,
+                        "costPerPoint": {
+                            "Stat Points": 1,
+                            "Luck": -1
                         }
                     },
                     {
-                        "id": "batBeastmanSpecies",
-                        "label": "Bat Beastman",
-                        "description": "Bat forms have Wings and can fly as easily as running. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
+                        "id": "charismaAttribute",
+                        "label": "Charisma",
+                        "description": "Determines physical appeal, communication skill, and likeability.\n0 - Socially and physically off-putting to most.\n1 - Unremarkable; easy to overlook but not offensive.\n2 - Pleasant; people approach you more readily and conversation flows.\n3 - Charming; friendships form easily and small lies fool the unwary.\n4 - Attractive; romantic interest is frequently initiated or reciprocated.\n5 - Magnetic; authority figures overlook minor faults and grant chances.\n6 - Glamorous; attract devoted admirers and romance comes effortlessly.\n7 - Compelling; sway the vulnerable to obey and deceive even the suspicious.\n8 - Disarming; talk foes down mid-fight and maintain impossible good looks.\n9 - Diplomatic legend; broker peace among bitter enemies and master politics.\n10 - Irresistible; inspire obsession and near-unconditional loyalty.",
+                        "inputType": "slider",
+                        "min": 0,
+                        "max": 10,
+                        "costPerPoint": {
+                            "Stat Points": 1,
+                            "Charisma": -1
                         }
-                    },
-                    {
-                        "id": "shrewBeastmanSpecies",
-                        "label": "Shrew Beastman",
-                        "description": "Shrew forms can burrow through the ground as easily as running. Beastmen can see in Complete Darkness and have heightened senses.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -14,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Sonic": 25
-                        }
-                    },
-                    {
-                        "id": "raptorBirdmanSpecies",
-                        "label": "Raptor Birdman",
-                        "description": "Raptors know how to use Ranged Weaponry. Birdmen have Wings and can fly as easily as running. They can see clearly over long distances, as such their Wisdom is considered 2x higher.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Cold": 25,
-                            "Sonic": -50,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "songbirdBirdmanSpecies",
-                        "label": "Songbird Birdman",
-                        "description": "Songbirds can use their Sing Skill to afflict Targets with Sleep or Fascination. Birdmen have Wings and can fly as easily as running. They can see clearly over long distances, as such their Wisdom is considered 2x higher.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Cold": 25,
-                            "Sonic": -50,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "serpentineLizardmanSpecies",
-                        "label": "Serpentine Lizardman",
-                        "description": "Serpentine Lizardmen possess Natural Weapons. They can choose one environment: Underground, Land, Underwater, or Air to gain a 50% bonus to movement speed. It is easier to remain undetected in Forest, Swampland, and Underwater Environments.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Heat": -25,
-                            "Cold": 25,
-                            "Acid": -25,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "reptilianLizardmanSpecies",
-                        "label": "Reptilian Lizardman",
-                        "description": "Reptilian Lizardmen possess Natural Weapons. They can choose one environment: Underground, Land, Underwater, or Air to gain a 50% bonus to movement speed. It is easier to remain undetected in Forest, Swampland, and Underwater Environments.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Heat": -25,
-                            "Cold": 25,
-                            "Acid": -25,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "amphibianLizardmanSpecies",
-                        "label": "Amphibian Lizardman",
-                        "description": "Amphibian Lizardmen can Breathe Underwater. They can choose one environment: Underground, Land, Underwater, or Air to gain a 50% bonus to movement speed. It is easier to remain undetected in Forest, Swampland, and Underwater Environments.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Heat": -25,
-                            "Cold": 25,
-                            "Acid": -25,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "jawedFishmanSpecies",
-                        "label": "Jawed Fishman",
-                        "description": "Jawed Fishmen possess Natural Weapons. They can Breathe Underwater indefinitely and see in Complete Darkness.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": -25,
-                            "Sonic": 25,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "bonyFishmanSpecies",
-                        "label": "Bony Fishman",
-                        "description": "Bony Fishmen have doubled movement speed while Underwater. They can Breathe Underwater indefinitely and see in Complete Darkness.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -10,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": -25,
-                            "Sonic": 25,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "goblinSpecies",
-                        "label": "Goblin",
-                        "description": "Goblins take 50% less fall damage. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -18,
-                            "Heat": -25,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "orcSpecies",
-                        "label": "Orc",
-                        "description": "Orcs have +15 to one Martial Arts or Craft Skill. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -18,
-                            "Heat": -25,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "trollSpecies",
-                        "label": "Troll",
-                        "description": "Trolls' limbs slowly Regenerate. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -18,
-                            "Heat": -25,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "bugbearSpecies",
-                        "label": "Bugbear",
-                        "description": "Bugbears are twice as hard to Knock Out or Stagger. They know how to use Martial Weaponry and can see normally in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -18,
-                            "Heat": -25,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "caveGiantkinSpecies",
-                        "label": "Cave Giant",
-                        "description": "Cave Giants can see in Complete Darkness. Strength is considered 2x higher, and their limbs slowly regenerate.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -26,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "frostGiantkinSpecies",
-                        "label": "Frost Giant",
-                        "description": "Frost Giants have a +50% Resistance to Cold. Strength is considered 2x higher, and their limbs slowly regenerate.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -26,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "mountainGiantkinSpecies",
-                        "label": "Mountain Giant",
-                        "description": "Mountain Giants are twice as hard to Knock Out or Stagger. Strength is considered 2x higher, and their limbs slowly regenerate.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -26,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "seaGiantkinSpecies",
-                        "label": "Sea Giant",
-                        "description": "Sea Giants can hold their breath for up to 8 hours. Strength is considered 2x higher, and their limbs slowly regenerate.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Vitality points": -26,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    }
-                ]
-            },
-            {
-                "type": "storyBlock",
-                "name": "Heteromorph",
-                "requiresOption": "heteromorphsRace",
-                "maxSelections": 1,
-                "text": "Choose what type of heteromorphic race you wish to be",
-                "options": [
-                    {
-                        "id": "angelSpecies",
-                        "label": "Angel",
-                        "description": "Have Wings and can Fly as easily as running. Can see if a Creature is Living, Undead, or Construct. Have Divine Spellcasting (WIS or CHA). Choose one Domain, you cast spells from that Domain at halved Mana Cost.",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Caster Level": -20,
-                            "Vitality points": -21,
-                            "Acid": -25,
-                            "Sonic": 25,
-                            "Light": -50,
-                            "Dark": 50
-                        }
-                    },
-                    {
-                        "id": "fallenAngelSpecies",
-                        "label": "Fallen Angel",
-                        "description": "Have Wings and can Fly as easily as running. Can see if a Creature is Living, Undead, or Construct. Have Divine Spellcasting (WIS or CHA). Choose one Domain, you cast spells from that Domain at halved Mana Cost.",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Caster Level": -20,
-                            "Vitality points": -21,
-                            "Acid": -25,
-                            "Sonic": 25,
-                            "Light": 50,
-                            "Dark": -50
-                        }
-                    },
-                    {
-                        "id": "djinnSpecies",
-                        "label": "Djinn",
-                        "description": "Can assume an Ethereal alternate form, but only for a short time once every 24 hours. Cannot be harmed by Physical damage, and can walk through most walls and obstacles, but are still affected by magic effects and magic damage, including magic weapons. Have Arcane Spellcasting (WIS or CHA). Are Immune to Mental Status Effects. Can Detect a Target's Karma score.",
-                        "cost": {
-                            "Caster Level": -20,
-                            "Vitality points": -21,
-                            "Heat": -25,
-                            "Acid": -75,
-                            "Sonic": 75,
-                            "Electric": 25,
-                            "Light": -50,
-                            "Dark": 50
-                        }
-                    },
-                    {
-                        "id": "nephilimSpecies",
-                        "label": "Nephilim",
-                        "description": "Strength is considered 2x higher. Choose 3 attributes to cap at 8 and 2 attributes to boost by 8.\n\nRESET YOUR ATTRIBUTES BEFORE SELECTING THIS OPTION",
-                        "cost": {
-                            "Martial Level": -20,
-                            "Vitality points": -33,
-                            "Light": 25,
-                            "Dark": -25
-                        },
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": [
-                                "Strength",
-                                "Dexterity",
-                                "Constitution",
-                                "Intelligence",
-                                "Wisdom",
-                                "Charisma"
-                            ],
-                            "values": [
-                                "cap:8",
-                                "cap:8",
-                                "cap:8",
-                                8,
-                                8
-                            ],
-                            "types": [
-                                "Cap Attribute",
-                                "Cap Attribute",
-                                "Cap Attribute",
-                                "Boost Attribute",
-                                "Boost Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "elementalSpecies",
-                        "label": "Elemental",
-                        "description": "Elementals are immune to one energy and weak to another.",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Caster Level": -20,
-                            "Vitality points": -21
-                        },
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": [
-                                "Heat",
-                                "Cold",
-                                "Acid",
-                                "Sonic",
-                                "Electric",
-                                "Light",
-                                "Dark"
-                            ],
-                            "values": [
-                                100,
-                                -100
-                            ],
-                            "types": [
-                                "Resistance",
-                                "Weakness"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "brainEaterSpecies",
-                        "label": "Brain Eater",
-                        "description": "Can identify a Target's Supernatural Actions. Have Arcane Spellcasting (INT or WIS). Are Immune to Mental Status Effects. Can see in Complete Darkness.",
-                        "cost": {
-                            "Caster Level": -20,
-                            "Vitality points": -15,
-                            "Cold": -50,
-                            "Sonic": 50,
-                            "Electric": 25,
-                            "Light": 25,
-                            "Dark": -50
-                        }
-                    },
-                    {
-                        "id": "dragonoidSpecies",
-                        "label": "Dragonoid",
-                        "description": "Can Breathe out a cone of chosen Energy once every 4 hours. Choose two Dragon Bloodlines: Fire, Frost, Acid, Sonic, or Electric. +50% Resistance to one Element, -50% Resistance to other Element. Possess Natural Weapons. Can see in Complete Darkness. Can assume a Humanoid alternate form.",
-                        "cost": {
-                            "Martial Level": -20,
-                            "Caster Level": -5,
-                            "Vitality points": -27
-                        },
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": [
-                                "Heat",
-                                "Cold",
-                                "Acid",
-                                "Sonic",
-                                "Electric"
-                            ],
-                            "values": [
-                                50,
-                                -50
-                            ],
-                            "types": [
-                                "Resistance",
-                                "Weakness"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "demonSpecies",
-                        "label": "Demon",
-                        "description": "Possess Wings and can Fly as easily as running. Can reduce the Attributes of nearby Good-Karma enemies. Can see in Complete Darkness. Have an increased understanding of Mental Status Effects, Charisma is considered 2x higher.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -27,
-                            "Cold": 25,
-                            "Sonic": -25,
-                            "Light": 50,
-                            "Dark": -50
-                        },
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Charisma"
-                            ],
-                            "values": [
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "redeemedDemonSpecies",
-                        "label": "Redeemed Demon",
-                        "description": "A Redeemed Demon reverses Light and Dark Resistances and Karma Abilities. Possess Wings and can Fly as easily as running. Can reduce the Attributes of nearby Evil-Karma enemies. Can see in Complete Darkness. Have an increased understanding of Mental Status Effects, Charisma is considered 2x higher.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -27,
-                            "Cold": 25,
-                            "Sonic": -25,
-                            "Light": -50,
-                            "Dark": 50
-                        },
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Charisma"
-                            ],
-                            "values": [
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "arthropodSpecies",
-                        "label": "Arthropod",
-                        "description": "Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Can see in Complete Darkness. Possess Natural Weapons. Can Repair their Natural Weapons and Exoskeleton.",
-                        "cost": {
-                            "Martial Level": -20,
-                            "Vitality points": -33,
-                            "Heat": 25,
-                            "Cold": 25,
-                            "Acid": 50,
-                            "Electric": -50,
-                            "Dark": -50
-                        }
-                    },
-                    {
-                        "id": "vermesSpecies",
-                        "label": "Vermes",
-                        "description": "Limbs slowly Regenerate. Can see in Complete Darkness. Are almost impossible to Grapple. Are Immune to Mental Status Effects, Blind, and Deaf, but INT and WIS are considered 2x lower.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -15,
-                            "Heat": -25,
-                            "Cold": -25,
-                            "Acid": 50,
-                            "Sonic": 50,
-                            "Dark": -50
-                        },
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Intelligence",
-                                "Wisdom"
-                            ],
-                            "values": [
-                                0.5,
-                                0.5
-                            ],
-                            "types": [
-                                "Multiply Attribute",
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "roperSpecies",
-                        "label": "Roper",
-                        "description": "Being Detected can afflict Targets with Revulsion or Fear. Can Parasitize a Humanoid or Demi-Humanoid NPC below their Level to take control of their body (Uses host's stats with bonus from parasite's Level, Parasite takes 50% of damage that the Host takes). Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Can manipulate body to fit into small openings.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -15,
-                            "Heat": 25,
-                            "Cold": 25,
-                            "Acid": -100,
-                            "Sonic": 25,
-                            "Electric": 25
-                        }
-                    },
-                    {
-                        "id": "doppelgangerMartialSpecies",
-                        "label": "Doppelganger (Martial)",
-                        "description": "Can assume an alternate form. This form can be any Humanoid or Demi-Humanoid NPC's appearance. While in alternate form Attributes, Resistances and Stats are changed to that of new form, adjusted to 60% of Doppelganger's Level. Can Perform a lengthy ritual to change their alternate form, but can only have one alternate form at a time. Being Detected can afflict Targets with Fear. Can Perform an action to Detect a Target's weaknesses.",
-                        "cost": {
-                            "Martial Level": -20,
-                            "Vitality points": -21,
-                            "Heat": -25,
-                            "Cold": -25,
-                            "Acid": -25,
-                            "Sonic": 50,
-                            "Electric": -25,
-                            "Light": 75,
-                            "Dark": -25
-                        }
-                    },
-                    {
-                        "id": "doppelgangerCasterSpecies",
-                        "label": "Doppelganger (Caster)",
-                        "description": "Can assume an alternate form. This form can be any Humanoid or Demi-Humanoid NPC's appearance. While in alternate form Attributes, Resistances and Stats are changed to that of new form, adjusted to 60% of Doppelganger's Level. Can Perform a lengthy ritual to change their alternate form, but can only have one alternate form at a time. Being Detected can afflict Targets with Fear. Can Perform an action to Detect a Target's weaknesses.",
-                        "cost": {
-                            "Caster Level": -20,
-                            "Vitality points": -21,
-                            "Heat": -25,
-                            "Cold": -25,
-                            "Acid": -25,
-                            "Sonic": 50,
-                            "Electric": -25,
-                            "Light": 75,
-                            "Dark": -25
-                        }
-                    },
-                    {
-                        "id": "planterranSpecies",
-                        "label": "Planterran",
-                        "description": "Vitality and Mana Regenerate faster while in direct sunlight. Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Have Nature Spellcasting (WIS or CON). Possess Natural Weapons.",
-                        "cost": {
-                            "Martial Level": -5,
-                            "Caster Level": -20,
-                            "Vitality points": -15,
-                            "Heat": 50,
-                            "Cold": 50,
-                            "Acid": -50,
-                            "Electric": -50
-                        }
-                    },
-                    {
-                        "id": "myconidSpecies",
-                        "label": "Myconid",
-                        "description": "Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Are Immune to Mental Status Effects, Blind, and Deaf, but INT and WIS are considered 2x lower. Limbs slowly Regenerate. Can inflict nearby Targets with Confusion or Revulsion.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -15,
-                            "Heat": -25,
-                            "Cold": 50,
-                            "Acid": -25
-                        },
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Intelligence",
-                                "Wisdom"
-                            ],
-                            "values": [
-                                0.5,
-                                0.5
-                            ],
-                            "types": [
-                                "Multiply Attribute",
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "slimeSpecies",
-                        "label": "Slime",
-                        "description": "Can see in a limited 360 degree FoV, granting Immunity to Critical Hits. Can manipulate their body to fit into small openings. Are twice as hard to Grapple, Knock Out, or Stagger. Possess a small, separate Inventory that cannot be Stolen from.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -24,
-                            "Heat": 50,
-                            "Cold": 50,
-                            "Acid": -50,
-                            "Electric": -50
-                        }
-                    },
-                    {
-                        "id": "fairySpecies",
-                        "label": "Fairy",
-                        "description": "Can issue simple commands to Beast and Plant NPCs. Have Nature Spellcasting (WIS or CHA). Can slip into small openings, but Strength is considered 2x lower. Have Wings and can Fly as easily as walking.",
-                        "cost": {
-                            "Martial Level": -10,
-                            "Caster Level": -15,
-                            "Vitality points": -15,
-                            "Heat": -25,
-                            "Cold": -50,
-                            "Acid": -25,
-                            "Sonic": 100,
-                            "Electric": -25
-                        },
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength"
-                            ],
-                            "values": [
-                                0.5
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "nymphFlumineSpecies",
-                        "label": "Nymph (Flumine)",
-                        "description": "Flumine Nymphs have a Dolphin-like tail and can Breathe Underwater indefinitely. Being Detected can afflict Targets with Fascination. Can shift into a Unique Bestial form, in which they possess Natural Weapons. Can see in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -21,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "nymphSylvanSpecies",
-                        "label": "Nymph (Sylvan)",
-                        "description": "Sylvan Nymphs have cloven hooves and can issue simple commands to Plant NPCs. Being Detected can afflict Targets with Fascination. Can shift into a Unique Bestial form, in which they possess Natural Weapons. Can see in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -21,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "nymphLamiaSpecies",
-                        "label": "Nymph (Lamia)",
-                        "description": "Lamia Nymphs have a snake-like lower body and receive no movement penalty regardless of Environment. Being Detected can afflict Targets with Fascination. Can shift into a Unique Bestial form, in which they possess Natural Weapons. Can see in Dim Lighting.",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -21,
-                            "Heat": 25,
-                            "Cold": -50,
-                            "Acid": 25
-                        }
-                    },
-                    {
-                        "id": "lycanthropeSpecies",
-                        "label": "Lycanthrope",
-                        "description": "Choose a Beastman base appearance. Can see in Complete Darkness. Can identify a Target's Physical Actions. Possess Natural Weapons. Can assume a Humanoid alternate form.",
-                        "cost": {
-                            "Martial Level": -20,
-                            "Caster Level": -5,
-                            "Vitality points": -27,
-                            "Heat": -25,
-                            "Cold": -25,
-                            "Light": 50
-                        }
-                    },
-                    {
-                        "id": "automatonSpecies",
-                        "label": "Automaton",
-                        "description": "Cannot Regenerate Vitality naturally over time or drink Consumables, but can replace parts of their body with Tinkered Equipment DLC. Can control their limbs remotely. Are Immune to Mental Status Effects. Know how to use Martial Weaponry.",
-                        "cost": {
-                            "Martial Level": -20,
-                            "Vitality points": -27,
-                            "Heat": -50,
-                            "Acid": 25,
-                            "Sonic": -25,
-                            "Electric": 50
-                        }
-                    },
-                    {
-                        "id": "awakenedGolemSpecies",
-                        "label": "Awakened Golem",
-                        "description": "They can Perform an action to absorb their base material into Vitality. Must choose either Wood, Copper, or Clay for base material. Strength and Constitution are considered 2x higher, but cannot Regenerate Vitality naturally over time or drink Consumables. Are twice as hard to Knock Out or Stagger. Can see in a limited 360 degree FoV, granting Immunity to Critical Hits.",
-                        "cost": {
-                            "Ygg": 100,
-                            "Martial Level": -20,
-                            "Caster Level": -5,
-                            "Vitality points": -48,
-                            "Heat": -25,
-                            "Cold": -25,
-                            "Acid": -25,
-                            "Sonic": -25,
-                            "Electric": -25
-                        },
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength",
-                                "Constitution"
-                            ],
-                            "values": [
-                                2,
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute",
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "undeadSpecies",
-                        "label": "Undead",
-                        "description": "Choose a Humanoid or Demi-Humanoid base appearance, then choose your Level of Decay (Pale Skin, Rotting, or Skeletal). Can see in Complete Darkness. Have limitless Stamina and Immune to Critical Hits, but cannot Regenerate Vitality naturally over time. Immune to Mental Status Effects. Have +15 to one Knowledge or Craft Skill (not yet implemented).",
-                        "cost": {
-                            "Martial Level": -15,
-                            "Caster Level": -10,
-                            "Vitality points": -21,
-                            "Heat": 50,
-                            "Cold": -25,
-                            "Electric": -25,
-                            "Light": 100,
-                            "Dark": -100
-                        }
-                    }
-                ]
-            },
-            {
-                "type": "storyBlock",
-                "name": "Advanced Racial Classes",
-                "text": "Can skip if not a Heteromorph. Can only pick one Level 10 Racial Class, but can pick any Level 5 you qualify after.",
-                "requiresOption": "heteromorphsRace",
-                "options": [
-                    {
-                        "id": "archangelSpecies",
-                        "label": "Archangel",
-                        "description": "Know how to use Martial Weaponry. Can deal additional damage to Evil-karma Targets. Can detect a Target's Karma score.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "angelSpecies",
-                        "conflictsWith": [
-                            "seraphSpecies"
-                        ]
-                    },
-                    {
-                        "id": "astralDevaSpecies",
-                        "label": "Astral Deva",
-                        "description": "Possess True Sight, able to see through all Illusions and see a Target's true form. Can Perform an action to Negate or Dispel a Spell or Magic effect, once every 4 hours.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "archangelSpecies"
-                    },
-                    {
-                        "id": "principalitySpecies",
-                        "label": "Principality",
-                        "description": "Can emit an Aura that increases the Attributes of Good-karma allies. Can Perform an action to bestow a Target with increased Physical or Supernatural action speed, or Immunity to Fear effects, once every 6 hours.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "archangelSpecies"
-                    },
-                    {
-                        "id": "seraphSpecies",
-                        "label": "Seraph",
-                        "description": "Can assume a Humanoid alternate form. Spoken words can be understood by All Creatures, and are Immune to Silence. Being Detected can afflict Targets with Charm or Fascination.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "angelSpecies",
-                        "conflictsWith": [
-                            "archangelSpecies"
-                        ]
-                    },
-                    {
-                        "id": "cherubimSpecies",
-                        "label": "Cherubim",
-                        "description": "Can rapidly Regenerate lost limbs, as such Constitution is considered 2x higher. Can Perform an action to cure an ally of a Physical Status Effect.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "seraphSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Constitution"
-                            ],
-                            "values": [
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "choralSpecies",
-                        "label": "Choral",
-                        "description": "Can Perform a lengthy cast time to cast a spell at halved Mana Cost. Can Perform an action to inflict a Target with Charm or Fascination.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "seraphSpecies"
-                    },
-                    {
-                        "id": "infernalSpecies",
-                        "label": "Infernal",
-                        "description": "Have Immunity to Heat, but are -50% Resistant to Electricity. Can Perform an Action to inflict nearby Targets with Confusion or Fascination. Can issue simple commands to weak Demon NPCs.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -14,
-                            "Heat": -100,
-                            "Electric": 50
-                        },
-                        "prerequisites": "demonSpecies",
-                        "conflictsWith": [
-                            "succubusSpecies"
-                        ]
-                    },
-                    {
-                        "id": "archdevilSpecies",
-                        "label": "Archdevil",
-                        "description": "Can issue simple commands to all weak NPCs. Immune to Mental Status Effects.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "infernalSpecies"
-                    },
-                    {
-                        "id": "pitfiendSpecies",
-                        "label": "Pit Fiend",
-                        "description": "Can emit an Aura that increases Attributes of Demon allies. Can summon a horde of weak Demon NPCs, once every 24 hours.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "infernalSpecies"
-                    },
-                    {
-                        "id": "succubusSpecies",
-                        "label": "Succubus",
-                        "description": "Can assume a Humanoid alternate form. Can Perform an Action to inflict a Target with Charm. Can absorb Vitality from a Target through touch.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "demonSpecies",
-                        "conflictsWith": [
-                            "infernalSpecies"
-                        ]
-                    },
-                    {
-                        "id": "lilinSpecies",
-                        "label": "Lilin",
-                        "description": "Can briefly edit an NPC's combat settings through touch. Can issue simple commands to Target afflicted with Charm.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "succubusSpecies"
-                    },
-                    {
-                        "id": "omnibusSpecies",
-                        "label": "Omnibus",
-                        "description": "Can assume the form of any non-unique NPC. Targets that Detect you are afflicted with Charm, Fascination, or Confusion.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "succubusSpecies"
-                    },
-                    {
-                        "id": "brightLord",
-                        "label": "Bright Lord",
-                        "description": "Can issue simple commands to Good-Karma NPCs below your Level. Light (and Radiant) spells deal additional damage to Evil-Karma NPCs. Can Purchase radiant Spells from the Yggdrasil Cash Shop.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "(angelSpecies && !fallenAngelSpecies) || redeemedDemonSpecies"
-                    },
-                    {
-                        "id": "radiantLord",
-                        "label": "Radiant Lord",
-                        "description": "Gain +50% Resistance (Immunity) to Light Elemental damage, but gain -50% weakness to Dark. Can cast Light (and Radiant) spells 50% faster.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3,
-                            "Light": -50,
-                            "Dark": 50
-                        },
-                        "prerequisites": "brightLord"
-                    },
-                    {
-                        "id": "darkLord",
-                        "label": "Dark Lord",
-                        "description": "Can issue simple commands to Evil-Karma NPCs below your Level. Dark (and Shadow) Spells deal additional damage to Good-Karma Targets. Can Purchase shadow Spell from the Yggdrasil Cash Shop.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "fallenAngelSpecies || (demonSpecies && !redeemedDemonSpecies)"
-                    },
-                    {
-                        "id": "shadowLord",
-                        "label": "Shadow Lord",
-                        "description": "Gain +50% Resistance (Immunity) to Dark Elemental damage, but gain -50% weakness to Light. Can cast Dark (and Shadow) spells 50% faster.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3,
-                            "Light": 50,
-                            "Dark": -50
-                        },
-                        "prerequisites": "darkLord"
-                    },
-                    {
-                        "id": "genieSpecies",
-                        "label": "Genie",
-                        "description": "Ethereal alternate form becomes your base appearance, and can assume a Humanoid alternate form. Can cast any not known spell, but only at the behest of Others. This generates a spell or magical effect that will be suited to the task of accomplishing the 'wish'. Has a chance of backfiring horribly when 'wish' is worded improperly. Are specialized in the Conjuration spell school, and can cast Conjuration spells at halved Mana cost.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "djinnSpecies"
-                    },
-                    {
-                        "id": "ifritSpecies",
-                        "label": "Ifrit",
-                        "description": "Can identify a Target's Supernatural Actions. Can Cast Spells of Heat Elemental Energy at halved Mana Cost, with increased Burn DoT duration.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "genieSpecies"
-                    },
-                    {
-                        "id": "houriSpecies",
-                        "label": "Houri",
-                        "description": "Can emit an Aura that slowly restores Vitality of nearby allies. Can Perform an action to cure an ally of a Mental Status Effect.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "seraphSpecies || genieSpecies"
-                    },
-                    {
-                        "id": "shoulderDevilSpecies",
-                        "label": "Shoulder Devil",
-                        "description": "Can slip into small openings, but Strength is considered 2x lower. Can cast spells that inflict Mental Status Effects at halved Mana cost.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "succubusSpecies || genieSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength"
-                            ],
-                            "values": [
-                                0.5
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "titanSpecies",
-                        "label": "Titan",
-                        "description": "Colossal beings of immense power. Choose one attribute: its maximum is reduced by 2, but you gain unique Titan abilities. If your current value exceeds the new cap, excess points are refunded for redistribution. RESET YOUR ATTRIBUTES BEFORE SELECTING THIS OPTION",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -15,
-                            "Vitality points": -16,
-                            "Attribute Points": -2
-                        },
-                        "prerequisites": "nephilimSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength",
-                                "Dexterity",
-                                "Constitution",
-                                "Intelligence",
-                                "Wisdom",
-                                "Charisma"
-                            ],
-                            "values": [
-                                "cap:-2"
-                            ],
-                            "types": [
-                                "Cap Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "asuraSpecies",
-                        "label": "Asura",
-                        "description": "Fierce demigods of war and chaos. Choose one attribute: its maximum is reduced by 2, but you gain unique Asura abilities. If your current value exceeds the new cap, excess points are refunded for redistribution. RESET YOUR ATTRIBUTES BEFORE SELECTING THIS OPTION",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -10,
-                            "Attribute Points": -2
-                        },
-                        "prerequisites": "titanSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength",
-                                "Dexterity",
-                                "Constitution",
-                                "Intelligence",
-                                "Wisdom",
-                                "Charisma"
-                            ],
-                            "values": [
-                                "cap:-2"
-                            ],
-                            "types": [
-                                "Cap Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "enlightenedOneSpecies",
-                        "label": "Enlightened One",
-                        "description": "Can consume the brain of a slain Humanoid or Demi-Humanoid in order to learn one additional Arcane Spell. Can briefly edit an NPC's combat settings through touch. Can issue simple commands to weak NPCs.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "brainEaterSpecies"
-                    },
-                    {
-                        "id": "oldOneSpecies",
-                        "label": "Old One",
-                        "description": "Choose one spell school to specialize in, you cast spells from that school at halved Mana cost. Being Detected can afflict Targets with Fear, Despair, or Revulsion.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "enlightenedOneSpecies"
-                    },
-                    {
-                        "id": "mindflayerSpecies",
-                        "label": "Mindflayer",
-                        "description": "Can Perform an Action to inflict a Target with a Mental Status Effect. Can issue simple commands to weak NPCs. Specialized in Enchantment spell school, you cast spells from that school at halved Mana cost.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "brainEaterSpecies"
-                    },
-                    {
-                        "id": "souldrinkerSpecies",
-                        "label": "Souldrinker",
-                        "description": "Can Perform an Action to drain Vitality and Mana on touch. Can briefly edit an NPC's combat settings through touch.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "mindflayerSpecies"
-                    },
-                    {
-                        "id": "deepOneSpecies",
-                        "label": "Deep One",
-                        "description": "Gain +50% Resistance (Immunity) to Dark Elemental damage, but gain -25% weakness to Light. Can breathe Underwater indefinitely, and are Immune to Deep Underwater Environment Status Effects.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3,
-                            "Dark": -50,
-                            "Light": 25
-                        },
-                        "prerequisites": "enlightenedOneSpecies || mindflayerSpecies"
-                    },
-                    {
-                        "id": "ascendantSpecies",
-                        "label": "Ascendant",
-                        "description": "+50% Resistance (Immunity) to Bloodline's Energy type, damage taken of Bloodline's energy gets converted into Vitality. Can sprout Wings and can fly as easily as running. Possess scales as strong as Medium Armor.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -14
-                        },
-                        "prerequisites": "dragonoidSpecies",
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": [
-                                "Heat",
-                                "Cold",
-                                "Acid",
-                                "Sonic",
-                                "Electric"
-                            ],
-                            "values": [
-                                50
-                            ],
-                            "types": [
-                                "Resistance"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "wyrmLordSpecies",
-                        "label": "Wyrm Lord",
-                        "description": "Can assume the form of an adult Dragon once every 168 hours. While shapeshifted, all Attributes receive an effective +8 bonus, and can use your breath attack at-will. Are Immune to Sleep and Paralysis.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "ascendantSpecies"
-                    },
-                    {
-                        "id": "angelDemonBloodSpecies",
-                        "label": "Angel-Blood / Demon-Blood",
-                        "description": "Replace your Bloodline's Energy type with either Light or Dark. Resistances change accordingly, but you gain +25% Resistance of your previous Bloodline (e.g., if you had 100% Heat, -50% Cold and pick Light, you have 25% Heat, 100% Light, -50% Dark). Breath attack is now a wide beam of your new Energy, with a longer range but a smaller hitbox, usable every 2 hours.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "ascendantSpecies",
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": [
-                                "Light", 
-                                "Dark",
-                                "Heat",
-                                "Cold",
-                                "Acid",
-                                "Sonic",
-                                "Electric"
-                            ],
-                            "values": [100, -75],
-                            "types": ["Resistance", "Resistance"]
-                        }
-                    },
-                    {
-                        "id": "arachnidSpecies",
-                        "label": "Arachnid",
-                        "description": "Can walk or run normally on walls and ceilings. Exoskeleton is as strong as Light Armor. Natural Weapon secretes a Poison DoT",
-                        "prerequisites": "arthropodSpecies",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -10
-                        },
-                        "conflictsWith": ["crustaceanSpecies"]
-                    },
-                    {
-                        "id": "ariadneSpecies",
-                        "label": "Ariadne",
-                        "description": "Can assume a Humanoid alternate form. Can produce a silk-like thread that can be woven into webs (that Slow or Stop) or Crafted Objects. These Crafted Objects have an inherent Data Level of [(Total Level/10)+1]",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": ["COIDL"],
-                            "values": ["(points['Levels']/10)+1"],
-                            "types": ["Formula Cost"]
-                        },
-                        "prerequisites": "arachnidSpecies"
-                    },
-                    {
-                        "id": "scorpionesSpecies",
-                        "label": "Scorpiones",
-                        "description": "Possess an additional Natural Weapon. Secondary Natural Weapon can cause Charm or Confusion, while Primary Natural Weapon deals additional damage. Secondary Natural Weapon doesn't secrete a Poison DoT.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "arachnidSpecies"
-                    },
-                    {
-                        "id": "vinegaroonSpecies",
-                        "label": "Vinegaroon",
-                        "description": "Natural Weapons deal additional Acid damage and make it twice as easy to Grapple Targets. Movement speed scales with unused Carry Weight Limit.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "arachnidSpecies"
-                    },
-                    {
-                        "id": "crustaceanSpecies",
-                        "label": "Crustacean",
-                        "description": "Have an additional pair of arms, as such can dual-wield on the same side of arms. Exoskeleton is as strong as Heavy Armor, but can't equip normal Armor. Can breathe Underwater indefinitely.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -16
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies"]
-                    },
-                    {
-                        "id": "cancerSpecies",
-                        "label": "Cancer",
-                        "description": "Receive a bonus to your Natural Armor rating that scales with Constitution. Can molt armor, losing Natural Armor protection for 24 hours, molted exoskeleton can be repurposed into Crafted Objects. These Crafted Objects have an inherent Data Level of [(Total Level/10)+1] (COIDL).\n\nDeselect COIDL from the dropdown if you want to de-select this option.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "crustaceanSpecies",
-                        "dynamicCost": {
-                            "target": "points",
-                            "choices": ["COIDL"],
-                            "values": ["(points['Levels']/10)+1"],
-                            "types": ["Formula Cost"]
-                        }
-                    },
-                    {
-                        "id": "mantisShrimpSpecies",
-                        "label": "Mantis Shrimp",
-                        "description": "Can Perform an attack Action to inflict Target with Blind or Stun, once every hour. Natural Weapons deal additional Sonic damage.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "crustaceanSpecies"
-                    },
-                    {
-                        "id": "barnacleMassSpecies",
-                        "label": "Barnacle Mass",
-                        "description": "Can rapidly Regenerate lost limbs, as such Constitution is considered 2x higher. Immune to instant Death and Doom, but gain -75% Resistance to Heat.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -5,
-                            "Heat": 75
-                        },
-                        "prerequisites": "crustaceanSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": ["Constitution"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
-                        }
-                    },
-                    {
-                        "id": "dictyopterranSpecies",
-                        "label": "Dictyopterran",
-                        "description": "Can consume Junk items to restore Vitality. Exoskeleton is as strong as Light Armor. Movement speed scales with Carry Weight Limit.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies"]
-                    },
-                    {
-                        "id": "mantisSpecies",
-                        "label": "Mantis",
-                        "description": "Can Perform an action to inflict Fear or Fascination on a Target. Deal double damage to Targets that do not Detect you.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "dictyopterranSpecies"
-                    },
-                    {
-                        "id": "roachSpecies",
-                        "label": "Roach",
-                        "description": "Constitution is considered 2x higher. Are able to slip into tight spaces.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -7
-                        },
-                        "prerequisites": "dictyopterranSpecies"
-                    },
-                    {
-                        "id": "termiteSpecies",
-                        "label": "Termite",
-                        "description": "Deal triple damage to structures with Natural Weapons. Immune to Blind and Deafness.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "dictyopterranSpecies"
-                    },
-                    {
-                        "id": "hymenopterranSpecies",
-                        "label": "Hymenopterran",
-                        "description": "Have Wings and can fly as easily as running.Exoskeleton is as strong as Medium ArmorNatural Weapon secretes a Poison DoT.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies"]
-                    },
-                    {
-                        "id": "antSpecies",
-                        "label": "Ant",
-                        "description": "Can walk or run normally on walls. Strength is considered 2x higher.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -7
-                        },
-                        "prerequisites": "hymenopterranSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": ["Strength"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
-                        }
-                    },
-                    {
-                        "id": "waspSpecies",
-                        "label": "Wasp",
-                        "description": "Natural Weapons can Sap DoT and it's 50% easier to Grapple Targets. Movement speed scales with unused Carry Weight Limit.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "hymenopterranSpecies"
-                    },
-                    {
-                        "id": "beeSpecies",
-                        "label": "Bee",
-                        "description": "It's twice as hard for a Grappled Target to escape once Grappled. Can create a honey-like substance that acts as a strong healing potion when consumed.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "hymenopterranSpecies"
-                    },
-                    {
-                        "id": "cricketSpecies",
-                        "label": "Cricket",
-                        "description": "Have an additional pair of arms, as such can dual-wield on the same side of arms. Exoskeleton is as strong as Light Armor. Can Jump up to five times higher by preparing for a moment.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -14
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies"]
-                    },
-                    {
-                        "id": "grasshopperSpecies",
-                        "label": "Grasshopper",
-                        "description": "Have Wings and can fly as easily as running. Deal 50% increased damage when attacking while jumping or flying",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "cricketSpecies"
-                    },
-                    {
-                        "id": "moleCricketSpecies",
-                        "label": "Mole Cricket",
-                        "description": "Can burrow through the ground as easily as running. Can Perform an Action to inflict Sleep on a Target, once every hour.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "cricketSpecies"
-                    },
-                    {
-                        "id": "locustSpecies",
-                        "label": "Locust",
-                        "description": "Receive no movement penalty regardless of Environment. Can Perform an Action to summon a horde of locusts that inflict Disease DoT AoE, once every 24 hours",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "cricketSpecies"
-                    },
-                    {
-                        "id": "scarabSpecies",
-                        "label": "Scarab",
-                        "description": "Have an additional pair of arms, as such can dual-wield on the same side of arms. Exoskeleton is as strong as Heavy Armor, but can't equip normal Armor . Are twice as hard to Knock Out or Stagger",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -16
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies"]
-                    },
-                    {
-                        "id": "herculesSpecies",
-                        "label": "Hercules",
-                        "description": "Can cast Spells while simultaneously wielding a Weapon. Strength is considered 2x higher.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "scarabSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": ["Strength"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
-                        }
-                    },
-                    {
-                        "id": "goliathSpecies",
-                        "label": "Goliath",
-                        "description": "Can Perform other Physical Actions at no penalty while Grappling a Target. When Grappling can use all four arms to deal additional damage that scales with Strength",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -7
-                        },
-                        "prerequisites": "scarabSpecies"
-                    },
-                    {
-                        "id": "odonateSpecies",
-                        "label": "Odonate",
-                        "description": "Have Wings and can fly as easily as running. Exoskeleton is as strong as Light Armor. Know how to use Ranged Weaponry.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies"]
-                    },
-                    {
-                        "id": "dragonflySpecies",
-                        "label": "Dragonfly",
-                        "description": "Gain an additional 50% Resistance to an Elemental Energy Type of your choice. Can imbue your Ranged attacks with that Energy type",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "odonateSpecies"
-                    },
-                    {
-                        "id": "damselflySpecies",
-                        "label": "Damselfly",
-                        "description": "While Flying you are 25% harder to hit with Ranged attacks or 'Ray'-type spells. Movement speed scale with unused Carry Weight Limit",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "odonateSpecies"
-                    },
-                    {
-                        "id": "flySpecies",
-                        "label": "Fly",
-                        "description": "Have Wings and can fly as easily as running. Exoskeleton is as strong as Light Armor. While flying you are 25% harder to hit with Ranged attacks and 'Ray'-type spells.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "arthropodSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies"]
-                    },
-                    {
-                        "id": "butterflySpecies",
-                        "label": "Butterfly",
-                        "description": "Gain 25% Light damage Resistance and Mana Regeneration is Enhanced during the day. Can Perform an action to inflict a Target with Panic or Charm",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "flySpecies"
-                    },
-                    {
-                        "id": "mothSpecies",
-                        "label": "Moth",
-                        "description": "Gain 25% Dark damage Resistance and Mana Regeneration is Enhanced during the night. Can Perform an action to inflict a Target with Confusion or Sleep",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "flySpecies"
-                    },
-                    {
-                        "id": "caddisflySpecies",
-                        "label": "Caddisfly",
-                        "description": "Can Breathe Underwater indefinitely. Can Perform an action to Enhance Natural Armor to be as strong as Medium Armor, once every 8 hours",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "flySpecies"
-                    },
-                    {
-                        "id": "mosquitoSpecies",
-                        "label": "Mosquito",
-                        "description": "Can absorb Vitality from a Target using stinger-like mouth (while Grappling). Any DoT effects inflicted on a Target last much longer, and Natural Weapons cause Bleed DoT",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -2
-                        },
-                        "prerequisites": "flySpecies"
-                    },
-                    {
-                        "id": "leechSpecies",
-                        "label": "Leech",
-                        "description": "  Can breathe Underwater indefinitely. Can see in Complete Darkness. Can absorb Vitality from a Target using your mouth (while Grappling)",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "vermesSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies"]
-                    },
-                    {
-                        "id": "bloodletterSpecies",
-                        "label": "Bloodletter",
-                        "description": "Harder to Detect while Underwater. Twice as hard to Knock Out or Stagger",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "leechSpecies"
-                    },
-                    {
-                        "id": "earthwormSpecies",
-                        "label": "Earthworm",
-                        "description": "Can burrow through the ground as easily as running. You are harder to Detect while Underground. Remaining motionless while Underground Enhances Stamina and Mana Regeneration.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "vermesSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies"]
-                    },
-                    {
-                        "id": "sandwormSpecies",
-                        "label": "Sandworm",
-                        "description": "Can now burrow through the ground 50% faster. Strength is considered 2x higher",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "earthWormSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": ["Strength"],
-                            "values": [2],
-                            "types": ["Multiply Attribute"]
-                        }
-                    },
-                    {
-                        "id": "herroperSpecies",
-                        "label": "Herroper",
-                        "description": "Possess tentacle Natural Weapons that have a change to inflict Poison DoT or Disease DoT on Targets. Twice as easy to Grapple Targets. Can Perform an Action to inflict Fascination on a Target, once every 4 hours",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -7
-                        },
-                        "prerequisites": "roperSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies"]
-                    },
-                    {
-                        "id": "livingCurseSpecies",
-                        "label": "Living Curse",
-                        "description": "Can possess inanimate Armor not bigger than oneself. Gain Natural Armor as strong as possessed Armor. Know how to use Martial Weaponry",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "herroperSpecies"
-                    },
-                    {
-                        "id": "greaterDoppelgangerSpecies",
-                        "label": "Greater Doppelganger",
-                        "description": "Alternate form can now be any non-unique NPC. Can assume any number of alternate forms, and can change alternate forms at-will. While in alternate form Attributes, Resistances and Stats are changed to that of new form, adjusted to 80% of Doppelganger's Level",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -5,
-                            "Caster Level": -10,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "doppelgangerMartialSpecies || doppelgangerCasterSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies"]
-                    },
-                    {
-                        "id": "changelingSpecies",
-                        "label": "Changeling",
-                        "description": "Alternate forms can now be any Humanoid, Demi-Humanoid, or Heteromorphic Races. Can assume the form of any Creature for a short time, Stats and Resistances are changed to that of new form.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "greaterDoppelgangerSpecies"
-                    },
-                    {
-                        "id": "mimicSpecies",
-                        "label": "Mimic",
-                        "description": "Can assume the form an inanimate Objects not bigger than oneself. While in the form of an Object and motionless you are Invisible to Perception passive Detection",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "greaterDoppelgangerSpecies || herroperSpecies"
-                    },
-                    {
-                        "id": "deathVineSpecies",
-                        "label": "Death Vine",
-                        "description": "Natural Weapons secrete a Poison DoT\n  Can breathe a cone of noxious fumes that applies a Poison DoT, once every 4 hours\n  Can Grapple a Target to inflict Poison DoT damage",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -14
-                        },
-                        "prerequisites": "planterranSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies", "greaterDoppelgangerSpecies"]
-                    },
-                    {
-                        "id": "medusoidSpecies",
-                        "label": "Medusoid",
-                        "description": "Natural Weapons and breath attack have a chance to inflict Petrification. Breath attacks have a chance of Ignoring a Target's Resistances",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -4
-                        },
-                        "prerequisites": "deathVineSpecies"
-                    },
-                    {
-                        "id": "shamblingMossSpecies",
-                        "label": "Shambling Moss",
-                        "description": "Can rapidly Regenerate lost limbs, as such Constitution is considered 2x higher. Have double success rate on Actions that use Climb or Grapple. Can breathe Underwater indefinitely",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -5,
-                            "Caster Level": -10,
-                            "Vitality points": -10
-                        },
-                        "prerequisites": "planterranSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies", "greaterDoppelgangerSpecies", "deathVineSpecies"]
-                    },
-                    {
-                        "id": "lurkerSpecies",
-                        "label": "Lurker",
-                        "description": "While remaining motionless in Forest or Swampland Environment become Invisible to Perception passive Detection. While remaining motionless in Forest or Swampland Environment Mana Regeneration is Enhanced",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "shamblingMossSpecies"
-                    },
-                    {
-                        "id": "dryadSpecies",
-                        "label": "Dryad",
-                        "description": "While remaining motionless in Forest or Swampland Environment become Invisible to Perception passive Detection.  Have Bark as Natural Armor that is as strong as Light Armor.  Natural Weapons deal additional Acid damage.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Caster Level": -5,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "planterranSpecies",
-                        "conflictsWith": ["arachnidSpecies", "crustaceanSpecies", "dictyopterranSpecies", "hymenopterranSpecies", "cricketSpecies", "odonateSpecies", "flySpecies", "leechSpecies", "earthwormSpecies", "herroperSpecies", "greaterDoppelgangerSpecies", "deathVineSpecies", "shamblingMossSpecies"]
-                    },
-                    {
-                        "id": "sprigganSpecies",
-                        "label": "Spriggan",
-                        "description": "Can Perform an Action to restore Vitality and remove a Mental Status Effect on a Target. Can issue simple commands to Beast and Plant NPCs",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "dryadSpecies"
-                    },
-                    {
-                        "id": "alrauneSpecies",
-                        "label": "Alraune",
-                        "description": "While remaining motionless in Forest or Swampland Environment Mana Regeneration is Enhanced. Can assume a Humanoid alternate form. Can Perform an Action to inflict a Target with Confusion, Charm, or Fascination Mental Status Effects.",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "planterranSpecies",
-                        "conflictsWith": [
-                            "arachnidSpecies",
-                            "crustaceanSpecies",
-                            "dictyopterranSpecies",
-                            "hymenopterranSpecies",
-                            "cricketSpecies",
-                            "odonateSpecies",
-                            "flySpecies",
-                            "leechSpecies",
-                            "earthwormSpecies",
-                            "herroperSpecies",
-                            "greaterDoppelgangerSpecies",
-                            "deathVineSpecies",
-                            "shamblingMossSpecies",
-                            "dryadSpecies"
-                        ]
-                    },
-                    {
-                        "id": "alrauneQueenSpecies",
-                        "label": "Alraune Queen",
-                        "description": "Can emit an Aura that restores the Vitality and grants Immunity to Cold for nearby Plants. Can issue simple commands to Plant NPCs, and Faefolk NPCs become a Summoner option.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "alrauneSpecies"
-                    },
-                    {
-                        "id": "treantSpecies",
-                        "label": "Treant",
-                        "description": "Have Bark as Natural Armor that is as strong as Medium Armor. Strength and Constitution are considered 2x higher, but Dexterity is considered 2x lower. Are twice as hard to Knock Out or Stagger",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -22
-                        },
-                        "prerequisites": "planterranSpecies",
-                        "conflictsWith": [
-                            "arachnidSpecies",
-                            "crustaceanSpecies",
-                            "dictyopterranSpecies",
-                            "hymenopterranSpecies",
-                            "cricketSpecies",
-                            "odonateSpecies",
-                            "flySpecies",
-                            "leechSpecies",
-                            "earthwormSpecies",
-                            "herroperSpecies",
-                            "greaterDoppelgangerSpecies",
-                            "deathVineSpecies",
-                            "shamblingMossSpecies",
-                            "dryadSpecies",
-                            "alrauneSpecies"
-                        ],
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": ["Strength", "Constitution", "Dexterity"],
-                            "values": [2, 2, 0.5],
-                            "types": ["Multiply Attribute"]
-                        }
-                    },
-                    {
-                        "id": "treeKingSpecies",
-                        "label": "Tree King",
-                        "description": "Can create a small Forest Environment at surrounded location, once every 72 hours. While remaining motionless in Forest or Swampland Environment become Invisible to Perception passive Detection",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "treantSpecies"
-                    },
-                    {
-                        "id": "puffballSpecies",
-                        "label": "Puffball",
-                        "description": "While remaining motionless in Forest or Swampland Environment Mana Regeneration is Enhanced. Can emit an Aura that inflicts random Mental Status Effects on Targets, once an hour. Can emit an Aura that inflicts Poison DoT on Targets",
-                        "cost": {
-                            "Levels": 10,
-                            "Caster Level": -10,
-                            "Vitality points": -8
-                        },
-                        "prerequisites": "myconidSpecies",
-                        "conflictsWith": [
-                            "arachnidSpecies",
-                            "crustaceanSpecies",
-                            "dictyopterranSpecies",
-                            "hymenopterranSpecies",
-                            "cricketSpecies",
-                            "odonateSpecies",
-                            "flySpecies",
-                            "leechSpecies",
-                            "earthwormSpecies",
-                            "herroperSpecies",
-                            "greaterDoppelgangerSpecies",
-                            "deathVineSpecies",
-                            "shamblingMossSpecies",
-                            "dryadSpecies",
-                            "alrauneSpecies",
-                            "treantSpecies"
-                        ]
-                    },
-                    {
-                        "id": "stinkballSpecies",
-                        "label": "Stinkball",
-                        "description": "While remaining motionless in Forest or Swampland Environment Mana Regenerates twice as fast. AoE attacks deal 50% increased damage and last longer.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -3
-                        },
-                        "prerequisites": "puffballSpecies"
-                    },
-                    {
-                        "id": "boleteSpecies",
-                        "label": "Bolete",
-                        "description": "Strength is considered 2x higher. Know how to use Unarmed Strikes lethally. Are twice as hard to Knock Out or Stagger.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -18
-                        },
-                        "prerequisites": "myconidSpecies",
-                        "conflictsWith": [
-                            "arachnidSpecies",
-                            "crustaceanSpecies",
-                            "dictyopterranSpecies",
-                            "hymenopterranSpecies",
-                            "cricketSpecies",
-                            "odonateSpecies",
-                            "flySpecies",
-                            "leechSpecies",
-                            "earthwormSpecies",
-                            "herroperSpecies",
-                            "greaterDoppelgangerSpecies",
-                            "deathVineSpecies",
-                            "shamblingMossSpecies",
-                            "dryadSpecies",
-                            "alrauneSpecies",
-                            "treantSpecies",
-                            "puffballSpecies"
-                        ],
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength"
-                            ],
-                            "values": [
-                                2
-                            ],
-                            "types": [
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "kingBoletusSpecies",
-                        "label": "King Boletus",
-                        "description": "Strength and Constitution are considered 2x higher, but Dexterity is considered 2x lower. If you have Bolete, your Strength is now 3x higher (Bolete’s 2x × King Boletus’s 1.5x). Almost impossible to Stagger.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "boleteSpecies",
-                        "dynamicCost": {
-                            "target": "attributes",
-                            "choices": [
-                                "Strength",
-                                "Constitution",
-                                "Dexterity"
-                            ],
-                            "values": [
-                                1.5,
-                                2,
-                                0.5
-                            ],
-                            "types": [
-                                "Multiply Attribute",
-                                "Multiply Attribute",
-                                "Multiply Attribute"
-                            ]
-                        }
-                    },
-                    {
-                        "id": "blackOozeSpecies",
-                        "label": "Black Ooze",
-                        "description": "Gain +50% Acid (Immunity) damage Resistance, but gain -25% Sonic damage weakness. Can deal Acid damage on touch. Can Grapple a smaller Target to engulf them, slowing or stopping their Physical Actions.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -10,
-                            "Vitality points": -16,
-                            "Acid": -50,
-                            "Sonic": 25
-                        },
-                        "prerequisites": "slimeSpecies",
-                        "conflictsWith": [
-                            "arachnidSpecies",
-                            "crustaceanSpecies",
-                            "dictyopterranSpecies",
-                            "hymenopterranSpecies",
-                            "cricketSpecies",
-                            "odonateSpecies",
-                            "flySpecies",
-                            "leechSpecies",
-                            "earthwormSpecies",
-                            "herroperSpecies",
-                            "greaterDoppelgangerSpecies",
-                            "deathVineSpecies",
-                            "shamblingMossSpecies",
-                            "dryadSpecies",
-                            "alrauneSpecies",
-                            "treantSpecies",
-                            "puffballSpecies",
-                            "boleteSpecies"
-                        ]
-                    },
-                    {
-                        "id": "tarJellySpecies",
-                        "label": "Tar Jelly",
-                        "description": "Acid damage to a Target always reduces their equipment durability. Grappling a Target stacks an additional Acid Corrosion effect.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "blackOozeSpecies"
-                    },
-                    {
-                        "id": "voidJellySpecies",
-                        "label": "Void Jelly",
-                        "description": "Gain +100% Resistance (Immunity) to Dark Elemental damage, but gain -100% weakness to Light. Separate Inventory is expanded, it is now a large Inventory instead of a small Inventory.",
-                        "cost": {
-                            "Levels": 5,
-                            "Caster Level": -5,
-                            "Vitality points": -4,
-                            "Dark": -100,
-                            "Light": 100
-                        },
-                        "prerequisites": "blackOozeSpecies"
-                    },
-                    {
-                        "id": "blueOozeSpecies",
-                        "label": "Blue Ooze",
-                        "description": "Possess Natural Weapons that mimic Martial Weaponry (allows bypassing Classes with Martial Weaponry requirements). Know how to Sneak attack to deal increased damage to Targets who have not Detected them. Can Perform an Action to poach a Monster at critical Vitality to learn an additional Skill/Spell.",
-                        "cost": {
-                            "Levels": 10,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -12
-                        },
-                        "prerequisites": "slimeSpecies",
-                        "conflictsWith": [
-                            "arachnidSpecies",
-                            "crustaceanSpecies",
-                            "dictyopterranSpecies",
-                            "hymenopterranSpecies",
-                            "cricketSpecies",
-                            "odonateSpecies",
-                            "flySpecies",
-                            "leechSpecies",
-                            "earthwormSpecies",
-                            "herroperSpecies",
-                            "greaterDoppelgangerSpecies",
-                            "deathVineSpecies",
-                            "shamblingMossSpecies",
-                            "dryadSpecies",
-                            "alrauneSpecies",
-                            "treantSpecies",
-                            "puffballSpecies",
-                            "boleteSpecies",
-                            "blackOozeSpecies"
-                        ]
-                    },
-                    {
-                        "id": "shoggothSpecies",
-                        "label": "Shoggoth",
-                        "description": "Can store a Humanoid or Demi-Humanoid NPC within your separate Inventory to assume their form. Being Detected can afflict Targets with Fear, Revulsion, or Despair.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "blueOozeSpecies"
-                    },
-                    {
-                        "id": "monsterJellySpecies",
-                        "label": "Monster Jelly",
-                        "description": "Can store any Creature NPC small enough to fit in your separate Inventory to assume their form. Can sprout Wings to fly, and Natural Weapons can now also mimic the Natural Weapons of the Creature stored.",
-                        "cost": {
-                            "Levels": 5,
-                            "Martial Level": -5,
-                            "Caster Level": -5,
-                            "Vitality points": -5
-                        },
-                        "prerequisites": "blueOozeSpecies"
                     }
                 ]
             }

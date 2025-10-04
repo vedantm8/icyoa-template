@@ -13,12 +13,45 @@ const dynamicSelections = {};
 let attributeRanges = {}; // Will be updated by dynamic effects
 let originalAttributeRanges = {}; // Stores the initial, base ranges from input.json
 
+function getSliderTypes(costPerPoint = {}) {
+    let currencyType = null;
+    let attributeType = null;
+
+    Object.entries(costPerPoint).forEach(([type, val]) => {
+        if (val > 0 && !currencyType) currencyType = type;
+        if (val < 0 && !attributeType) attributeType = type;
+    });
+
+    if (!currencyType) currencyType = Object.keys(costPerPoint).find(key => key === "Attribute Points") || Object.keys(costPerPoint)[0] || "Attribute Points";
+    if (!attributeType) attributeType = Object.keys(costPerPoint).find(key => key !== currencyType) || null;
+
+    return {
+        currencyType,
+        attributeType
+    };
+}
+
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
 const modalTextarea = document.getElementById("modalTextarea");
 const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 const modalClose = document.getElementById("modalClose");
 let modalMode = null;
+
+function escapeHtml(text = "") {
+    return String(text).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[ch]);
+}
+
+function setMultilineText(element, text = "") {
+    if (!element) return;
+    element.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+}
 
 // Event Listeners
 document.getElementById("exportBtn").onclick = () => openModal("export");
@@ -356,7 +389,7 @@ fetch("input.json")
             const descriptionEntry = data.find(entry => entry.type === "description");
             if (descriptionEntry?.text) {
                 const descEl = document.getElementById("cyoaDescription");
-                if (descEl) descEl.textContent = descriptionEntry.text;
+                setMultilineText(descEl, descriptionEntry.text);
             }
 
             // Set Header Image
@@ -941,7 +974,7 @@ function renderAccordion() {
                     if (subcat.text && subcat.text.trim() !== "") {
                         const storyText = document.createElement("div");
                         storyText.className = "story-block";
-                        storyText.innerHTML = subcat.text.replace(/\n/g, "<br>"); // Allow newlines to be rendered
+                        setMultilineText(storyText, subcat.text);
                         subcatContent.appendChild(storyText);
                     }
                     if (subcat.input) {
@@ -1057,14 +1090,19 @@ function renderAccordion() {
 
                     const desc = document.createElement("div");
                     desc.className = "option-description";
-                    desc.textContent = opt.description || "";
+                    setMultilineText(desc, opt.description || "");
 
                     contentWrapper.appendChild(label);
                     contentWrapper.appendChild(requirements);
                     contentWrapper.appendChild(desc);
 
                     if (opt.inputType === "slider") {
-                        const attrName = Object.keys(opt.costPerPoint || {}).find(t => t !== "Attribute Points");
+                        const {
+                            currencyType,
+                            attributeType
+                        } = getSliderTypes(opt.costPerPoint || {});
+
+                        const attrName = attributeType;
 
                         const effectiveMin = opt.min ?? attributeRanges[attrName]?.min ?? 0;
                         // Use attributeRanges for max, which will be updated by dynamic effects
@@ -1075,10 +1113,19 @@ function renderAccordion() {
                         if (currentValue > effectiveMax) {
                             currentValue = effectiveMax;
                             attributeSliderValues[opt.id] = currentValue;
+                            if (attrName) attributeSliderValues[attrName] = currentValue;
                         }
                         if (currentValue < effectiveMin) {
                             currentValue = effectiveMin;
                             attributeSliderValues[opt.id] = currentValue;
+                            if (attrName) attributeSliderValues[attrName] = currentValue;
+                        }
+
+                        if (attributeSliderValues[opt.id] === undefined) {
+                            attributeSliderValues[opt.id] = currentValue;
+                        }
+                        if (attrName && attributeSliderValues[attrName] === undefined) {
+                            attributeSliderValues[attrName] = currentValue;
                         }
 
 
@@ -1099,8 +1146,12 @@ function renderAccordion() {
 
                         slider.oninput = (e) => {
                             const newVal = parseInt(e.target.value);
-                            const attrNameForCost = Object.keys(opt.costPerPoint || {}).find(t => t !== "Attribute Points");
-                            const costPerPoint = opt.costPerPoint["Attribute Points"] || 0;
+                            const {
+                                currencyType: currentCurrency,
+                                attributeType: currentAttribute
+                            } = getSliderTypes(opt.costPerPoint || {});
+                            const costPerPoint = opt.costPerPoint?.[currentCurrency] || 0;
+                            const attrNameForCost = currentAttribute;
 
                             // Re-check current effective max (could have been changed by a dynamic cap)
                             const currentEffectiveMax = attributeRanges[attrNameForCost]?.max ?? parseInt(slider.max);
@@ -1113,7 +1164,7 @@ function renderAccordion() {
                                 return;
                             }
 
-                            const oldVal = attributeSliderValues[opt.id] || 0; // Value before this input event
+                            const oldVal = attributeSliderValues[opt.id] ?? effectiveMin; // Value before this input event
                             let diff = newVal - oldVal;
 
                             let freeBoostAmount = 0;
@@ -1140,7 +1191,7 @@ function renderAccordion() {
 
                                 if (paidIncrease > 0) {
                                     const cost = costPerPoint * paidIncrease;
-                                    if (points["Attribute Points"] < cost && !allowNegativeTypes.has("Attribute Points")) {
+                                    if (points[currentCurrency] < cost && !allowNegativeTypes.has(currentCurrency)) {
                                         e.target.value = oldVal; // Revert slider visually
                                         sliderLabel.textContent = `${opt.label}: ${oldVal}`; // Also revert label
                                         return; // Not enough points, prevent change
@@ -1159,14 +1210,17 @@ function renderAccordion() {
 
                             // Apply the calculated point change
                             if (pointsChange !== 0) {
-                                points["Attribute Points"] += pointsChange;
+                                points[currentCurrency] += pointsChange;
                             }
 
                             // Update the stored attribute value
                             attributeSliderValues[opt.id] = newVal;
+                            if (attrNameForCost) {
+                                attributeSliderValues[attrNameForCost] = newVal;
+                            }
                             // Also update the points object if the attribute is directly tied to a point type
                             // (this was causing issues with 'Strength' not updating in points display previously)
-                            if (points.hasOwnProperty(attrNameForCost)) {
+                            if (attrNameForCost && points.hasOwnProperty(attrNameForCost)) {
                                 points[attrNameForCost] = newVal;
                             }
 
