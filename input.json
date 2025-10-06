@@ -16,7 +16,8 @@
             "SP": 1,
             "JP": 0,
             "SCP": 0,
-            "PP": 0
+            "PP": 0,
+            "IP": 600
         },
         "allowNegative": [
             "RP"
@@ -2861,6 +2862,646 @@
                         "cost": {
                             "PP": 1200
                         }
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Items/Equipment",
+        "discountSelectionLimit": 2,
+        "discountEligibleUnder": 800,
+        "subcategories": [
+            {
+                "type": "storyBlock",
+                "name": "Conversion",
+                "text": "Convert core CP into Items Points (IP) to expand your arsenal here.",
+                "options": [
+                    {
+                        "id": "itemsConvertCpToIp",
+                        "label": "Convert CP to IP",
+                        "description": "Exchange CP for IP at a 1:1 ratio to fund equipment purchases.",
+                        "cost": {
+                            "CP": 100,
+                            "IP": -100
+                        },
+                        "maxSelections": 99
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "General",
+                "text": "You receive a stipend of 600 IP to spend in this section. Use the Apply Discount buttons to mark up to two items costing 800 IP or less for a 50% discount.",
+                "options": [
+                    {
+                        "id": "itemsRaisingSpirit",
+                        "label": "The Raising Fighting Spirit [FREE]",
+                        "description": "Stream the entire Naruto and Boruto soundtracks in your head, controlling playback and sharing it ambiently. Merge with other musical perks and produce Naruto-style remixes backed by physical media copies.",
+                        "cost": {
+                            "IP": 0
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsRaisingSpiritUpgrade",
+                        "label": "Raising Fighting Spirit: Companion Tracks [50 IP]",
+                        "description": "Add unique themes for yourself and companions, fully compatible with other music perks and items.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "prerequisites": "itemsRaisingSpirit",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsNinjaTools",
+                        "label": "Ninja Tools [FREE]",
+                        "description": "Receive a replenishing warehouse stock of standard shinobi gear such as kunai, shuriken, explosive tags, and wire.",
+                        "cost": {
+                            "IP": 0
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsNinjaSpecialized",
+                        "label": "Specialized Ninja Tool [50 IP]",
+                        "description": "Add a specialized piece of equipment\u2014chakra-conductive weaponry, a basic puppet, or similar\u2014to your arsenal. May be purchased multiple times.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "prerequisites": "itemsNinjaTools",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "itemsTaijutsuUniform",
+                        "label": "Taijutsu Master Uniform [50 IP]",
+                        "description": "A breathable, durable training uniform accompanied by heavy limb weights; aesthetics may be customized without altering properties.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsTrainingJournal",
+                        "label": "Training Journal [50 IP]",
+                        "description": "A compendium of shinobi training essays containing a curated selection of techniques from prior owners.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsTrainingJournalComprehensive",
+                        "label": "Training Journal: Comprehensive Edition [200 IP]",
+                        "description": "Upgrades the journal so it periodically reveals new sections, ultimately cataloguing the full Naruto roster over centuries of study.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "prerequisites": "itemsTrainingJournal",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAkimichiPills",
+                        "label": "Akimichi Three Colored Pills [100 IP]",
+                        "description": "Spinach, Curry, and Chili Pills that safely transmute stored fat into chakra, replenished each day without detrimental side effects.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsResonatingSpeaker",
+                        "label": "Resonating Echo Speaker [100 IP]",
+                        "description": "A durable gauntlet that amplifies, redirects, or absorbs soundwaves for offensive and defensive purposes.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsRockLeeMedicine",
+                        "label": "Rock Lee's Medicine [100 IP]",
+                        "description": "An endless draught that induces\u2014or enhances mastery of\u2014the Drunken Fist for several hours per dose.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsShinigamiMask",
+                        "label": "Shinigami Mask [100 IP]",
+                        "description": "Release selected souls from the Reaper Death Seal without harming yourself; choose which spirits remain bound.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsDeepPockets",
+                        "label": "Deep Pockets [100 IP]",
+                        "description": "An untraceable trust fund paying 250,000 units annually in the currency of your choice. Each purchase increases the payout by a factor of ten.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "itemsAirCannon",
+                        "label": "Air Cannon [100 IP]",
+                        "description": "Forearm vents emit devastating air-sound blasts capable of shattering stone\u2014use caution to avoid obstructing the outlets.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsChakraDisruption",
+                        "label": "Chakra Disruption Device [100 IP]",
+                        "description": "A reusable restraint that rapidly drains chakra and stuns targets; replacements appear daily if lost.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsChakraDisruptionUnlimited",
+                        "label": "Chakra Disruption Device Supply [300 IP]",
+                        "description": "Upgrade to an endless supply of chakra disruption devices, ready for deployment whenever needed.",
+                        "cost": {
+                            "IP": 300
+                        },
+                        "prerequisites": "itemsChakraDisruption",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsHeroWater",
+                        "label": "Purified Hero Water [100 IP]",
+                        "description": "A flask of Hero Water that boosts chakra tenfold without shortening lifespan. Refills each Jump or decade and respawns if lost.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsHeroWaterInfinite",
+                        "label": "Purified Hero Water: Endless Flask [400 IP]",
+                        "description": "Keep the flask permanently full; each individual may benefit only once per Jump or decade.",
+                        "cost": {
+                            "IP": 400
+                        },
+                        "prerequisites": "itemsHeroWater",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsShinobiLibrary",
+                        "label": "Shinobi Library",
+                        "description": "An attachment to your warehouse containing rows upon rows of bookshelves, each filled with scrolls. Here, you can find information about numerous techniques but, unlike the Training Journal, instead of learning actual jutsu, this is a compendium of knowledge on stuff like how each hand sign affects energy flow or the best way to form chakra into an element. With this you could easily develop new techniques, although their power and effectiveness will depend on your intelligence and creativity, as well as analyze the already existing ones to improve, counter or do whatever else you might think of. Post-Jump, new sections detailing the magic system of whatever world you find yourself in will be added here. They won’t be as expansive as the Naruto section at first, but they will grow over time and as you do in-setting research.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsPetrifactionGauntlet",
+                        "label": "Petrifaction Gauntlet",
+                        "description": "A dark gauntlet with a glowing eye on the back and two abilities. The first is that grabbing someone with this gauntlet causes them to be transformed to brittle stone, spreading from where the gauntlet is touching. Medical jutsu can restore them if used promptly, but the effect soon becomes permanent. The second ability the gauntlet grants is telekinetic control of stone.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsDanzosArm",
+                        "label": "Danzo's Arm [200 IP]",
+                        "description": "A prosthetic arm cultivated from Shin Uchiha tissue, grafted with Hashirama cells and ten Sharingan. The eyes lack direct sensory input, but they empower an enhanced Izanagi that rewrites undesired outcomes\u2014including your death\u2014for one minute per eye. All ten Sharingan fully restore at the start of each new Jump. Creepy shoulder-mouth that grows trees remains optional.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsDanzosArmMangekyo",
+                        "label": "Danzo's Arm: Mangeky\u014d Array [100 IP]",
+                        "description": "Augment the prosthetic's Sharingan to Mangeky\u014d variants, unlocking a single unique Mangeky\u014d ability (other than Susanoo) and amplifying Izanagi's potency without extending its duration.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsDanzosArm",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsDragonBlade",
+                        "label": "Dragon Blade [200 IP]",
+                        "description": "Even among the countless weapons of this world, the Dragon Blade stands apart. It always returns to you across any distance and can slice or absorb chakra and other energies much like Samehada, demanding tremendous reserves to wield. This purchase grants the blade alone; without the orbs it cannot channel the five basic nature transformations.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsDragonBladeOrbs",
+                        "label": "Dragon Blade: Elemental Orbs [100 IP]",
+                        "description": "A complete set of five orbs that slot into the Dragon Blade's core, unlocking the basic elemental transformations: red fire, green wind, yellow lightning, orange earth, and blue water. Requires the Dragon Blade and lets you swap elements at will.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsDragonBlade",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsSummoningPact",
+                        "label": "Summoning Pact",
+                        "description": "This scroll, upon signing it with your blood, will allow you to summon one type of animal. This can be whatever animal you want. They are all trained in basic ninja arts and some individuals among them are of irregular size. The scroll doesn’t need to be on your person for the jutsu to work and if you allow, others can sign it too to be able to summon your type of animal. Can be bought multiple times for multiple types of animals, discounted after the first purchase.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "itemsKusanagi",
+                        "label": "Sword of Kusanagi",
+                        "description": "A powerful and sturdy longsword, the Kusanagi is capable of extending its blade to considerable lengths and is sharp enough to cut through anything less durable than a Four-Tailed Chakra Shroud. Even when faced with a material it cannot cut, the sword will never break or dull its edge. You can telekinetically control the weapon, allowing you to use it to attack remotely. The sword itself is also capable of transforming into a snake and can return to you in said form.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Four Celestial Tools",
+                "text": "Acquire the four treasures of the Village of Artisans individually or as a fused set. Purchasing the complete set for 400 IP counts as a single discounted item.",
+                "options": [
+                    {
+                        "id": "itemsCelestialShortSwords",
+                        "label": "Weaknessless Soaring Short Swords [100 IP]",
+                        "description": "Twin blades that streamline wind chakra shaping, allowing wind jutsu to be cast through them without signs and at a greatly reduced chakra cost. Post-Jump, they similarly boost other wind-based techniques.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsCelestialGarian",
+                        "label": "Garian Sword [100 IP]",
+                        "description": "A tri-pronged sword whose segments extend and flex like a puppet limb. Each prong channels chakra into a dragon-like construct that can be directed at will.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsCelestialSun",
+                        "label": "Sword of the Sun [100 IP]",
+                        "description": "A two-handed blade that summons vast firestorms and emerald light beams, and can call the other celestial tools to the wielder.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsCelestialArmor",
+                        "label": "Infinite Armor [100 IP]",
+                        "description": "Tiger-faced armor that drains chakra on contact, channeling it through weapons to restore stamina or heal injuries. When combined with the other tools, all effects intensify, granting flight, mental control, and a wide-area chakra-devouring vortex. Post-Jump it absorbs other energy types as well as chakra.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsCelestialFused",
+                        "label": "Fused Celestial Tools [400 IP]",
+                        "description": "Obtain all four tools already merged, unlocking their enhanced synergy immediately. Eligible for one discount slot despite containing the whole set.",
+                        "cost": {
+                            "IP": 400
+                        },
+                        "maxSelections": 1
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Puppets",
+                "text": "Bolster your puppet corps with Sasori's legendary creations and support gear.",
+                "options": [
+                    {
+                        "id": "itemsPuppetsHundred",
+                        "label": "Performance of a Hundred Puppets [200 CP]",
+                        "description": "By purchasing this, you gain access to a scroll containing the 100 puppets created by Sasori, the greatest puppet master of this time and possibly in all of history. Mastering them all at once requires Sasori's immortality upgrade below.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsPuppetsHundredSasori",
+                        "label": "Performance of a Hundred Puppets: Sasori Mastery [FREE]",
+                        "description": "If you purchased Immortality: Sasori, you also receive the knowledge and skill needed on how to control every single puppet at once. This add-on is free once you own the puppet scroll and Sasori's immortality.",
+                        "cost": {
+                            "IP": 0
+                        },
+                        "prerequisites": [
+                            "itemsPuppetsHundred",
+                            "immortalitySasori"
+                        ],
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsPuppetArmorHiruko",
+                        "label": "Puppet Armor Hiruko [200 CP]",
+                        "description": "A special form of armor that makes use of the Puppet Technique to bolster the wearer's defensive and offensive abilities simultaneously. This armor is equipped with a highly durable armored shell, an extendable scorpion-like tail tipped with a deadly blade, an arm-mounted senbon grenade, and a rapid-fire senbon launcher in the mouth. All of its blades feature a unique and deadly poison. Gruff and growly voice when in use is optional.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    }
+                ]
+            },
+            {
+                "type": "storyBlock",
+                "name": "Aburame",
+                "text": "Cultivate bespoke insect hives. Use the Apply Free Slot button to mark two complimentary species; additional species cost 100 IP (equal to 100 CP via the 1:1 conversion).",
+                "options": [
+                    {
+                        "id": "itemsAburameClan",
+                        "label": "Aburame",
+                        "description": "Congratulations. You are now a living hive. You have the honor of being a member of the Aburame Clan. Your body has been implanted with several different breeds of insects as a nest, now lying beneath the skin in a symbiotic relationship with you. They gain shelter and absorb chakra from you, and you are able to utilize these insects for a variety of different ways. The insects within your body number in the tens of thousands.\n\nNow, moving on to actual applications. One thing that is universal for all Aburame is the ability to track targets by leaving a female insect on a person which can be tracked by scent by a male insect. Another method is by sending out scout insects which can then return and notify the Aburame (yes, you can speak to them). Post-Jump, they can also feed on energy instead of just chakra including life energy as well. What an Aburame is capable of is dependent on the insects they possess. Choose two species below for free; additional species cost 100 IP (equivalent to 100 CP via conversion).",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAburameBikochu",
+                        "label": "Bikoch\u016b [100 IP]",
+                        "description": "A form of tracking insect. This species possesses an incredible sense of smell that is stronger than even a dog\u2019s. What makes this species so loved by the Aburame is its ability to remember the first scent it smells after it changes from its infant stage into an adult form, and they will always try to return to that smell.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsAburameClan",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAburameKidaichu",
+                        "label": "Kidaich\u016b [100 IP]",
+                        "description": "When given an incorrect amount of chakra, these insects begin to devour the flesh of their host, rapidly growing in size. But don't worry, while they are in your body, they won\u2019t eat you, as you will always give them the correct amount of chakra. Post-Jump, you can mentally command this species if you wish for them to devour a person.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsAburameClan",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAburameKikaichu",
+                        "label": "Kikaich\u016b [100 IP]",
+                        "description": "The most common species utilized by the Aburame, this species is primarily used for the express purpose of battle. In combat, they are spread across an area to cut off the target\u2019s escape. Once done, they then swarm the target and rapidly deplete the target's chakra until they can no longer move. Of course, this species can also be used for other purposes as well. They can help to expel poison from the body, distribute stolen chakra to others, or impersonate their host to act as a decoy. Much like Bikoch\u016b, they can also be used as a method of tracking by observing the target and returning to their host to report what they heard and the target's location. Once a Kikaich\u016b has locked onto a chakra signature, they can continue to follow it so long as the target remains within a certain range. Finally, by planting a female of the species onto a person, that person can be tracked via smell. They also breed very rapidly. If the population is decimated, so long as one survives, it\u2019s only a matter of days before it has been fully restored.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsAburameClan",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAburameKochu",
+                        "label": "Koch\u016b [100 IP]",
+                        "description": "A more nefarious tool than the others, this species produces a poison that will both paralyze and kill the target within a few seconds of biting the victim. As an additional benefit, the poison also disappears upon death, preventing the cause of death from being determined and stymying the development of an antidote.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsAburameClan",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAburameRinkaichu",
+                        "label": "Rinkaich\u016b [100 IP]",
+                        "description": "This species is a tad bit special among the Aburame\u2019s insect species. Unlike other insects, this species is nano-sized and venomous, able to destroy the victim\u2019s cells; however, this brand of insects can only be passed from user to victim via physical contact even through clothing. The Rinkaich\u016b act similarly to viruses, spreading and multiplying as they thrive on living cells. However, if they stray too far from their host or the host dies, they too will die. If you touch and infect someone you didn't mean to, you can recall the insects by touching the initial area and mentally calling them back.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsAburameClan",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsAburameShokaichu",
+                        "label": "Shokaich\u016b [100 IP]",
+                        "description": "These insects resemble worms; they can burrow into the ground and locate chakra signatures. They can then report the signature back to the user.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsAburameClan",
+                        "maxSelections": 1
+                    }
+                ],
+                "discountSelectionLimit": 2,
+                "discountEligibleUnder": 100,
+                "discountMode": "free"
+            },
+            {
+                "type": "storyBlock",
+                "name": "Chakra Armor",
+                "text": "This armor produces an invisible barrier around the user that nullifies or deflects most chakra-based techniques, including genjutsu, as well as physical projectiles. A powerful attack focused into a single point, such as the Rasengan, or overwhelming power like multiple explosive tags can still damage the armor. Some models of this armor have been known to explode, but since you are paying CP, damage to the armor will only ever render it nonfunctional, and it will be completely repaired each morning. Furthermore, you may pay additional CP to grant the armor additional features.",
+                "options": [
+                    {
+                        "id": "itemsChakraArmor",
+                        "label": "Chakra Armor",
+                        "description": "Chakra armor",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "disableSubcategoryDiscount": true,
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsCableCannon",
+                        "label": "Cable Cannon [50 IP]",
+                        "description": "This allows you to fire and control a large bundle of cables that can be used to entrap opponents or pull yourself to nearby locations.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "prerequisites": "itemsChakraArmor",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsNinjaTool",
+                        "label": "Ninja Tool [50 IP]",
+                        "description": "This incorporates a ninja tool or other device into the armor such as a burst of senbon, poison mist storage, kunai launcher, gas mask, extendable sword blade, or the like. This option may also be used to import a similar item into the armor, including those bought in this Jump. You may purchase this option multiple times.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "prerequisites": "itemsChakraArmor",
+                        "maxSelections": 99
+                    },
+                    {
+                        "id": "itemsPistonFist",
+                        "label": "Piston Fist [50 IP]",
+                        "description": "These large cylindrical gauntlets massively increase the user’s punching strength.",
+                        "cost": {
+                            "IP": 50
+                        },
+                        "prerequisites": "itemsChakraArmor",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsWings",
+                        "label": "Wings [100 IP]",
+                        "description": "These wings allow flight and are also capable of cutting through ninja wire and other similar materials.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsChakraArmor",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsEvolvingDefense",
+                        "label": "Evolving Defense [100 IP]",
+                        "description": "The armor becomes intrinsically linked to the wearer. If the wearer has greater defensive abilities then the armor would normally grant, then the armor’s own defensive abilities are strengthened to be as proportionally powerful to the wearer as the default armor would have been to the average shinobi. Any other features of the armor are similarly strengthened relative to your abilities as to remain relevant as well.",
+                        "cost": {
+                            "IP": 100
+                        },
+                        "prerequisites": "itemsChakraArmor",
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsChakraAugmentation",
+                        "label": "Chakra Augmentation [150 IP]",
+                        "description": "This augmentation greatly increases the power of the wearer’s jutsu and other similar techniques.",
+                        "cost": {
+                            "IP": 150
+                        },
+                        "prerequisites": "itemsChakraArmor",
+                        "maxSelections": 1
+                    }
+                ],
+                "discountSelectionLimit": 20,
+                "discountEligibleUnder": 400,
+                "discountMode": "half"
+            },
+            {
+                "type": "storyBlock",
+                "name": "Treasured Tools of the Sage of Six Paths",
+                "text": "A set of five legendary implements attributed to the Sage of Six Paths. Each tool is devastatingly powerful yet ravenous for chakra, and even a single use can be lethal to ordinary shinobi.",
+                "options": [
+                    {
+                        "id": "itemsSageToolsBashosen",
+                        "label": "Bashōsen [200 IP]",
+                        "description": "This large fan unleashes any of the five basic elemental natures at a thought, producing torrents of flame, lightning, water, wind, or earth. Its sturdy frame doubles as an exceptional shield against ninjutsu and taijutsu alike.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsSageToolsBenihisago",
+                        "label": "Benihisago [200 IP]",
+                        "description": "A colossal gourd wrapped in scarlet cloth that seals the word soul of those ensnared by Kōkinjō. Once cursed, speaking the word they have uttered most in their life—or even remaining silent—pulls the victim into the gourd until freed by new habits.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsSageToolsKohaku",
+                        "label": "Kohaku no Jōhei [200 IP]",
+                        "description": "An immense sealing pot that captures anyone whose name you call. Should the target answer, the vessel records their voice and binds them within, inescapable without outside intervention.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsSageToolsKokinjou",
+                        "label": "Kōkinjō [200 IP]",
+                        "description": "A golden rope wielded to draw forth the mystic word soul from a target. Once exposed, the soul can be severed by Shichiseiken or siphoned into the Benihisago for sealing.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsSageToolsShichiseiken",
+                        "label": "Shichiseiken [200 IP]",
+                        "description": "A broad, folding sword engraved with the words of those it strikes when commanded to curse. Severing the word soul inscribes their most common utterance upon its blade, changing as their habits change.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    }
+                ],
+                "discountSelectionLimit": 5,
+                "discountEligibleUnder": 200,
+                "discountMode": "half",
+                "discountRequires": "kgRinnegan",
+                "discountAutoApplyAll": true,
+                "discountRequiresMessage": "Purchase the Rinnegan to unlock 50% discounts on every treasured tool."
+            },
+            {
+                "type": "storyBlock",
+                "name": "Swords of the Seven Ninja Swordsmen",
+                "text": "In Kirigakure, there is an organization that consisted only of the greatest blade-wielding shinobi of the generation. This organization is known as the Seven Ninja Swordsmen of the Mist. As the name suggests, there were only seven members at a time, each one wielding a mystical blade passed down from generation to generation. Together, the Seven Swordsmen were said to be capable of bringing down entire nation. The seven swords can be yours now, for a price. Sharpened teeth optional.",
+                "options": [
+                    {
+                        "id": "itemsHiramekarei",
+                        "label": "Hiramekarei [200 IP]",
+                        "description": "The blade is wide and flat with two curved indentations at the base, creating a cross guard of sorts and it possess two handles connected to each other with a short length of cord. These handles allow the blade to be split in to two, should the need arise.\n\nThe blade possesses the ability to store chakra, and, with a command phrase of your choice, the stored chakra can be emitted from the holes in the sword’s tip. The chakra then coats the sword, being able to be shaped into a variety of different weapons. The sword is also capable of generating a large amount of blue crystals that can cause a lot of damage to a target and restrain their movement.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsKabutowari",
+                        "label": "Kabutowari [200 IP]",
+                        "description": "This ‘sword’ is made up of a giant axe and hammer linked to one other by a rope. By striking a target with the axe and then striking the back of the axe with the hammer, this weapon can break through almost any defense.This ‘sword’ is made up of a giant axe and hammer linked to one other by a rope. By striking a target with the axe and then striking the back of the axe with the hammer, this weapon can break through almost any defense.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsKiba",
+                        "label": "Kiba [200 IP]",
+                        "description": "Not the character obviously, these swords are slim and straight possessing two bladed prongs on each sword, one near the tip and the another near the base. These swords are imbued with lightning, granting them enhanced cutting power and the power to transform and manipulate lightning, even allowing the user to perform their lightning techniques without hand seals. Such attacks can also be enhanced with minimal cost. These swords can also be used to channel natural lightning and can be connected to form one large sword. Not only that, but the swords capable of amplifying the chakra channeled into and returning it to the wielder, enhancing their chakra for a short time.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsKubikiribocho",
+                        "label": "Kubikiribōchō [200 IP]",
+                        "description": "A massive broadsword closer to a butcher’s blade than a normal sword. The blade is quite heavy, and it takes quite a bit of strength to truly wield it as a master. Despite the masterful quality of the sword, the only ability this sword possesses is the ability to reform itself using iron harvested from blood, capable of regenerating itself almost instantaneously, even if the blade itself had been split in half.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsNuibari",
+                        "label": "Nuibari [200 IP]",
+                        "description": "A long sword with a long length of wire attached to the bottom. This sword looks and acts very much like an oversized sewing needle. It can pierce through most people in a single strike and then stitch them together by pulling the attached wire tightly. A master of this weapon could crucify people with the blade and wire alone.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsShibuki",
+                        "label": "Shibuki [200 IP]",
+                        "description": "This ‘sword’ is made up of a scroll and an edge. The scroll component is made up of explosive tags, allowing the wielder to incorporate the art of explosions into their swordsmanship. Once the target is struck by the sword, the explosive tags in the scroll ignite and detach from the sword, providing an opportunity for the wielder to escape the blast radius. The sword automatically reloads another segment of tags after they detach. It does this as if there was an endless number of explosive tags within the blade.",
+                        "cost": {
+                            "IP": 200
+                        },
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "itemsSamehada",
+                        "label": "Samehada [300 IP]",
+                        "description": "This is less of a sword and more of a bunch of scales. Because of these scales, Samehada does not inflict injuries through cutting. It shreds. Moving on to its other abilities, Samehada is quite unique. The handle of Samehada is capable of stretching, allowing the weapon act as if it was a flail. The scales are also capable of extending into spikes.\n\nUnlike other weapons, Samehada is sentient and shares a symbiotic relationship with its wielder. It feeds on the chakra of its wielder and the wielder in turn gains Samehada’s loyalty and friendship.\n\nIn battle, Samehada is capable of absorbing the chakra and energy of opponents, even their attacks, by slicing. This allows it to quickly bring down the energy of most opponents as few can withstand losing so much chakra to the blade. Samehada is also fighting separately from its wielder along with transferring the energy it has absorbed and, should the need arise, it can fuse with its wielder to grant a formidable and shark-like transformation.\n\nYou need not fear losing Samehada’s loyalty. By purchasing it here, Samehada will always be loyal to you and you alone. It will not even let others wield without your permission.",
+                        "cost": {
+                            "IP": 300
+                        },
+                        "maxSelections": 1
                     }
                 ]
             }

@@ -12,6 +12,8 @@ let allowNegativeTypes = new Set();
 const dynamicSelections = {};
 let attributeRanges = {}; // Will be updated by dynamic effects
 let originalAttributeRanges = {}; // Stores the initial, base ranges from input.json
+const subcategoryDiscountSelections = {};
+const categoryDiscountSelections = {};
 
 function meetsCountRequirement(rawId) {
     if (typeof rawId !== 'string') return false;
@@ -42,6 +44,60 @@ function getOptionEffectiveCost(option) {
             bestCost = mergedCost;
         }
     });
+
+    const info = findSubcategoryInfo(option.id);
+    let discountApplied = false;
+    const allowSubcatDiscount = option.disableSubcategoryDiscount !== true;
+    const allowCatDiscount = option.disableCategoryDiscount !== true;
+
+    if (!allowSubcatDiscount && info.key) {
+        const subMap = getSubcategoryDiscountMap(info.key);
+        if (subMap[option.id]) delete subMap[option.id];
+    }
+    if (!allowCatDiscount && info.catKey) {
+        const catMap = getCategoryDiscountMap(info.catKey);
+        if (catMap[option.id]) delete catMap[option.id];
+    }
+
+    const subcatDiscountActive = allowSubcatDiscount && info.subcat && info.key && canUseDiscount(info.subcat);
+    const subcatAutoApplyAll = subcatDiscountActive && shouldAutoApplyDiscount(info.subcat);
+    if (subcatDiscountActive) {
+        const ipCost = (baseCost && typeof baseCost.IP === 'number') ? baseCost.IP : null;
+        if (ipCost !== null && ipCost > 0 && ipCost <= info.subcat.discountEligibleUnder) {
+            if (subcatAutoApplyAll) {
+                bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                discountApplied = true;
+            } else {
+                const map = getSubcategoryDiscountMap(info.key);
+                const assigned = map[option.id] || 0;
+                const alreadySelected = selectedOptions[option.id] || 0;
+                if (assigned > alreadySelected) {
+                    bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                    discountApplied = true;
+                }
+            }
+        }
+    }
+
+    const catDiscountActive = !discountApplied && allowCatDiscount && info.cat && info.catKey && canUseDiscount(info.cat);
+    const catAutoApplyAll = catDiscountActive && shouldAutoApplyDiscount(info.cat);
+    if (catDiscountActive) {
+        const ipCost = (baseCost && typeof baseCost.IP === 'number') ? baseCost.IP : null;
+        if (ipCost !== null && ipCost > 0 && ipCost <= info.cat.discountEligibleUnder) {
+            if (catAutoApplyAll) {
+                bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                discountApplied = true;
+            } else {
+                const map = getCategoryDiscountMap(info.catKey);
+                const assigned = map[option.id] || 0;
+                const alreadySelected = selectedOptions[option.id] || 0;
+                if (assigned > alreadySelected) {
+                    bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                    discountApplied = true;
+                }
+            }
+        }
+    }
 
     return bestCost;
 }
@@ -145,6 +201,9 @@ document.getElementById("resetBtn").onclick = () => {
     for (let key in discountedSelections) delete discountedSelections[key];
     for (let key in storyInputs) delete storyInputs[key];
     for (let key in dynamicSelections) delete dynamicSelections[key];
+    for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
+    for (let key in categoryDiscountSelections) delete categoryDiscountSelections[key];
+    for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
 
 
     // Reset points and attribute ranges to their original states from input.json
@@ -178,6 +237,9 @@ modalConfirmBtn.onclick = () => {
         for (let key in discountedSelections) delete discountedSelections[key];
         for (let key in storyInputs) delete storyInputs[key];
         for (let key in dynamicSelections) delete dynamicSelections[key];
+        for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
+        for (let key in categoryDiscountSelections) delete categoryDiscountSelections[key];
+        for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
 
         // Apply imported states
         points = {
@@ -197,6 +259,38 @@ modalConfirmBtn.onclick = () => {
         });
         Object.entries(importedData.dynamicSelections || {}).forEach(([key, val]) => {
             dynamicSelections[key] = val
+        });
+        Object.entries(importedData.subcategoryDiscountSelections || {}).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+                const map = {};
+                val.forEach(id => {
+                    map[id] = (map[id] || 0) + 1;
+                });
+                subcategoryDiscountSelections[key] = map;
+            } else if (val && typeof val === 'object') {
+                const map = {};
+                Object.entries(val).forEach(([id, count]) => {
+                    const num = Number(count) || 0;
+                    if (num > 0) map[id] = num;
+                });
+                subcategoryDiscountSelections[key] = map;
+            }
+        });
+        Object.entries(importedData.categoryDiscountSelections || {}).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+                const map = {};
+                val.forEach(id => {
+                    map[id] = (map[id] || 0) + 1;
+                });
+                categoryDiscountSelections[key] = map;
+            } else if (val && typeof val === 'object') {
+                const map = {};
+                Object.entries(val).forEach(([id, count]) => {
+                    const num = Number(count) || 0;
+                    if (num > 0) map[id] = num;
+                });
+                categoryDiscountSelections[key] = map;
+            }
         });
 
         // Reset attribute ranges to original before re-applying dynamic effects
@@ -225,6 +319,8 @@ function openModal(mode) {
             storyInputs,
             attributeSliderValues,
             dynamicSelections,
+            subcategoryDiscountSelections,
+            categoryDiscountSelections,
             computedPoints: Object.keys(formulas), // For debugging/info, not strictly needed for import
         }, null, 2);
         modalConfirmBtn.style.display = "none";
@@ -899,6 +995,153 @@ function getSubcategoryOptionLabel(id) {
     return getOptionLabel(id);
 }
 
+function buildCategoryKey(catIndex, catName) {
+    return `${catIndex}-${slugifyKey(catName || `Category${catIndex}`)}`;
+}
+
+function slugifyKey(str) {
+    return String(str || "").replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '');
+}
+
+function buildSubcategoryKey(catIndex, catName, subIndex, subName) {
+    const catPart = `${catIndex}-${slugifyKey(catName || `Category${catIndex}`)}`;
+    const subPart = `${subIndex}-${slugifyKey(subName || `Sub${subIndex}`)}`;
+    return `${catPart}__${subPart}`;
+}
+
+function findSubcategoryInfo(optionId) {
+    for (let c = 0; c < categories.length; c++) {
+        const cat = categories[c];
+        const directOptions = cat.options || [];
+        if (directOptions.some(opt => opt.id === optionId)) {
+            return {
+                cat,
+                subcat: null,
+                key: buildSubcategoryKey(c, cat.name, -1, 'root'),
+                catKey: buildCategoryKey(c, cat.name)
+            };
+        }
+        const subs = cat.subcategories || [];
+        for (let s = 0; s < subs.length; s++) {
+            const sub = subs[s];
+            if ((sub.options || []).some(opt => opt.id === optionId)) {
+                return {
+                    cat,
+                    subcat: sub,
+                    key: buildSubcategoryKey(c, cat.name, s, sub.name),
+                    catKey: buildCategoryKey(c, cat.name)
+                };
+            }
+        }
+    }
+    return {
+        cat: null,
+        subcat: null,
+        key: null,
+        catKey: null
+    };
+}
+
+function getDiscountMap(store, key) {
+    if (!key) return null;
+    if (!store[key]) store[key] = {};
+    return store[key];
+}
+
+function getSubcategoryDiscountMap(key) {
+    return getDiscountMap(subcategoryDiscountSelections, key) || {};
+}
+
+function getCategoryDiscountMap(key) {
+    return getDiscountMap(categoryDiscountSelections, key) || {};
+}
+
+function getDiscountTotalCount(map) {
+    return Object.values(map || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
+}
+
+function applyDiscountCost(cost = {}, mode = 'half') {
+    const updated = { ...cost };
+    Object.entries(updated).forEach(([type, val]) => {
+        if (val > 0) {
+            updated[type] = mode === 'free' ? 0 : Math.ceil(val / 2);
+        }
+    });
+    return updated;
+}
+
+function evaluateDiscountRequirementNode(node) {
+    if (node === null || node === undefined || node === '') return true;
+
+    if (Array.isArray(node)) {
+        if (node.length === 0) return true;
+        return node.every(evaluateDiscountRequirementNode);
+    }
+
+    if (typeof node === 'string') {
+        const trimmed = node.trim();
+        if (!trimmed) return true;
+        const hasLogicalOperators = /[()!&|]/.test(trimmed);
+        if (hasLogicalOperators && typeof window !== 'undefined' && typeof window.evaluatePrereqExpr === 'function') {
+            try {
+                return window.evaluatePrereqExpr(trimmed, id => selectedOptions[id] || 0);
+            } catch (err) {
+                console.warn('Failed to evaluate discount requirement expression:', trimmed, err);
+                return false;
+            }
+        }
+        return meetsCountRequirement(trimmed);
+    }
+
+    if (typeof node === 'object') {
+        const {
+            all,
+            any,
+            none
+        } = node;
+
+        if (all !== undefined) {
+            const list = Array.isArray(all) ? all : [all];
+            if (!list.every(evaluateDiscountRequirementNode)) return false;
+        }
+
+        if (any !== undefined) {
+            const list = Array.isArray(any) ? any : [any];
+            if (!list.some(evaluateDiscountRequirementNode)) return false;
+        }
+
+        if (none !== undefined) {
+            const list = Array.isArray(none) ? none : [none];
+            if (list.some(evaluateDiscountRequirementNode)) return false;
+        }
+
+        return true;
+    }
+
+    return true;
+}
+
+function evaluateDiscountRequirement(requirement) {
+    return evaluateDiscountRequirementNode(requirement);
+}
+
+function hasDiscountConfig(entity) {
+    return !!(entity && entity.discountSelectionLimit && entity.discountEligibleUnder);
+}
+
+function isDiscountUnlocked(entity) {
+    if (!entity) return false;
+    return evaluateDiscountRequirement(entity.discountRequires);
+}
+
+function canUseDiscount(entity) {
+    return hasDiscountConfig(entity) && isDiscountUnlocked(entity);
+}
+
+function shouldAutoApplyDiscount(entity) {
+    return !!(entity && entity.discountAutoApplyAll && canUseDiscount(entity));
+}
+
 
 /**
  * Renders the accordion structure based on the categories data.
@@ -909,7 +1152,7 @@ function renderAccordion() {
     const container = document.getElementById("accordionContainer");
     container.innerHTML = ""; // Clear previous content
 
-    categories.forEach(cat => {
+    categories.forEach((cat, catIndex) => {
         // Skip special types (points, headerImage, title, description, formulas) as they are handled separately
         if (["points", "headerImage", "title", "description", "formulas"].includes(cat.type)) {
             return;
@@ -963,7 +1206,35 @@ function renderAccordion() {
                 name: ""
             }]; // Treat options directly in category as a single subcategory
 
+            const catKey = buildCategoryKey(catIndex, cat.name);
+            const catHasDiscounts = hasDiscountConfig(cat);
+            const catDiscountUnlocked = catHasDiscounts && isDiscountUnlocked(cat);
+            const catAutoApplyAll = catDiscountUnlocked && shouldAutoApplyDiscount(cat);
+
+            if (catHasDiscounts && cat.discountRequiresMessage) {
+                const note = document.createElement("div");
+                note.className = "category-discount-requirement";
+                note.textContent = `${catDiscountUnlocked ? '✅' : '🔒'} ${cat.discountRequiresMessage}`;
+                content.appendChild(note);
+            }
+
+            if (catDiscountUnlocked) {
+                const catInfo = document.createElement("div");
+                catInfo.className = "category-discount-info";
+                if (catAutoApplyAll) {
+                    const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+                    catInfo.textContent = `Category discount auto-applies to eligible items (${catModeLabel}).`;
+                } else {
+                    const catMap = getCategoryDiscountMap(catKey);
+                    const used = getDiscountTotalCount(catMap);
+                    const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+                    catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} IP, ${catModeLabel})`;
+                }
+                content.appendChild(catInfo);
+            }
+
             subcats.forEach((subcat, subIndex) => {
+                const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
                 // Check subcategory-level requirements
                 const subcatRequires = subcat.requiresOption;
                 const subcatReqIds = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
@@ -978,7 +1249,6 @@ function renderAccordion() {
 
                 const subcatContent = document.createElement("div");
                 subcatContent.className = "subcategory-content";
-                const subcatKey = `${cat.name}__${subcat.name || subIndex}`; // Unique key for subcategory state
 
                 if (openSubcategories.has(subcatKey)) {
                     subcatContent.style.display = "block";
@@ -1022,6 +1292,32 @@ function renderAccordion() {
                         setMultilineText(storyText, subcat.text);
                         subcatContent.appendChild(storyText);
                     }
+                    const subcatHasDiscounts = hasDiscountConfig(subcat);
+                    const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+                    const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+
+                    if (subcatHasDiscounts && subcat.discountRequiresMessage) {
+                        const note = document.createElement("div");
+                        note.className = "subcategory-discount-requirement";
+                        note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
+                        subcatContent.appendChild(note);
+                    }
+
+                    if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
+                        const discountInfo = document.createElement("div");
+                        discountInfo.className = "subcategory-discount-info";
+                        const subMap = getSubcategoryDiscountMap(subcatKey);
+                        const usedSlots = getDiscountTotalCount(subMap);
+                        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                        discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
+                        subcatContent.appendChild(discountInfo);
+                    } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
+                        const discountInfo = document.createElement("div");
+                        discountInfo.className = "subcategory-discount-info";
+                        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                        discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
+                        subcatContent.appendChild(discountInfo);
+                    }
                     if (subcat.input) {
                         const inputWrapper = document.createElement("div");
                         inputWrapper.className = "story-input-wrapper";
@@ -1048,6 +1344,11 @@ function renderAccordion() {
                 }
 
                 // Render options within the subcategory
+                const subcatHasDiscounts = hasDiscountConfig(subcat);
+                const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+                const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+                const isDiscountableSubcat = subcatDiscountUnlocked && !subcatAutoApplyAll;
+
                 (subcat.options || []).forEach(opt => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "option-wrapper";
@@ -1078,6 +1379,12 @@ function renderAccordion() {
                     });
                     if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
                     if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
+                    const originalCost = opt.cost || {};
+                    const discountApplied = Object.entries(displayCost || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
+                    if (discountApplied) {
+                        const freeApplied = Object.entries(displayCost || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
+                        requirements.innerHTML += freeApplied ? `🔻 Discount Applied (Free)<br>` : `🔻 Discount Applied<br>`;
+                    }
 
                     // Show prerequisites for options (like Archangel)
                     if (opt.prerequisites && opt.prerequisites.length > 0) {
@@ -1130,6 +1437,107 @@ function renderAccordion() {
                     const desc = document.createElement("div");
                     desc.className = "option-description";
                     setMultilineText(desc, opt.description || "");
+
+                    const baseIpCost = (opt.cost && typeof opt.cost.IP === 'number') ? opt.cost.IP : null;
+                    const discountContexts = [];
+                    if (isDiscountableSubcat && opt.disableSubcategoryDiscount !== true) {
+                        discountContexts.push({
+                            level: 'subcategory',
+                            limit: subcat.discountSelectionLimit,
+                            eligible: subcat.discountEligibleUnder,
+                            map: getSubcategoryDiscountMap(subcatKey),
+                            mode: subcat.discountMode || 'half'
+                        });
+                    }
+                    if (catDiscountUnlocked && opt.disableCategoryDiscount !== true && !catAutoApplyAll) {
+                        discountContexts.push({
+                            level: 'category',
+                            limit: cat.discountSelectionLimit,
+                            eligible: cat.discountEligibleUnder,
+                            map: getCategoryDiscountMap(catKey),
+                            mode: cat.discountMode || 'half'
+                        });
+                    }
+
+                    discountContexts.forEach(discountContext => {
+                        if (baseIpCost === null || baseIpCost <= 0 || baseIpCost > discountContext.eligible) {
+                            return;
+                        }
+
+                        const discountMap = discountContext.map;
+                        const assignedCount = discountMap[opt.id] || 0;
+                        const totalAssigned = getDiscountTotalCount(discountMap);
+                        const discountLimit = discountContext.limit || 0;
+                        const alreadySelected = selectedOptions[opt.id] > 0;
+                        const totalOthers = totalAssigned - assignedCount;
+                        const availableSlots = Math.max(0, discountLimit - totalOthers);
+                        const contextLabel = discountContext.level === 'subcategory' ? 'subcategory' : 'category';
+                        const discountLabel = discountContext.mode === 'free' ? 'Free slots' : 'Discount slots';
+
+                        if (assignedCount > 0) {
+                            const remaining = Math.max(0, assignedCount - (selectedOptions[opt.id] || 0));
+                            const remainingText = remaining > 0 ? ` (remaining ${remaining})` : '';
+                            requirements.innerHTML += `${discountLabel} assigned (${contextLabel}): ${assignedCount}${remainingText}<br>`;
+                        }
+
+                        const discountBtn = document.createElement("button");
+                        discountBtn.className = "discount-toggle";
+                        if (assignedCount > 0) {
+                            discountBtn.textContent = discountContext.mode === 'free'
+                                ? `Discount Applied (${assignedCount}) – Free (${contextLabel})`
+                                : `Discount Applied (${assignedCount}) (${contextLabel})`;
+                        } else {
+                            discountBtn.textContent = discountContext.mode === 'free'
+                                ? `Apply Free Slot (${contextLabel})`
+                                : `Apply Discount (${contextLabel})`;
+                        }
+
+                        const canIncrease = availableSlots > assignedCount;
+
+                        discountBtn.disabled = alreadySelected || (assignedCount === 0 && !canIncrease);
+                        if (alreadySelected) {
+                            discountBtn.title = `Remove and re-select this item to change ${contextLabel} discount status.`;
+                        } else if (assignedCount === 0 && !canIncrease) {
+                            const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
+                            discountBtn.title = `${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`;
+                        } else {
+                            discountBtn.title = discountContext.mode === 'free'
+                                ? `Assign or remove a free ${contextLabel} slot for this item.`
+                                : `Cycle the number of ${contextLabel} discount slots applied to this item.`;
+                        }
+
+                        discountBtn.onclick = () => {
+                            if (selectedOptions[opt.id] > 0) return;
+
+                            const current = discountMap[opt.id] || 0;
+                            const freshTotal = getDiscountTotalCount(discountMap) - current;
+                            const maxAllowed = Math.max(0, discountLimit - freshTotal);
+
+                            if (maxAllowed === 0 && current === 0) {
+                                const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
+                                alert(`${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`);
+                                return;
+                            }
+
+                            let next = current + 1;
+                            if (next > maxAllowed) {
+                                next = 0;
+                            }
+
+                            if (next > 0) {
+                                discountMap[opt.id] = next;
+                                discountContexts.forEach(otherContext => {
+                                    if (otherContext !== discountContext && otherContext.map[opt.id]) {
+                                        delete otherContext.map[opt.id];
+                                    }
+                                });
+                            } else {
+                                delete discountMap[opt.id];
+                            }
+                            renderAccordion();
+                        };
+                        requirements.appendChild(discountBtn);
+                    });
 
                     contentWrapper.appendChild(label);
                     contentWrapper.appendChild(requirements);
