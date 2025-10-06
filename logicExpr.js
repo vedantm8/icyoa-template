@@ -7,11 +7,15 @@ function evaluatePrereqExpr(expr, lookupFn) {
         throw new Error('Prerequisite expression must be a string');
     }
 
-    const replaced = expr.replace(/!?[a-zA-Z_][a-zA-Z0-9_]*/g, (token) => {
+    const replaced = expr.replace(/!?[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?/g, (token) => {
         const isNegated = token.startsWith('!');
-        const id = isNegated ? token.slice(1) : token;
-        const value = !!lookupFn(id);
-        const result = isNegated ? !value : value;
+        const core = isNegated ? token.slice(1) : token;
+
+        const [id, minSuffix] = core.split('__');
+        const rawValue = lookupFn(id);
+        const numericValue = Number(rawValue) || 0;
+        const meetsCount = minSuffix ? numericValue >= Number(minSuffix) : numericValue > 0;
+        const result = isNegated ? !meetsCount : meetsCount;
         return result ? 'true' : 'false';
     });
 

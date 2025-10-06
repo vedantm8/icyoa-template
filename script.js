@@ -13,6 +13,39 @@ const dynamicSelections = {};
 let attributeRanges = {}; // Will be updated by dynamic effects
 let originalAttributeRanges = {}; // Stores the initial, base ranges from input.json
 
+function meetsCountRequirement(rawId) {
+    if (typeof rawId !== 'string') return false;
+    let id = rawId;
+    let required = 1;
+    if (rawId.includes('__')) {
+        const [base, suffix] = rawId.split('__');
+        id = base;
+        required = Number(suffix) || 1;
+    }
+    return (selectedOptions[id] || 0) >= required;
+}
+
+function getOptionEffectiveCost(option) {
+    const baseCost = { ...(option.cost || {}) };
+    let bestCost = baseCost;
+    let bestTotal = Object.entries(baseCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
+
+    (option.discounts || []).forEach(discount => {
+        const target = discount.ids || discount.id;
+        const requiredIds = Array.isArray(target) ? target : [target];
+        if (!requiredIds.every(req => meetsCountRequirement(req))) return;
+
+        const mergedCost = { ...baseCost, ...(discount.cost || {}) };
+        const total = Object.entries(mergedCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
+        if (total < bestTotal) {
+            bestTotal = total;
+            bestCost = mergedCost;
+        }
+    });
+
+    return bestCost;
+}
+
 function getSliderTypes(costPerPoint = {}) {
     let currencyType = null;
     let attributeType = null;
@@ -694,10 +727,20 @@ function addSelection(option) {
     const subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
 
     // Determine if this selection is discounted
-    const discounted = subcat?.discountFirstN && subcatCount < subcat.discountFirstN;
+    let discounted = false;
+    if (subcat) {
+        if (typeof subcat.discountStartsAfter === 'number') {
+            discounted = subcatCount >= subcat.discountStartsAfter;
+        } else if (typeof subcat.discountFirstN === 'number') {
+            discounted = subcatCount < subcat.discountFirstN;
+        } else if (subcat.discountFirstN) { // Fallback for truthy non-number values
+            discounted = subcatCount < subcat.discountFirstN;
+        }
+    }
 
+    const effectiveCost = getOptionEffectiveCost(option);
     const actualCost = {};
-    Object.entries(option.cost).forEach(([type, cost]) => {
+    Object.entries(effectiveCost).forEach(([type, cost]) => {
         let finalCost;
         if (cost < 0) { // If cost is negative (a gain), it's never discounted
             finalCost = cost;
@@ -743,7 +786,7 @@ function canSelect(option) {
     let meetsPrereq = true;
     if (typeof option.prerequisites === 'string') {
         try {
-            meetsPrereq = window.evaluatePrereqExpr(option.prerequisites, id => !!selectedOptions[id]);
+            meetsPrereq = window.evaluatePrereqExpr(option.prerequisites, id => selectedOptions[id] || 0);
         } catch (e) {
             console.error('Invalid prerequisite expression:', option.prerequisites, e);
             meetsPrereq = false;
@@ -780,7 +823,8 @@ function canSelect(option) {
     const underOptionLimit = currentOptionCount < maxPerOption;
 
     // Check if enough points (only for positive costs)
-    const hasPoints = Object.entries(option.cost || {}).every(([type, cost]) => {
+    const effectiveCost = getOptionEffectiveCost(option);
+    const hasPoints = Object.entries(effectiveCost || {}).every(([type, cost]) => {
         if (cost < 0) return true; // Gains don't require points
         const projected = points[type] - cost;
         return projected >= 0 || allowNegativeTypes.has(type);
@@ -803,6 +847,7 @@ function findSubcategoryOfOption(optionId) {
                 options: cat.options,
                 name: cat.name,
                 discountFirstN: cat.discountFirstN,
+                discountStartsAfter: cat.discountStartsAfter,
                 discountAmount: cat.discountAmount,
                 maxSelections: cat.maxSelections
             }; // Return a mock subcategory object
@@ -1026,7 +1071,8 @@ function renderAccordion() {
                     requirements.className = "option-requirements";
                     const gain = [],
                         spend = [];
-                    Object.entries(opt.cost || {}).forEach(([type, val]) => {
+                    const displayCost = getOptionEffectiveCost(opt);
+                    Object.entries(displayCost || {}).forEach(([type, val]) => {
                         if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
                         else spend.push(`${type} ${val}`);
                     });
@@ -1037,27 +1083,20 @@ function renderAccordion() {
                     if (opt.prerequisites && opt.prerequisites.length > 0) {
                         let prereqLines = [];
                         if (typeof opt.prerequisites === 'string') {
-                            // Parse the string for variable names (option IDs)
-                            const ids = opt.prerequisites.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || [];
-                            // Remove JS reserved words and boolean literals
+                            const tokens = opt.prerequisites.match(/!?[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?/g) || [];
                             const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
-                            // For OR logic: if any option is selected, mark all as accepted
-                            let isOr = opt.prerequisites.includes('||');
-                            let orAccepted = false;
-                            if (isOr) {
-                                orAccepted = ids.some(id => !reserved.has(id) && !!selectedOptions[id]);
-                            }
-                            ids.forEach(id => {
-                                if (!reserved.has(id)) {
-                                    const label = getOptionLabel(id);
-                                    let symbol;
-                                    if (isOr && orAccepted) {
-                                        symbol = "✅";
-                                    } else {
-                                        symbol = !!selectedOptions[id] ? "✅" : "❌";
-                                    }
-                                    prereqLines.push(`${symbol} ${label}`);
-                                }
+                            const seen = new Set();
+                            tokens.forEach(token => {
+                                const negated = token.startsWith('!');
+                                const core = negated ? token.slice(1) : token;
+                                const [id, minSuffix] = core.split('__');
+                                if (reserved.has(id) || seen.has(core)) return;
+                                seen.add(core);
+                                const requiredCount = minSuffix ? Number(minSuffix) : 1;
+                                const actual = selectedOptions[id] || 0;
+                                const satisfied = negated ? actual < requiredCount : actual >= requiredCount;
+                                const label = getOptionLabel(id) + (requiredCount > 1 ? ` (x${requiredCount})` : "");
+                                prereqLines.push(`${satisfied ? "✅" : "❌"} ${label}`);
                             });
                         } else if (Array.isArray(opt.prerequisites)) {
                             prereqLines = opt.prerequisites.map(id => {
