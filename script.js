@@ -576,7 +576,7 @@ function removeDependentOptions(deselectedId) {
     for (const cat of categories) {
         // Check options directly in category
         for (const opt of cat.options || []) {
-            if (opt.prerequisites?.includes(deselectedId) && selectedOptions[opt.id]) {
+            if (prereqReferencesId(opt.prerequisites, deselectedId) && selectedOptions[opt.id]) {
                 removeSelection(opt);
                 removeDependentOptions(opt.id); // Recursively remove dependents
             }
@@ -584,7 +584,7 @@ function removeDependentOptions(deselectedId) {
         // Check options within subcategories
         for (const subcat of cat.subcategories || []) {
             for (const opt of subcat.options || []) {
-                if (opt.prerequisites?.includes(deselectedId) && selectedOptions[opt.id]) {
+                if (prereqReferencesId(opt.prerequisites, deselectedId) && selectedOptions[opt.id]) {
                     removeSelection(opt);
                     removeDependentOptions(opt.id); // Recursively remove dependents
                 }
@@ -648,8 +648,7 @@ function removeSelection(option) {
 
 
     // Get the last recorded discounted cost for this selection instance
-    const refundCost = discountedSelections[option.id]?.pop() || option.cost;
-
+    const refundCost = (discountedSelections[option.id]?.pop()) ?? (option.cost ?? {});
     Object.entries(refundCost).forEach(([type, cost]) => {
         points[type] += cost;
     });
@@ -1799,4 +1798,33 @@ function renderAccordion() {
         }
         container.appendChild(item);
     });
+}
+
+// Put this near your other helpers (top-level scope)
+function prereqReferencesId(prereq, id) {
+    if (!prereq) return false;
+
+    // String: could be a single id or a boolean expression referencing ids
+    if (typeof prereq === 'string') {
+        // Match whole-id occurrences: kgA, not substrings like kgAB
+        const re = new RegExp(`\\b${id}\\b`);
+        return re.test(prereq);
+    }
+
+    // Array: interpreted as "must have all" (or however you’re using it)
+    if (Array.isArray(prereq)) {
+        return prereq.includes(id);
+    }
+
+    // Object: support {and:[]}, {or:[]}, {not:...} (any can be omitted)
+    if (typeof prereq === 'object') {
+        const hasAnd = Array.isArray(prereq.and) && prereq.and.some(p => prereqReferencesId(p, id));
+        const hasOr = Array.isArray(prereq.or) && prereq.or.some(p => prereqReferencesId(p, id));
+        const hasNot = prereq.not ? prereqReferencesId(prereq.not, id) : false;
+
+        // If it's referenced positively in AND/OR, or in NOT (still a dependency)
+        return hasAnd || hasOr || hasNot;
+    }
+
+    return false;
 }
