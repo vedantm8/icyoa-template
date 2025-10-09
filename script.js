@@ -12,6 +12,113 @@ let allowNegativeTypes = new Set();
 const dynamicSelections = {};
 let attributeRanges = {}; // Will be updated by dynamic effects
 let originalAttributeRanges = {}; // Stores the initial, base ranges from input.json
+const subcategoryDiscountSelections = {};
+const categoryDiscountSelections = {};
+
+function meetsCountRequirement(rawId) {
+    if (typeof rawId !== 'string') return false;
+    let id = rawId;
+    let required = 1;
+    if (rawId.includes('__')) {
+        const [base, suffix] = rawId.split('__');
+        id = base;
+        required = Number(suffix) || 1;
+    }
+    return (selectedOptions[id] || 0) >= required;
+}
+
+function getOptionEffectiveCost(option) {
+    const baseCost = { ...(option.cost || {}) };
+    let bestCost = baseCost;
+    let bestTotal = Object.entries(baseCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
+
+    (option.discounts || []).forEach(discount => {
+        const target = discount.ids || discount.id;
+        const requiredIds = Array.isArray(target) ? target : [target];
+        if (!requiredIds.every(req => meetsCountRequirement(req))) return;
+
+        const mergedCost = { ...baseCost, ...(discount.cost || {}) };
+        const total = Object.entries(mergedCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
+        if (total < bestTotal) {
+            bestTotal = total;
+            bestCost = mergedCost;
+        }
+    });
+
+    const info = findSubcategoryInfo(option.id);
+    let discountApplied = false;
+    const allowSubcatDiscount = option.disableSubcategoryDiscount !== true;
+    const allowCatDiscount = option.disableCategoryDiscount !== true;
+
+    if (!allowSubcatDiscount && info.key) {
+        const subMap = getSubcategoryDiscountMap(info.key);
+        if (subMap[option.id]) delete subMap[option.id];
+    }
+    if (!allowCatDiscount && info.catKey) {
+        const catMap = getCategoryDiscountMap(info.catKey);
+        if (catMap[option.id]) delete catMap[option.id];
+    }
+
+    const subcatDiscountActive = allowSubcatDiscount && info.subcat && info.key && canUseDiscount(info.subcat);
+    const subcatAutoApplyAll = subcatDiscountActive && shouldAutoApplyDiscount(info.subcat);
+    if (subcatDiscountActive) {
+        const ipCost = (baseCost && typeof baseCost.IP === 'number') ? baseCost.IP : null;
+        if (ipCost !== null && ipCost > 0 && ipCost <= info.subcat.discountEligibleUnder) {
+            if (subcatAutoApplyAll) {
+                bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                discountApplied = true;
+            } else {
+                const map = getSubcategoryDiscountMap(info.key);
+                const assigned = map[option.id] || 0;
+                const alreadySelected = selectedOptions[option.id] || 0;
+                if (assigned > alreadySelected) {
+                    bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                    discountApplied = true;
+                }
+            }
+        }
+    }
+
+    const catDiscountActive = !discountApplied && allowCatDiscount && info.cat && info.catKey && canUseDiscount(info.cat);
+    const catAutoApplyAll = catDiscountActive && shouldAutoApplyDiscount(info.cat);
+    if (catDiscountActive) {
+        const ipCost = (baseCost && typeof baseCost.IP === 'number') ? baseCost.IP : null;
+        if (ipCost !== null && ipCost > 0 && ipCost <= info.cat.discountEligibleUnder) {
+            if (catAutoApplyAll) {
+                bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                discountApplied = true;
+            } else {
+                const map = getCategoryDiscountMap(info.catKey);
+                const assigned = map[option.id] || 0;
+                const alreadySelected = selectedOptions[option.id] || 0;
+                if (assigned > alreadySelected) {
+                    bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                    discountApplied = true;
+                }
+            }
+        }
+    }
+
+    return bestCost;
+}
+
+function getSliderTypes(costPerPoint = {}) {
+    let currencyType = null;
+    let attributeType = null;
+
+    Object.entries(costPerPoint).forEach(([type, val]) => {
+        if (val > 0 && !currencyType) currencyType = type;
+        if (val < 0 && !attributeType) attributeType = type;
+    });
+
+    if (!currencyType) currencyType = Object.keys(costPerPoint).find(key => key === "Attribute Points") || Object.keys(costPerPoint)[0] || "Attribute Points";
+    if (!attributeType) attributeType = Object.keys(costPerPoint).find(key => key !== currencyType) || null;
+
+    return {
+        currencyType,
+        attributeType
+    };
+}
 
 const modal = document.getElementById("modal");
 const modalTitle = document.getElementById("modalTitle");
@@ -19,6 +126,21 @@ const modalTextarea = document.getElementById("modalTextarea");
 const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 const modalClose = document.getElementById("modalClose");
 let modalMode = null;
+
+function escapeHtml(text = "") {
+    return String(text).replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[ch]);
+}
+
+function setMultilineText(element, text = "") {
+    if (!element) return;
+    element.innerHTML = escapeHtml(text).replace(/\n/g, "<br>");
+}
 
 // Event Listeners
 document.getElementById("exportBtn").onclick = () => openModal("export");
@@ -79,6 +201,9 @@ document.getElementById("resetBtn").onclick = () => {
     for (let key in discountedSelections) delete discountedSelections[key];
     for (let key in storyInputs) delete storyInputs[key];
     for (let key in dynamicSelections) delete dynamicSelections[key];
+    for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
+    for (let key in categoryDiscountSelections) delete categoryDiscountSelections[key];
+    for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
 
 
     // Reset points and attribute ranges to their original states from input.json
@@ -112,6 +237,9 @@ modalConfirmBtn.onclick = () => {
         for (let key in discountedSelections) delete discountedSelections[key];
         for (let key in storyInputs) delete storyInputs[key];
         for (let key in dynamicSelections) delete dynamicSelections[key];
+        for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
+        for (let key in categoryDiscountSelections) delete categoryDiscountSelections[key];
+        for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
 
         // Apply imported states
         points = {
@@ -131,6 +259,38 @@ modalConfirmBtn.onclick = () => {
         });
         Object.entries(importedData.dynamicSelections || {}).forEach(([key, val]) => {
             dynamicSelections[key] = val
+        });
+        Object.entries(importedData.subcategoryDiscountSelections || {}).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+                const map = {};
+                val.forEach(id => {
+                    map[id] = (map[id] || 0) + 1;
+                });
+                subcategoryDiscountSelections[key] = map;
+            } else if (val && typeof val === 'object') {
+                const map = {};
+                Object.entries(val).forEach(([id, count]) => {
+                    const num = Number(count) || 0;
+                    if (num > 0) map[id] = num;
+                });
+                subcategoryDiscountSelections[key] = map;
+            }
+        });
+        Object.entries(importedData.categoryDiscountSelections || {}).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+                const map = {};
+                val.forEach(id => {
+                    map[id] = (map[id] || 0) + 1;
+                });
+                categoryDiscountSelections[key] = map;
+            } else if (val && typeof val === 'object') {
+                const map = {};
+                Object.entries(val).forEach(([id, count]) => {
+                    const num = Number(count) || 0;
+                    if (num > 0) map[id] = num;
+                });
+                categoryDiscountSelections[key] = map;
+            }
         });
 
         // Reset attribute ranges to original before re-applying dynamic effects
@@ -159,6 +319,8 @@ function openModal(mode) {
             storyInputs,
             attributeSliderValues,
             dynamicSelections,
+            subcategoryDiscountSelections,
+            categoryDiscountSelections,
             computedPoints: Object.keys(formulas), // For debugging/info, not strictly needed for import
         }, null, 2);
         modalConfirmBtn.style.display = "none";
@@ -356,7 +518,7 @@ fetch("input.json")
             const descriptionEntry = data.find(entry => entry.type === "description");
             if (descriptionEntry?.text) {
                 const descEl = document.getElementById("cyoaDescription");
-                if (descEl) descEl.textContent = descriptionEntry.text;
+                setMultilineText(descEl, descriptionEntry.text);
             }
 
             // Set Header Image
@@ -414,7 +576,7 @@ function removeDependentOptions(deselectedId) {
     for (const cat of categories) {
         // Check options directly in category
         for (const opt of cat.options || []) {
-            if (opt.prerequisites?.includes(deselectedId) && selectedOptions[opt.id]) {
+            if (prereqReferencesId(opt.prerequisites, deselectedId) && selectedOptions[opt.id]) {
                 removeSelection(opt);
                 removeDependentOptions(opt.id); // Recursively remove dependents
             }
@@ -422,7 +584,7 @@ function removeDependentOptions(deselectedId) {
         // Check options within subcategories
         for (const subcat of cat.subcategories || []) {
             for (const opt of subcat.options || []) {
-                if (opt.prerequisites?.includes(deselectedId) && selectedOptions[opt.id]) {
+                if (prereqReferencesId(opt.prerequisites, deselectedId) && selectedOptions[opt.id]) {
                     removeSelection(opt);
                     removeDependentOptions(opt.id); // Recursively remove dependents
                 }
@@ -486,8 +648,7 @@ function removeSelection(option) {
 
 
     // Get the last recorded discounted cost for this selection instance
-    const refundCost = discountedSelections[option.id]?.pop() || option.cost;
-
+    const refundCost = (discountedSelections[option.id]?.pop()) ?? (option.cost ?? {});
     Object.entries(refundCost).forEach(([type, cost]) => {
         points[type] += cost;
     });
@@ -661,10 +822,20 @@ function addSelection(option) {
     const subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
 
     // Determine if this selection is discounted
-    const discounted = subcat?.discountFirstN && subcatCount < subcat.discountFirstN;
+    let discounted = false;
+    if (subcat) {
+        if (typeof subcat.discountStartsAfter === 'number') {
+            discounted = subcatCount >= subcat.discountStartsAfter;
+        } else if (typeof subcat.discountFirstN === 'number') {
+            discounted = subcatCount < subcat.discountFirstN;
+        } else if (subcat.discountFirstN) { // Fallback for truthy non-number values
+            discounted = subcatCount < subcat.discountFirstN;
+        }
+    }
 
+    const effectiveCost = getOptionEffectiveCost(option);
     const actualCost = {};
-    Object.entries(option.cost).forEach(([type, cost]) => {
+    Object.entries(effectiveCost).forEach(([type, cost]) => {
         let finalCost;
         if (cost < 0) { // If cost is negative (a gain), it's never discounted
             finalCost = cost;
@@ -710,7 +881,7 @@ function canSelect(option) {
     let meetsPrereq = true;
     if (typeof option.prerequisites === 'string') {
         try {
-            meetsPrereq = window.evaluatePrereqExpr(option.prerequisites, id => !!selectedOptions[id]);
+            meetsPrereq = window.evaluatePrereqExpr(option.prerequisites, id => selectedOptions[id] || 0);
         } catch (e) {
             console.error('Invalid prerequisite expression:', option.prerequisites, e);
             meetsPrereq = false;
@@ -747,7 +918,8 @@ function canSelect(option) {
     const underOptionLimit = currentOptionCount < maxPerOption;
 
     // Check if enough points (only for positive costs)
-    const hasPoints = Object.entries(option.cost || {}).every(([type, cost]) => {
+    const effectiveCost = getOptionEffectiveCost(option);
+    const hasPoints = Object.entries(effectiveCost || {}).every(([type, cost]) => {
         if (cost < 0) return true; // Gains don't require points
         const projected = points[type] - cost;
         return projected >= 0 || allowNegativeTypes.has(type);
@@ -770,6 +942,7 @@ function findSubcategoryOfOption(optionId) {
                 options: cat.options,
                 name: cat.name,
                 discountFirstN: cat.discountFirstN,
+                discountStartsAfter: cat.discountStartsAfter,
                 discountAmount: cat.discountAmount,
                 maxSelections: cat.maxSelections
             }; // Return a mock subcategory object
@@ -821,6 +994,153 @@ function getSubcategoryOptionLabel(id) {
     return getOptionLabel(id);
 }
 
+function buildCategoryKey(catIndex, catName) {
+    return `${catIndex}-${slugifyKey(catName || `Category${catIndex}`)}`;
+}
+
+function slugifyKey(str) {
+    return String(str || "").replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '');
+}
+
+function buildSubcategoryKey(catIndex, catName, subIndex, subName) {
+    const catPart = `${catIndex}-${slugifyKey(catName || `Category${catIndex}`)}`;
+    const subPart = `${subIndex}-${slugifyKey(subName || `Sub${subIndex}`)}`;
+    return `${catPart}__${subPart}`;
+}
+
+function findSubcategoryInfo(optionId) {
+    for (let c = 0; c < categories.length; c++) {
+        const cat = categories[c];
+        const directOptions = cat.options || [];
+        if (directOptions.some(opt => opt.id === optionId)) {
+            return {
+                cat,
+                subcat: null,
+                key: buildSubcategoryKey(c, cat.name, -1, 'root'),
+                catKey: buildCategoryKey(c, cat.name)
+            };
+        }
+        const subs = cat.subcategories || [];
+        for (let s = 0; s < subs.length; s++) {
+            const sub = subs[s];
+            if ((sub.options || []).some(opt => opt.id === optionId)) {
+                return {
+                    cat,
+                    subcat: sub,
+                    key: buildSubcategoryKey(c, cat.name, s, sub.name),
+                    catKey: buildCategoryKey(c, cat.name)
+                };
+            }
+        }
+    }
+    return {
+        cat: null,
+        subcat: null,
+        key: null,
+        catKey: null
+    };
+}
+
+function getDiscountMap(store, key) {
+    if (!key) return null;
+    if (!store[key]) store[key] = {};
+    return store[key];
+}
+
+function getSubcategoryDiscountMap(key) {
+    return getDiscountMap(subcategoryDiscountSelections, key) || {};
+}
+
+function getCategoryDiscountMap(key) {
+    return getDiscountMap(categoryDiscountSelections, key) || {};
+}
+
+function getDiscountTotalCount(map) {
+    return Object.values(map || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
+}
+
+function applyDiscountCost(cost = {}, mode = 'half') {
+    const updated = { ...cost };
+    Object.entries(updated).forEach(([type, val]) => {
+        if (val > 0) {
+            updated[type] = mode === 'free' ? 0 : Math.ceil(val / 2);
+        }
+    });
+    return updated;
+}
+
+function evaluateDiscountRequirementNode(node) {
+    if (node === null || node === undefined || node === '') return true;
+
+    if (Array.isArray(node)) {
+        if (node.length === 0) return true;
+        return node.every(evaluateDiscountRequirementNode);
+    }
+
+    if (typeof node === 'string') {
+        const trimmed = node.trim();
+        if (!trimmed) return true;
+        const hasLogicalOperators = /[()!&|]/.test(trimmed);
+        if (hasLogicalOperators && typeof window !== 'undefined' && typeof window.evaluatePrereqExpr === 'function') {
+            try {
+                return window.evaluatePrereqExpr(trimmed, id => selectedOptions[id] || 0);
+            } catch (err) {
+                console.warn('Failed to evaluate discount requirement expression:', trimmed, err);
+                return false;
+            }
+        }
+        return meetsCountRequirement(trimmed);
+    }
+
+    if (typeof node === 'object') {
+        const {
+            all,
+            any,
+            none
+        } = node;
+
+        if (all !== undefined) {
+            const list = Array.isArray(all) ? all : [all];
+            if (!list.every(evaluateDiscountRequirementNode)) return false;
+        }
+
+        if (any !== undefined) {
+            const list = Array.isArray(any) ? any : [any];
+            if (!list.some(evaluateDiscountRequirementNode)) return false;
+        }
+
+        if (none !== undefined) {
+            const list = Array.isArray(none) ? none : [none];
+            if (list.some(evaluateDiscountRequirementNode)) return false;
+        }
+
+        return true;
+    }
+
+    return true;
+}
+
+function evaluateDiscountRequirement(requirement) {
+    return evaluateDiscountRequirementNode(requirement);
+}
+
+function hasDiscountConfig(entity) {
+    return !!(entity && entity.discountSelectionLimit && entity.discountEligibleUnder);
+}
+
+function isDiscountUnlocked(entity) {
+    if (!entity) return false;
+    return evaluateDiscountRequirement(entity.discountRequires);
+}
+
+function canUseDiscount(entity) {
+    return hasDiscountConfig(entity) && isDiscountUnlocked(entity);
+}
+
+function shouldAutoApplyDiscount(entity) {
+    return !!(entity && entity.discountAutoApplyAll && canUseDiscount(entity));
+}
+
 
 /**
  * Renders the accordion structure based on the categories data.
@@ -831,7 +1151,7 @@ function renderAccordion() {
     const container = document.getElementById("accordionContainer");
     container.innerHTML = ""; // Clear previous content
 
-    categories.forEach(cat => {
+    categories.forEach((cat, catIndex) => {
         // Skip special types (points, headerImage, title, description, formulas) as they are handled separately
         if (["points", "headerImage", "title", "description", "formulas"].includes(cat.type)) {
             return;
@@ -885,7 +1205,35 @@ function renderAccordion() {
                 name: ""
             }]; // Treat options directly in category as a single subcategory
 
+            const catKey = buildCategoryKey(catIndex, cat.name);
+            const catHasDiscounts = hasDiscountConfig(cat);
+            const catDiscountUnlocked = catHasDiscounts && isDiscountUnlocked(cat);
+            const catAutoApplyAll = catDiscountUnlocked && shouldAutoApplyDiscount(cat);
+
+            if (catHasDiscounts && cat.discountRequiresMessage) {
+                const note = document.createElement("div");
+                note.className = "category-discount-requirement";
+                note.textContent = `${catDiscountUnlocked ? '✅' : '🔒'} ${cat.discountRequiresMessage}`;
+                content.appendChild(note);
+            }
+
+            if (catDiscountUnlocked) {
+                const catInfo = document.createElement("div");
+                catInfo.className = "category-discount-info";
+                if (catAutoApplyAll) {
+                    const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+                    catInfo.textContent = `Category discount auto-applies to eligible items (${catModeLabel}).`;
+                } else {
+                    const catMap = getCategoryDiscountMap(catKey);
+                    const used = getDiscountTotalCount(catMap);
+                    const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+                    catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} IP, ${catModeLabel})`;
+                }
+                content.appendChild(catInfo);
+            }
+
             subcats.forEach((subcat, subIndex) => {
+                const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
                 // Check subcategory-level requirements
                 const subcatRequires = subcat.requiresOption;
                 const subcatReqIds = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
@@ -900,7 +1248,6 @@ function renderAccordion() {
 
                 const subcatContent = document.createElement("div");
                 subcatContent.className = "subcategory-content";
-                const subcatKey = `${cat.name}__${subcat.name || subIndex}`; // Unique key for subcategory state
 
                 if (openSubcategories.has(subcatKey)) {
                     subcatContent.style.display = "block";
@@ -941,8 +1288,34 @@ function renderAccordion() {
                     if (subcat.text && subcat.text.trim() !== "") {
                         const storyText = document.createElement("div");
                         storyText.className = "story-block";
-                        storyText.innerHTML = subcat.text.replace(/\n/g, "<br>"); // Allow newlines to be rendered
+                        setMultilineText(storyText, subcat.text);
                         subcatContent.appendChild(storyText);
+                    }
+                    const subcatHasDiscounts = hasDiscountConfig(subcat);
+                    const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+                    const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+
+                    if (subcatHasDiscounts && subcat.discountRequiresMessage) {
+                        const note = document.createElement("div");
+                        note.className = "subcategory-discount-requirement";
+                        note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
+                        subcatContent.appendChild(note);
+                    }
+
+                    if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
+                        const discountInfo = document.createElement("div");
+                        discountInfo.className = "subcategory-discount-info";
+                        const subMap = getSubcategoryDiscountMap(subcatKey);
+                        const usedSlots = getDiscountTotalCount(subMap);
+                        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                        discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
+                        subcatContent.appendChild(discountInfo);
+                    } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
+                        const discountInfo = document.createElement("div");
+                        discountInfo.className = "subcategory-discount-info";
+                        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                        discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
+                        subcatContent.appendChild(discountInfo);
                     }
                     if (subcat.input) {
                         const inputWrapper = document.createElement("div");
@@ -970,6 +1343,11 @@ function renderAccordion() {
                 }
 
                 // Render options within the subcategory
+                const subcatHasDiscounts = hasDiscountConfig(subcat);
+                const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+                const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+                const isDiscountableSubcat = subcatDiscountUnlocked && !subcatAutoApplyAll;
+
                 (subcat.options || []).forEach(opt => {
                     const wrapper = document.createElement("div");
                     wrapper.className = "option-wrapper";
@@ -993,38 +1371,38 @@ function renderAccordion() {
                     requirements.className = "option-requirements";
                     const gain = [],
                         spend = [];
-                    Object.entries(opt.cost || {}).forEach(([type, val]) => {
+                    const displayCost = getOptionEffectiveCost(opt);
+                    Object.entries(displayCost || {}).forEach(([type, val]) => {
                         if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
                         else spend.push(`${type} ${val}`);
                     });
                     if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
                     if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
+                    const originalCost = opt.cost || {};
+                    const discountApplied = Object.entries(displayCost || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
+                    if (discountApplied) {
+                        const freeApplied = Object.entries(displayCost || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
+                        requirements.innerHTML += freeApplied ? `🔻 Discount Applied (Free)<br>` : `🔻 Discount Applied<br>`;
+                    }
 
                     // Show prerequisites for options (like Archangel)
                     if (opt.prerequisites && opt.prerequisites.length > 0) {
                         let prereqLines = [];
                         if (typeof opt.prerequisites === 'string') {
-                            // Parse the string for variable names (option IDs)
-                            const ids = opt.prerequisites.match(/\b[a-zA-Z_][a-zA-Z0-9_]*\b/g) || [];
-                            // Remove JS reserved words and boolean literals
+                            const tokens = opt.prerequisites.match(/!?[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?/g) || [];
                             const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
-                            // For OR logic: if any option is selected, mark all as accepted
-                            let isOr = opt.prerequisites.includes('||');
-                            let orAccepted = false;
-                            if (isOr) {
-                                orAccepted = ids.some(id => !reserved.has(id) && !!selectedOptions[id]);
-                            }
-                            ids.forEach(id => {
-                                if (!reserved.has(id)) {
-                                    const label = getOptionLabel(id);
-                                    let symbol;
-                                    if (isOr && orAccepted) {
-                                        symbol = "✅";
-                                    } else {
-                                        symbol = !!selectedOptions[id] ? "✅" : "❌";
-                                    }
-                                    prereqLines.push(`${symbol} ${label}`);
-                                }
+                            const seen = new Set();
+                            tokens.forEach(token => {
+                                const negated = token.startsWith('!');
+                                const core = negated ? token.slice(1) : token;
+                                const [id, minSuffix] = core.split('__');
+                                if (reserved.has(id) || seen.has(core)) return;
+                                seen.add(core);
+                                const requiredCount = minSuffix ? Number(minSuffix) : 1;
+                                const actual = selectedOptions[id] || 0;
+                                const satisfied = negated ? actual < requiredCount : actual >= requiredCount;
+                                const label = getOptionLabel(id) + (requiredCount > 1 ? ` (x${requiredCount})` : "");
+                                prereqLines.push(`${satisfied ? "✅" : "❌"} ${label}`);
                             });
                         } else if (Array.isArray(opt.prerequisites)) {
                             prereqLines = opt.prerequisites.map(id => {
@@ -1057,14 +1435,120 @@ function renderAccordion() {
 
                     const desc = document.createElement("div");
                     desc.className = "option-description";
-                    desc.textContent = opt.description || "";
+                    setMultilineText(desc, opt.description || "");
+
+                    const baseIpCost = (opt.cost && typeof opt.cost.IP === 'number') ? opt.cost.IP : null;
+                    const discountContexts = [];
+                    if (isDiscountableSubcat && opt.disableSubcategoryDiscount !== true) {
+                        discountContexts.push({
+                            level: 'subcategory',
+                            limit: subcat.discountSelectionLimit,
+                            eligible: subcat.discountEligibleUnder,
+                            map: getSubcategoryDiscountMap(subcatKey),
+                            mode: subcat.discountMode || 'half'
+                        });
+                    }
+                    if (catDiscountUnlocked && opt.disableCategoryDiscount !== true && !catAutoApplyAll) {
+                        discountContexts.push({
+                            level: 'category',
+                            limit: cat.discountSelectionLimit,
+                            eligible: cat.discountEligibleUnder,
+                            map: getCategoryDiscountMap(catKey),
+                            mode: cat.discountMode || 'half'
+                        });
+                    }
+
+                    discountContexts.forEach(discountContext => {
+                        if (baseIpCost === null || baseIpCost <= 0 || baseIpCost > discountContext.eligible) {
+                            return;
+                        }
+
+                        const discountMap = discountContext.map;
+                        const assignedCount = discountMap[opt.id] || 0;
+                        const totalAssigned = getDiscountTotalCount(discountMap);
+                        const discountLimit = discountContext.limit || 0;
+                        const alreadySelected = selectedOptions[opt.id] > 0;
+                        const totalOthers = totalAssigned - assignedCount;
+                        const availableSlots = Math.max(0, discountLimit - totalOthers);
+                        const contextLabel = discountContext.level === 'subcategory' ? 'subcategory' : 'category';
+                        const discountLabel = discountContext.mode === 'free' ? 'Free slots' : 'Discount slots';
+
+                        if (assignedCount > 0) {
+                            const remaining = Math.max(0, assignedCount - (selectedOptions[opt.id] || 0));
+                            const remainingText = remaining > 0 ? ` (remaining ${remaining})` : '';
+                            requirements.innerHTML += `${discountLabel} assigned (${contextLabel}): ${assignedCount}${remainingText}<br>`;
+                        }
+
+                        const discountBtn = document.createElement("button");
+                        discountBtn.className = "discount-toggle";
+                        if (assignedCount > 0) {
+                            discountBtn.textContent = discountContext.mode === 'free'
+                                ? `Discount Applied (${assignedCount}) – Free (${contextLabel})`
+                                : `Discount Applied (${assignedCount}) (${contextLabel})`;
+                        } else {
+                            discountBtn.textContent = discountContext.mode === 'free'
+                                ? `Apply Free Slot (${contextLabel})`
+                                : `Apply Discount (${contextLabel})`;
+                        }
+
+                        const canIncrease = availableSlots > assignedCount;
+
+                        discountBtn.disabled = alreadySelected || (assignedCount === 0 && !canIncrease);
+                        if (alreadySelected) {
+                            discountBtn.title = `Remove and re-select this item to change ${contextLabel} discount status.`;
+                        } else if (assignedCount === 0 && !canIncrease) {
+                            const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
+                            discountBtn.title = `${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`;
+                        } else {
+                            discountBtn.title = discountContext.mode === 'free'
+                                ? `Assign or remove a free ${contextLabel} slot for this item.`
+                                : `Cycle the number of ${contextLabel} discount slots applied to this item.`;
+                        }
+
+                        discountBtn.onclick = () => {
+                            if (selectedOptions[opt.id] > 0) return;
+
+                            const current = discountMap[opt.id] || 0;
+                            const freshTotal = getDiscountTotalCount(discountMap) - current;
+                            const maxAllowed = Math.max(0, discountLimit - freshTotal);
+
+                            if (maxAllowed === 0 && current === 0) {
+                                const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
+                                alert(`${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`);
+                                return;
+                            }
+
+                            let next = current + 1;
+                            if (next > maxAllowed) {
+                                next = 0;
+                            }
+
+                            if (next > 0) {
+                                discountMap[opt.id] = next;
+                                discountContexts.forEach(otherContext => {
+                                    if (otherContext !== discountContext && otherContext.map[opt.id]) {
+                                        delete otherContext.map[opt.id];
+                                    }
+                                });
+                            } else {
+                                delete discountMap[opt.id];
+                            }
+                            renderAccordion();
+                        };
+                        requirements.appendChild(discountBtn);
+                    });
 
                     contentWrapper.appendChild(label);
                     contentWrapper.appendChild(requirements);
                     contentWrapper.appendChild(desc);
 
                     if (opt.inputType === "slider") {
-                        const attrName = Object.keys(opt.costPerPoint || {}).find(t => t !== "Attribute Points");
+                        const {
+                            currencyType,
+                            attributeType
+                        } = getSliderTypes(opt.costPerPoint || {});
+
+                        const attrName = attributeType;
 
                         const effectiveMin = opt.min ?? attributeRanges[attrName]?.min ?? 0;
                         // Use attributeRanges for max, which will be updated by dynamic effects
@@ -1075,10 +1559,19 @@ function renderAccordion() {
                         if (currentValue > effectiveMax) {
                             currentValue = effectiveMax;
                             attributeSliderValues[opt.id] = currentValue;
+                            if (attrName) attributeSliderValues[attrName] = currentValue;
                         }
                         if (currentValue < effectiveMin) {
                             currentValue = effectiveMin;
                             attributeSliderValues[opt.id] = currentValue;
+                            if (attrName) attributeSliderValues[attrName] = currentValue;
+                        }
+
+                        if (attributeSliderValues[opt.id] === undefined) {
+                            attributeSliderValues[opt.id] = currentValue;
+                        }
+                        if (attrName && attributeSliderValues[attrName] === undefined) {
+                            attributeSliderValues[attrName] = currentValue;
                         }
 
 
@@ -1099,8 +1592,12 @@ function renderAccordion() {
 
                         slider.oninput = (e) => {
                             const newVal = parseInt(e.target.value);
-                            const attrNameForCost = Object.keys(opt.costPerPoint || {}).find(t => t !== "Attribute Points");
-                            const costPerPoint = opt.costPerPoint["Attribute Points"] || 0;
+                            const {
+                                currencyType: currentCurrency,
+                                attributeType: currentAttribute
+                            } = getSliderTypes(opt.costPerPoint || {});
+                            const costPerPoint = opt.costPerPoint?.[currentCurrency] || 0;
+                            const attrNameForCost = currentAttribute;
 
                             // Re-check current effective max (could have been changed by a dynamic cap)
                             const currentEffectiveMax = attributeRanges[attrNameForCost]?.max ?? parseInt(slider.max);
@@ -1113,7 +1610,7 @@ function renderAccordion() {
                                 return;
                             }
 
-                            const oldVal = attributeSliderValues[opt.id] || 0; // Value before this input event
+                            const oldVal = attributeSliderValues[opt.id] ?? effectiveMin; // Value before this input event
                             let diff = newVal - oldVal;
 
                             let freeBoostAmount = 0;
@@ -1140,7 +1637,7 @@ function renderAccordion() {
 
                                 if (paidIncrease > 0) {
                                     const cost = costPerPoint * paidIncrease;
-                                    if (points["Attribute Points"] < cost && !allowNegativeTypes.has("Attribute Points")) {
+                                    if (points[currentCurrency] < cost && !allowNegativeTypes.has(currentCurrency)) {
                                         e.target.value = oldVal; // Revert slider visually
                                         sliderLabel.textContent = `${opt.label}: ${oldVal}`; // Also revert label
                                         return; // Not enough points, prevent change
@@ -1159,14 +1656,17 @@ function renderAccordion() {
 
                             // Apply the calculated point change
                             if (pointsChange !== 0) {
-                                points["Attribute Points"] += pointsChange;
+                                points[currentCurrency] += pointsChange;
                             }
 
                             // Update the stored attribute value
                             attributeSliderValues[opt.id] = newVal;
+                            if (attrNameForCost) {
+                                attributeSliderValues[attrNameForCost] = newVal;
+                            }
                             // Also update the points object if the attribute is directly tied to a point type
                             // (this was causing issues with 'Strength' not updating in points display previously)
-                            if (points.hasOwnProperty(attrNameForCost)) {
+                            if (attrNameForCost && points.hasOwnProperty(attrNameForCost)) {
                                 points[attrNameForCost] = newVal;
                             }
 
@@ -1188,7 +1688,12 @@ function renderAccordion() {
                         const max = opt.maxSelections || 1;
 
                         const btn = document.createElement("button");
-                        btn.textContent = count > 0 ? "✓ Selected" : "Select";
+                        if (count > 0) {
+                            const maxLabel = max === Infinity ? "" : ` / ${max}`;
+                            btn.textContent = `✓ Selected (${count}${maxLabel})`;
+                        } else {
+                            btn.textContent = "Select";
+                        }
 
                         const canAdd = canSelect(opt);
                         // Disable if cannot select AND nothing is already selected (prevent adding)
@@ -1293,4 +1798,33 @@ function renderAccordion() {
         }
         container.appendChild(item);
     });
+}
+
+// Put this near your other helpers (top-level scope)
+function prereqReferencesId(prereq, id) {
+    if (!prereq) return false;
+
+    // String: could be a single id or a boolean expression referencing ids
+    if (typeof prereq === 'string') {
+        // Match whole-id occurrences: kgA, not substrings like kgAB
+        const re = new RegExp(`\\b${id}\\b`);
+        return re.test(prereq);
+    }
+
+    // Array: interpreted as "must have all" (or however you’re using it)
+    if (Array.isArray(prereq)) {
+        return prereq.includes(id);
+    }
+
+    // Object: support {and:[]}, {or:[]}, {not:...} (any can be omitted)
+    if (typeof prereq === 'object') {
+        const hasAnd = Array.isArray(prereq.and) && prereq.and.some(p => prereqReferencesId(p, id));
+        const hasOr = Array.isArray(prereq.or) && prereq.or.some(p => prereqReferencesId(p, id));
+        const hasNot = prereq.not ? prereqReferencesId(prereq.not, id) : false;
+
+        // If it's referenced positively in AND/OR, or in NOT (still a dependency)
+        return hasAnd || hasOr || hasNot;
+    }
+
+    return false;
 }
