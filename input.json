@@ -17,10 +17,21 @@
             "JP": 0,
             "SCP": 0,
             "PP": 0,
-            "IP": 600
+            "IP": 600,
+            "MSP": 0,
+            "RGP": 0
         },
         "allowNegative": [
-            "RP"
+            "RP",
+            "SP",
+            "BLP",
+            "RGP",
+            "IP",
+            "JP",
+            "MSP",
+            "SCP",
+            "PP",
+            "CP"
         ]
     },
     {
@@ -144,7 +155,7 @@
                 "options": [
                     {
                         "id": "raceHuman",
-                        "label": "Human [FREE]",
+                        "label": "Human",
                         "description": "A standard human. Nothing particularly special, but it’s free.",
                         "cost": {
                             "RP": 1
@@ -152,7 +163,7 @@
                     },
                     {
                         "id": "raceAnimalSummon100",
-                        "label": "Animal Summon [100 CP]",
+                        "label": "Animal Summon",
                         "description": "An animal companion that grows in power and size, gaining species-based supernatural abilities. Base size comparable to a normal specimen.",
                         "cost": {
                             "CP": 100,
@@ -161,7 +172,7 @@
                     },
                     {
                         "id": "raceAnimalSummon200",
-                        "label": "Animal Summon [200 CP]",
+                        "label": "Animal Summon",
                         "description": "As above, but you begin much larger—nearly the size of a small house, with significant physical might.",
                         "cost": {
                             "CP": 200,
@@ -170,7 +181,7 @@
                     },
                     {
                         "id": "raceAnimalSummon300",
-                        "label": "Animal Summon [300 CP]",
+                        "label": "Animal Summon",
                         "description": "A gargantuan summon rivaling Gamabunta or Manda, or a transformation to reach that size at will. Grants a discount on the Sage Mode perk.",
                         "cost": {
                             "CP": 300,
@@ -179,7 +190,7 @@
                     },
                     {
                         "id": "raceMechaHuman300",
-                        "label": "Mecha-Human [300 CP]",
+                        "label": "Mecha-Human",
                         "description": "Become a mecha-fied human with flight, modular weaponry, chakra absorption, and other machine advantages, but requiring repairs instead of natural healing.",
                         "cost": {
                             "CP": 300,
@@ -188,7 +199,7 @@
                     },
                     {
                         "id": "raceMechaHuman400",
-                        "label": "Mecha-Human [400 CP]",
+                        "label": "Mecha-Human",
                         "description": "All the benefits of a magic robot body with drawbacks nullified—heal and improve naturally while retaining all mechanical upgrades. Works with Hybrid for cyborg adaptations.",
                         "cost": {
                             "CP": 400,
@@ -197,7 +208,7 @@
                     },
                     {
                         "id": "raceZetsuWhite",
-                        "label": "Zetsu [White, 400 CP]",
+                        "label": "Zetsu [White]",
                         "description": "A White Zetsu with flawless transformations, chakra-draining spores, and persistent parasite clones. Discount on Regeneration Kekkei Genkai.",
                         "cost": {
                             "CP": 400,
@@ -206,7 +217,7 @@
                     },
                     {
                         "id": "raceZetsuBlack",
-                        "label": "Zetsu [Black, 400 CP]",
+                        "label": "Zetsu [Black]",
                         "description": "A Black Zetsu with a malleable body, possession abilities, perfect sensory recording, free Chakra Sensing Kekkei Genkai, and Wood Release without prerequisites.",
                         "cost": {
                             "CP": 400,
@@ -215,7 +226,7 @@
                     },
                     {
                         "id": "raceZetsuHybrid",
-                        "label": "Zetsu [White & Black, 600 CP]",
+                        "label": "Zetsu [White & Black]",
                         "description": "Half White, half Black—split into two autonomous bodies. Perks apply to both halves, and either can regenerate the other if destroyed.",
                         "cost": {
                             "CP": 600,
@@ -224,16 +235,17 @@
                     },
                     {
                         "id": "raceOtsutsuki800",
-                        "label": "Ōtsutsuki [800 CP]",
+                        "label": "Ōtsutsuki",
                         "description": "Celestial being with overwhelming strength, durability, vast chakra reserves, enhanced Byakugan that reads fate, and Kāma-based resurrection.",
                         "cost": {
                             "CP": 800,
-                            "RP": 1
+                            "RP": 1,
+                            "RGP": -1
                         }
                     },
                     {
                         "id": "raceOtsutsuki1200",
-                        "label": "Ōtsutsuki [1200 CP]",
+                        "label": "Ōtsutsuki 2",
                         "description": "Ōtsutsuki who has consumed a Chakra Fruit—gain Rinnegan or Isshiki’s dōjutsu, flight, Yomotsu Hirasaka, and chakra reserves surpassing Jūbi Madara.",
                         "cost": {
                             "CP": 400
@@ -264,7 +276,7 @@
                 "options": [
                     {
                         "id": "perkChakraFree",
-                        "label": "Chakra [FREE]",
+                        "label": "Chakra",
                         "description": "Begin with chakra reserves equal to an average Jōnin. In future Jumps you can awaken chakra pathways in others by channeling your energy.",
                         "cost": {
                             "CP": 0
@@ -276,7 +288,7 @@
                     },
                     {
                         "id": "perkChakra100",
-                        "label": "Chakra [100 CP]",
+                        "label": "Chakra",
                         "description": "Start with chakra reserves comparable to an average Kage.",
                         "cost": {
                             "CP": 100
@@ -288,7 +300,7 @@
                     },
                     {
                         "id": "perkChakra200",
-                        "label": "Chakra [200 CP]",
+                        "label": "Chakra",
                         "description": "Possess immense chakra on par with Kisame Hoshigaki, the 'Tailless Tailed Beast'.",
                         "cost": {
                             "CP": 200
@@ -300,7 +312,7 @@
                     },
                     {
                         "id": "perkAcademyTraining",
-                        "label": "Academy Training [FREE]",
+                        "label": "Academy Training",
                         "description": "Graduate-level shinobi fundamentals: survival, stealth, trap-making, basic tools, three Academy jutsu, taijutsu forms, and chakra control for reinforced strength/speed and genjutsu dispels.",
                         "cost": {
                             "CP": 0
@@ -308,7 +320,7 @@
                     },
                     {
                         "id": "perkNatureFree",
-                        "label": "Nature Affinity [FREE]",
+                        "label": "Nature Affinity",
                         "description": "Gain one elemental or Yin/Yang chakra nature affinity. Doubles affinity strength with matching dojutsu-based bloodlines.",
                         "cost": {
                             "CP": 0
@@ -317,7 +329,7 @@
                     },
                     {
                         "id": "perkNatureAdditional",
-                        "label": "Additional Nature Affinity [50 CP]",
+                        "label": "Additional Nature Affinity",
                         "description": "Acquire another chakra nature affinity (limit seven total).",
                         "cost": {
                             "CP": 50
@@ -326,7 +338,7 @@
                     },
                     {
                         "id": "perkJutsuFree",
-                        "label": "Jutsu Technique [FREE]",
+                        "label": "E-Rank Jutsu Technique",
                         "description": "Know any one E-rank technique at Academy graduate mastery.",
                         "cost": {
                             "CP": 0
@@ -336,7 +348,7 @@
                     },
                     {
                         "id": "perkJutsuD",
-                        "label": "Jutsu Technique [50 CP]",
+                        "label": "D-Rank Jutsu Technique",
                         "description": "Master a D-rank technique (e.g., Body Flicker).",
                         "cost": {
                             "CP": 50
@@ -346,7 +358,7 @@
                     },
                     {
                         "id": "perkJutsuC",
-                        "label": "Jutsu Technique [100 CP]",
+                        "label": "C-Rank Jutsu Technique",
                         "description": "Master a C-rank technique (e.g., Lee's Drunken Fist).",
                         "cost": {
                             "CP": 100
@@ -356,7 +368,7 @@
                     },
                     {
                         "id": "perkJutsuB",
-                        "label": "Jutsu Technique [200 CP]",
+                        "label": "B-Rank Jutsu Technique",
                         "description": "Master a B-rank technique (e.g., Kurenai's Tree Binding Death).",
                         "cost": {
                             "CP": 200
@@ -366,7 +378,7 @@
                     },
                     {
                         "id": "perkJutsuA",
-                        "label": "Jutsu Technique [300 CP]",
+                        "label": "A-Rank Jutsu Technique",
                         "description": "Master an A-rank technique (e.g., Chidori).",
                         "cost": {
                             "CP": 300
@@ -376,7 +388,7 @@
                     },
                     {
                         "id": "perkJutsuS",
-                        "label": "Jutsu Technique [400 CP]",
+                        "label": "S-Rank Jutsu Technique",
                         "description": "Master an S-rank technique (e.g., Flying Thunder God). Over-purchasing adds mastery; prerequisites must still be met.",
                         "cost": {
                             "CP": 400
@@ -386,7 +398,7 @@
                     },
                     {
                         "id": "perkJutsuSPlus",
-                        "label": "Jutsu Technique [500 CP]",
+                        "label": "S+ Rank Jutsu Technique",
                         "description": "Over-purchase to elevate a technique to S+ mastery, removing drawbacks and granting total control.",
                         "cost": {
                             "CP": 500
@@ -396,7 +408,7 @@
                     },
                     {
                         "id": "perkAnimeStyle",
-                        "label": "Anime Style [50 CP]",
+                        "label": "Anime Style",
                         "description": "Toggle the aesthetic of each Jump to match any anime art style.",
                         "cost": {
                             "CP": 50
@@ -404,7 +416,7 @@
                     },
                     {
                         "id": "perkUltimateNinjaStyle",
-                        "label": "Ultimate Ninja Style [50 CP]",
+                        "label": "Ultimate Ninja Style",
                         "description": "Make your techniques dramatically stylish without altering their power. Can extend to teammates.",
                         "cost": {
                             "CP": 50
@@ -439,7 +451,7 @@
                     },
                     {
                         "id": "perkTsunadeStrength",
-                        "label": "Tsunade’s Strength [100 CP]",
+                        "label": "Tsunade’s Strength",
                         "description": "Possess immense raw strength: crack terrain with a finger, shatter Sannin, or breach Susanoo with a handful of blows.",
                         "cost": {
                             "CP": 100
@@ -447,7 +459,7 @@
                     },
                     {
                         "id": "perkSpecialistPaid",
-                        "label": "Specialist [200 CP]",
+                        "label": "Specialist",
                         "description": "Acquire additional specialties or styles, each granting rapid mastery in the chosen field. Can mix focuses (e.g., Nin-Taijutsu).",
                         "cost": {
                             "CP": 200,
@@ -457,7 +469,7 @@
                     },
                     {
                         "id": "perkUnsealable",
-                        "label": "Unsealable [200 CP]",
+                        "label": "Unsealable",
                         "description": "Immune to sealing techniques; your powers cannot be suppressed or imprisoned by fūinjutsu (extends to other methods post-Jump).",
                         "cost": {
                             "CP": 200
@@ -465,7 +477,7 @@
                     },
                     {
                         "id": "perkMyWorld",
-                        "label": "My World [200 CP]",
+                        "label": "My World",
                         "description": "Total immunity to hallucinations and illusions, including Tsukuyomi and Infinite Tsukuyomi.",
                         "cost": {
                             "CP": 200
@@ -473,7 +485,7 @@
                     },
                     {
                         "id": "perkWhatsMine",
-                        "label": "What’s Mine Is Mine [200 CP]",
+                        "label": "What’s Mine Is Mine",
                         "description": "Your DNA is undecipherable and immune to cloning. Toggle to allow or deny access at will.",
                         "cost": {
                             "CP": 200
@@ -481,7 +493,7 @@
                     },
                     {
                         "id": "perkHanzosTouch",
-                        "label": "Hanzō’s Touch [300 CP]",
+                        "label": "Hanzō’s Touch",
                         "description": "Implanted with a lethal salamander venom sac; exhale targeted toxins causing agony and death within days, with antidote provided.",
                         "cost": {
                             "CP": 300
@@ -489,7 +501,7 @@
                     },
                     {
                         "id": "perkTheEightGates",
-                        "label": "The Eight Gates [600 CP]",
+                        "label": "The Eight Gates",
                         "description": "The Eight Gates are special points in the body that exist to control the flow of chakra within the body. Ordinarily, a person could use no more than 20% of their potential in order to prevent the body from harming itself. With training, an individual can learn to release these limiters, increasing their strength and speed. By taking this perk, you can now open all Eight Gates and survive unlike in canon. You will, however, be incapacitated for a minimum of six months unless you possess a regenerative factor that can counteract your injuries.",
                         "cost": {
                             "CP": 600
@@ -500,11 +512,11 @@
             {
                 "type": "storyBlock",
                 "name": "Sage Mode",
-                "text": "SAGE MODE [400/800 CP]\n\nMany view Sages as just another type of ninja, another kind of killer, but we both know that is not true. A Sage is something more, a being who does not just use the chakra of the world but becomes one with the world.\n\nSages utilize a specialized form of jutsu called senjutsu that involves drawing natural energy from the world itself into their bodies and merging it with their own chakra to create senjutsu chakra. Now, this seems easy but in order to do so the nature chakra must be gathered and then balanced with the body's physical and spiritual energies. Upon doing so, the Sage's strength, speed, stamina, reflexes, perception, and durability are enhanced.\n\nBy utilizing senjutsu chakra, the Sage can cause their ninjutsu, genjutsu, and taijutsu to become even more powerful. The Sage can sense chakra around them and can sense attacks without the need to view them and if you can already do that before, then the talent is enhanced. While in Sage Mode, this increases the amount of chakra the user has available and by imbuing senjutsu chakra into ninjutsu, the user can augment the techniques and gain access to special senjutsu techniques.\n\nAs you are paying CP, you can choose to gain the powers of either the Toad Sages or the Snake Sages. The Toad Sages possess the Frog Kata ability, allowing the user to harness natural energy to extend the reach of their attacks. The Snake Sages possess the Inorganic Reincarnation technique, allowing the user to animate and control the environment around them, as well as using the White Rage technique, a powerful explosion of light and sound.\n\nYou may instead gain a custom set of unique abilities of a similar power level, based on where and how you learned Sage Mode. If you wish to have access to additional versions, you can pay 50 CP extra for each.\n\nHowever, this comes with a downside. If too much natural energy is taken in, it can lead to the Sage being turned into stone. Another downside is that the natural energy can only be taken in and mixed only when standing completely and utterly still. If in a fight, you cannot stay utterly still, then your reserve of senjutsu chakra will diminish as the battle goes on.\n\nBy paying for it here, you will find that the first drawback of turning to stone will never occur and you will never make any mistake in the blending of the chakra. Even in a life and death battle, the process will always go correctly.\n\nNormally you would require large chakra reserves, but you have found a way around that. Another thing to remember is if you continually practice the use of senjutsu, the time needed to refill your senjutsu reserves will decrease.\n\nFor an additional 400 CP (FREE: Jūbi Jinchūriki), you can obtain Six Paths Senjutsu, a version of senjutsu vastly superior to regular senjutsu.\n\nFor starters, every boost you get from regular senjutsu is massively enhanced to the point you that you can sense beings like Madara's Limbo clones and dodge lightspeed attacks.\n\nSecondly, you are immune to all but senjutsu enhanced attacks. Thirdly, Six Paths Senjutsu enhances any dōjutsu you possess. An example of this is Obito using Kamui and what little Six Paths chakra he had left to somehow give his Sharingan to Kakashi temporarily while he was in Limbo. Another example is Kakashi being able to use the perfect Susanoo without any of the prior forms.\n\nFinally, you gain access to Yin and Yang natures as well as Yin-Yang release and Truth-Seeking Balls along with the ability of flight.\n\nAs far as abilities go, the versions the Jūbi Jinchūriki have and what Naruto gets are the same but with different appearances. Naruto's eyes changed to be similar to when he uses Sage mode in Nine-Tails Chakra Mode but without the markings or the chakra cloak, the Jūbi Jinchūriki either has fleshy mutations like Obito or clothes made of senjutsu chakra like Madara.\n\nFor the purposes of this perk, if you are not a Jūbi Jinchūriki, assume that your Six Paths Sage Mode is similar in appearance to Naruto's, only tailored to what animal summon you chose to learn from.",
+                "text": "SAGE MODE\n\nMany view Sages as just another type of ninja, another kind of killer, but we both know that is not true. A Sage is something more, a being who does not just use the chakra of the world but becomes one with the world.\n\nSages utilize a specialized form of jutsu called senjutsu that involves drawing natural energy from the world itself into their bodies and merging it with their own chakra to create senjutsu chakra. Now, this seems easy but in order to do so the nature chakra must be gathered and then balanced with the body's physical and spiritual energies. Upon doing so, the Sage's strength, speed, stamina, reflexes, perception, and durability are enhanced.\n\nBy utilizing senjutsu chakra, the Sage can cause their ninjutsu, genjutsu, and taijutsu to become even more powerful. The Sage can sense chakra around them and can sense attacks without the need to view them and if you can already do that before, then the talent is enhanced. While in Sage Mode, this increases the amount of chakra the user has available and by imbuing senjutsu chakra into ninjutsu, the user can augment the techniques and gain access to special senjutsu techniques.\n\nAs you are paying CP, you can choose to gain the powers of either the Toad Sages or the Snake Sages. The Toad Sages possess the Frog Kata ability, allowing the user to harness natural energy to extend the reach of their attacks. The Snake Sages possess the Inorganic Reincarnation technique, allowing the user to animate and control the environment around them, as well as using the White Rage technique, a powerful explosion of light and sound.\n\nYou may instead gain a custom set of unique abilities of a similar power level, based on where and how you learned Sage Mode. If you wish to have access to additional versions, you can pay 50 CP extra for each.\n\nHowever, this comes with a downside. If too much natural energy is taken in, it can lead to the Sage being turned into stone. Another downside is that the natural energy can only be taken in and mixed only when standing completely and utterly still. If in a fight, you cannot stay utterly still, then your reserve of senjutsu chakra will diminish as the battle goes on.\n\nBy paying for it here, you will find that the first drawback of turning to stone will never occur and you will never make any mistake in the blending of the chakra. Even in a life and death battle, the process will always go correctly.\n\nNormally you would require large chakra reserves, but you have found a way around that. Another thing to remember is if you continually practice the use of senjutsu, the time needed to refill your senjutsu reserves will decrease.\n\nFor an additional 400 CP (FREE: Jūbi Jinchūriki), you can obtain Six Paths Senjutsu, a version of senjutsu vastly superior to regular senjutsu.\n\nFor starters, every boost you get from regular senjutsu is massively enhanced to the point you that you can sense beings like Madara's Limbo clones and dodge lightspeed attacks.\n\nSecondly, you are immune to all but senjutsu enhanced attacks. Thirdly, Six Paths Senjutsu enhances any dōjutsu you possess. An example of this is Obito using Kamui and what little Six Paths chakra he had left to somehow give his Sharingan to Kakashi temporarily while he was in Limbo. Another example is Kakashi being able to use the perfect Susanoo without any of the prior forms.\n\nFinally, you gain access to Yin and Yang natures as well as Yin-Yang release and Truth-Seeking Balls along with the ability of flight.\n\nAs far as abilities go, the versions the Jūbi Jinchūriki have and what Naruto gets are the same but with different appearances. Naruto's eyes changed to be similar to when he uses Sage mode in Nine-Tails Chakra Mode but without the markings or the chakra cloak, the Jūbi Jinchūriki either has fleshy mutations like Obito or clothes made of senjutsu chakra like Madara.\n\nFor the purposes of this perk, if you are not a Jūbi Jinchūriki, assume that your Six Paths Sage Mode is similar in appearance to Naruto's, only tailored to what animal summon you chose to learn from.",
                 "options": [
                     {
                         "id": "perkSageMode",
-                        "label": "Sage Mode [400 CP]",
+                        "label": "Sage Mode",
                         "description": "Attune yourself to natural energy and enter Sage Mode, mastering a tradition such as the toads, snakes, or a custom mentor. Gain senjutsu chakra that bolsters every combat discipline, grants chakra sensing, and guarantees flawless energy balance without petrification. Additional Sage Mode traditions cost 50 CP via the option below.\n\nFree if you are the Jūbi Jinchūriki",
                         "cost": {
                             "CP": 400
@@ -521,7 +533,7 @@
                     },
                     {
                         "id": "perkSageModeAdditional",
-                        "label": "Additional Sage Tradition [50 CP]",
+                        "label": "Additional Sage Tradition",
                         "description": "Expand your senjutsu repertoire with another Sage Mode lineage or custom path, adding its techniques and nuances to your arsenal.",
                         "cost": {
                             "CP": 50
@@ -531,7 +543,7 @@
                     },
                     {
                         "id": "perkSixPathsSenjutsu",
-                        "label": "Six Paths Senjutsu [400 CP]",
+                        "label": "Six Paths Senjutsu",
                         "description": "Elevate Sage Mode into its Six Paths form, massively amplifying every senjutsu boost, granting immunity to non-senjutsu attacks, empowering any dōjutsu, awakening Yin-Yang Release, Truth-Seeking Balls, and flight. Costs CP unless you are a Jūbi Jinchūriki.",
                         "cost": {
                             "CP": 400
@@ -545,7 +557,7 @@
                                     "CP": 200
                                 }
                             }
-                        ]                        
+                        ]
                     }
                 ]
             },
@@ -563,7 +575,7 @@
                             "CP": 0,
                             "SP": 1
                         },
-                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "prerequisites": "perkSpecialistPaid",
                         "maxSelections": 20
                     },
                     {
@@ -574,7 +586,7 @@
                             "CP": 50,
                             "SP": 1
                         },
-                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "prerequisites": "perkSpecialistPaid",
                         "maxSelections": 20
                     },
                     {
@@ -585,7 +597,7 @@
                             "CP": 100,
                             "SP": 1
                         },
-                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "prerequisites": "perkSpecialistPaid",
                         "maxSelections": 20
                     },
                     {
@@ -596,7 +608,7 @@
                             "CP": 150,
                             "SP": 1
                         },
-                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "prerequisites": "perkSpecialistPaid",
                         "maxSelections": 20
                     },
                     {
@@ -607,7 +619,7 @@
                             "CP": 200,
                             "SP": 1
                         },
-                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "prerequisites": "perkSpecialistPaid",
                         "maxSelections": 20
                     },
                     {
@@ -618,7 +630,7 @@
                             "CP": 250,
                             "SP": 1
                         },
-                        "prerequisites": "perkSpecialistFree || perkSpecialistPaid",
+                        "prerequisites": "perkSpecialistPaid",
                         "maxSelections": 20
                     }
                 ]
@@ -630,7 +642,7 @@
                 "options": [
                     {
                         "id": "perkMyNindo",
-                        "label": "My Nindō [100 CP]",
+                        "label": "My Nindō",
                         "description": "The Ninja Way, a personal rule that each shinobi lives and dies by. It is their motto, their belief and the way they live their lives, and it can be anything no matter how immoral or cruel. You too have a motto that you will follow and abide by to the ends of the Earth and no matter how many hardships you face or what situations arise, you remain steadfast to your Nindō.\n\nUnlike others, you will always find ways to achieve what you need to without compromising your beliefs whatsoever. After all, this is your Nindō.",
                         "cost": {
                             "CP": 100
@@ -647,7 +659,7 @@
                     },
                     {
                         "id": "perkShonenCharm",
-                        "label": "Shonen Charm [200 CP]",
+                        "label": "Shonen Charm",
                         "description": "It is the quality of every protagonist to beat the trauma out of their opponents, to do decades of psychological work in a matter of hits. The greater the damage you inflict on your enemies, the better they become at breezing past all of the hang-ups that they were inflicted with as if by magic. But this has to be an actual fight, you cannot just physically abuse them.",
                         "cost": {
                             "CP": 200
@@ -664,7 +676,7 @@
                     },
                     {
                         "id": "perkOldFashionedNinja",
-                        "label": "Old-Fashioned Ninja [200 CP]",
+                        "label": "Old-Fashioned Ninja",
                         "description": "With all the different types of jutsu around, people seem to forget what exactly ninja are about. It is about being a shadow. It is about sneaking through with nothing but skill and not relying solely on chakra. You are an old school shinobi with the skills to back it up, you could sneak through an entire village of ninja and deface their most prized monument in paint without being seen whatsoever. Furthermore, you have mastered it to the point where you could maintain it even if you were half asleep or higher than the clouds.",
                         "cost": {
                             "CP": 200
@@ -681,7 +693,7 @@
                     },
                     {
                         "id": "perkLucky",
-                        "label": "Lucky [400 CP]",
+                        "label": "Lucky",
                         "description": "You are obscenely lucky with a capital L, random events always go your way, you trip over treasures and fortunes others would sell their soul for and your enemies always seem to suffer from something or other every time they come across you. This is not a win button, however. If you anger a being too powerful compared to you, you will be lucky enough to probably make it out alive if not in one piece, but that is better than most people get.",
                         "cost": {
                             "CP": 400
@@ -698,7 +710,7 @@
                     },
                     {
                         "id": "perkWillOfFire",
-                        "label": "Will of Fire [600 CP]",
+                        "label": "Will of Fire",
                         "description": "Konoha is known for its Will of Fire, and now you embody that ideal with a fire that burns especially bright. No amount of damage done to your body may squander your spirit. You could be too exhausted to move a limb, but you would still try to charge your enemy by pushing yourself with your chin. Your will is so powerful you could still fight after being knocked out cold. Your cut off head would probably try and bite your opponents' ankles for a while before you actually died. Yes, you could literally push yourself beyond death with this, if only for a little while, to give allies some extra time to heal you.\n\nBe careful about taking things that far though. Even for someone with an unbreakable will, being dead is still dead, and if you are not resuscitated soon after crossing that line, you will not be coming back.",
                         "cost": {
                             "CP": 600
@@ -722,7 +734,7 @@
                 "options": [
                     {
                         "id": "perkCoolCalmCollected",
-                        "label": "Cool, Calm and Collected [100 CP]",
+                        "label": "Cool, Calm and Collected",
                         "description": "Like a certain cyclops Jōnin, you possess the incredibly rare skill to be unfazed with everything. Regardless of what happens, you will never panic or let your emotions get to you, possessing the ability to look at a situation calmly with zero prejudice or subjectivity involved. When you say you're totally objective, you are.",
                         "cost": {
                             "CP": 100
@@ -739,7 +751,7 @@
                     },
                     {
                         "id": "perkUnRusted",
-                        "label": "Un-Rusted [200 CP]",
+                        "label": "Un-Rusted",
                         "description": "You aren’t human, are you? After all, how else do you possess such an ability? You see, unlike what science has taught, you possess the ability to never become rusty or lose your instincts regardless of how long ago you practiced. You could be sitting at a desk for years and come out swinging swords with the skills, coordination and instincts you had previously. Barring age, even your physical abilities will never change—you only go up now, never down. But be warned: this ability doesn’t do anything against age, so while you might possess the same skills and instincts, if your physical characteristics have deteriorated due to age and not anything else, then this won’t preserve them.",
                         "cost": {
                             "CP": 200
@@ -756,7 +768,7 @@
                     },
                     {
                         "id": "perkJutsuMastery",
-                        "label": "Jutsu Mastery [200 CP]",
+                        "label": "Jutsu Mastery",
                         "description": "Your control over jutsu and other techniques is akin to an experienced master. Any jutsu you already know no longer needs hand signs to use beyond the most basic of ones like the hand sign needed for the Fireball Technique. Any technique you learn will very quickly be mastered up to this level. Creating a Rasengan with just one hand? Easy. You could even form a Rasenshuriken one-handed if you know it—and you can reach this standard with every technique you wield.",
                         "cost": {
                             "CP": 200
@@ -773,7 +785,7 @@
                     },
                     {
                         "id": "perkOoohJumper",
-                        "label": "Oooh Jumper [400 CP]",
+                        "label": "Oooh Jumper",
                         "description": "There’s something about you, Jumper—a certain charm that seems to draw people around you. When they speak of beings such as Hashirama Senju and Naruto Uzumaki and the raw power of their charisma, the force that seems to burst from them like a tidal wave, they speak of people like you. With a few minutes of talking to people, you could turn them into either your best friends or your most loyal subordinates and unlike others, they would serve you loyally rather than through fear or extortion. Whether through your mere presence or your comforting words, you can bring about the best in others even if it lies so deep that even the best cannot see it.",
                         "cost": {
                             "CP": 400
@@ -790,7 +802,7 @@
                     },
                     {
                         "id": "perkKamiNoShinobi",
-                        "label": "Kami no Shinobi [600 CP]",
+                        "label": "Kami no Shinobi",
                         "description": "Maybe one day. All those who hold this title are or were monsters of all things ninja related. They mastered in days what would take others months. What would take others lifetimes would take them less than a decade. They made progress after progress in mind, body, and chakra far quicker than ever thought possible, and you are now one of them. Your sheer overwhelming talent and natural skill in the ninja arts all but guarantees you a place in history alongside those known as the Gods of Shinobi.",
                         "cost": {
                             "CP": 600
@@ -814,7 +826,7 @@
                 "options": [
                     {
                         "id": "perkEideticMemory",
-                        "label": "Eidetic Memory [100 CP]",
+                        "label": "Eidetic Memory ",
                         "description": "You possess a memory that will never forget anything and with an instant recall attached to it. Furthermore, no matter what, you will never be able to forget anything unless you consciously choose to forget.",
                         "cost": {
                             "CP": 100
@@ -831,7 +843,7 @@
                     },
                     {
                         "id": "perkPerfectControl",
-                        "label": "Perfect Control [200 CP]",
+                        "label": "Perfect Control",
                         "description": "To be a medic requires absolute control over one's chakra, both to regulate the chakra and to conserve it. You in particular are a master of the art, able to precisely utilize the exact amount of energy needed for a task without any additional energy being wasted whatsoever. As a by-product of such control, you can control the flow and molding of the energy needed for jutsu or other techniques with only a fraction of the seals required and with no loss in power or range.",
                         "cost": {
                             "CP": 200
@@ -848,7 +860,7 @@
                     },
                     {
                         "id": "perkShinobiWare",
-                        "label": "Shinobi-Ware [200 CP]",
+                        "label": "Shinobi-Ware",
                         "description": "Otherwise known as Integrated Mechanical Ninja Tools, Shinobi-Ware are scientific ninja tools developed as prosthetics for civilians and ninja alike. Currently, these types of tools are not even an idea which is why it’s so puzzling that you know how to make them, or to be more precise, you know how to make microscopic tools that can modify a person's circulatory and nervous system. The tools you can make are revolutionary, capable of altering an organism down to the cellular level, turning people into living weapons, or completely restructuring their bodily systems.",
                         "cost": {
                             "CP": 200
@@ -865,7 +877,7 @@
                     },
                     {
                         "id": "perkMasterOfBiology",
-                        "label": "Master of Biology [400 CP]",
+                        "label": "Master of Biology",
                         "description": "Say what you will about Orochimaru. For all his cruelty and evil, you cannot deny his skill in the science of biology. Utilizing near-modern technology, Orochimaru, and later Kabuto, were able to perfectly comprehend and even reproduce others’ abilities. With only a scrap of DNA, he was able to perfectly reproduce Kekkei Genkai, create artificial limbs and organs, and even create near identical clones of the original. You too possess this knowledge and skill able to rival that homicidal maniac in the biological sciences. With time and practice, all it will take is a single cell for you to unlock everything about a being.",
                         "cost": {
                             "CP": 400
@@ -882,7 +894,7 @@
                     },
                     {
                         "id": "perkWorldsGreatestMedicNin",
-                        "label": "World's Greatest Medic-Nin [600 CP]",
+                        "label": "World's Greatest Medic-Nin",
                         "description": "A title given to only one other, the Slug Princess Tsunade herself. Like her, your ability as a medic is legendary. You are able to identify injuries and other ailments with merely a glance and treat conditions others have deemed impossible. For example, your skills in the medical arts is such that you could heal the necrosis caused by the Dead Demon Consuming Seal or the psychological torture inflicted by Tsukuyomi, easily create cures against the poisons of the great Chiyo, and even heal yourself after being cut in half. There is nothing you cannot heal given time. Obviously, this comes with all the medical knowledge one would expect for a medic of your caliber; one example of this is your knowledge of the cellular structure and, if you were to perform an autopsy, you could easily detect damage at the cellular level and immediately tell what could have caused it and what exactly happened. Of course, to keep your title you can’t just coast by on what you know. So now and in all future Jumps, all attempts to increase knowledge relating to medicine and healing will be learnt ten times faster than every other so-called medic.",
                         "cost": {
                             "CP": 600
@@ -899,7 +911,7 @@
                     },
                     {
                         "id": "medicSPlusUpgrade",
-                        "label": "Medical Technique Upgrade [100 CP]",
+                        "label": "Medical Technique Upgrade ",
                         "description": "Requires World's Greatest Medic-Nin. Upgrade any medical, regeneration, or healing reincarnation technique to S+ mastery.",
                         "cost": {
                             "CP": 100
@@ -916,7 +928,7 @@
                 "options": [
                     {
                         "id": "perkReputation",
-                        "label": "Reputation [100 CP]",
+                        "label": "Reputation ",
                         "description": "Even long after his death, the very thought of Madara living was enough to create an alliance of all five ninja villages. Now you possess such a reputation, one that causes the mere mention of your name to drive fear into the hearts of even the most cold-blooded killers and most powerful entities. The effectiveness will only increase as you perform more deeds and become more and more infamous.",
                         "cost": {
                             "CP": 100
@@ -933,7 +945,7 @@
                     },
                     {
                         "id": "perkBrainwashing",
-                        "label": "Brainwashing [200 CP]",
+                        "label": "Brainwashing",
                         "description": "Obito Uchiha was once a good man, but all that changed once Madara got a hold of him. Until the very end, he remained loyal to Madara, regardless of anything that contradicted that loyalty. Like him, you now know exactly how to break a person’s spirit and mind, gradually twisting them until your ideals and dreams become theirs. This process will take time and the greater the being’s will, the more time it will take. A child would take a matter of days, while a Kage would take at least a year, and possibly more. It is still possible for the effects of this brainwashing to be broken, much like how Obito eventually broke free and returned to how he once was in his final moments.",
                         "cost": {
                             "CP": 200
@@ -950,7 +962,7 @@
                     },
                     {
                         "id": "perkMasterfulActing",
-                        "label": "Masterful Acting [200 CP]",
+                        "label": "Masterful Acting",
                         "description": "You have to hand it to Obito. For decades, he masterfully hid his identity and truly became Madara to the point where even those who knew him best could not recognize him. Like him, you too are a performer of masterful skill and talent, able to subdue your original personality and truly become another person to the point where even their closest of friends could not find a single flaw in your disguise. From the tone of your voice to the way you dress to your conscious and unconscious acts, you perform as if second nature with there being nothing ever giving you away for even a second. Except maybe your face, but that’s what masks are for.",
                         "cost": {
                             "CP": 200
@@ -967,7 +979,7 @@
                     },
                     {
                         "id": "perkMasterfulPlanning",
-                        "label": "Masterful Planning [400 CP]",
+                        "label": "Masterful Planning",
                         "description": "Say what you want of Zetsu but he was a master planner, pulling at the springs of even incredibly powerful beings like Madara, Indra Ōtsutsuki, and all the Kage alongside the ninja world. With only his ability to plan, Zetsu was able to manipulate the entire world and most major events from the shadows over countless lifetimes in his quest to resurrect his mother, and you are his equal. Your planning is legendary, able to encompass literal lifetimes and manipulate entire worlds, all without them even knowing you exist. Furthermore, unlike other so-called master planners, your plans take into account every possible eventuality and change that could ever occur to disrupt your plans. Your plans also possess one final unique ability. The longer your plans are in motion, the more momentum they gain, eventually becoming impossible to stop. This momentum will take time to build up, taking multiple generations to become truly unstoppable.",
                         "cost": {
                             "CP": 400
@@ -984,7 +996,7 @@
                     },
                     {
                         "id": "perkADecadeAhead",
-                        "label": "A Decade Ahead [600 CP]",
+                        "label": "A Decade Ahead",
                         "description": "A mind that comes along once in a lifetime is one of the titles that people will one day bestow upon you, a pioneer in the art of science. You possess an intellect that can push the boundaries of science and technology, create things that can push society forward by decades, if not centuries. In only a few short years of work, you could push society from the time of swords and horse-drawn carriages to trains, TVs and movies. It’s now less on what you can learn and more on how much you can fit in a week.",
                         "cost": {
                             "CP": 600
@@ -1013,7 +1025,7 @@
                 "options": [
                     {
                         "id": "perkSupremeKekkei",
-                        "label": "Supreme Kekkei Genkai [400 CP]",
+                        "label": "Supreme Kekkei Genkai",
                         "description": "Encode any abilities into your genetics, ensuring they breed true (or under conditions you set) and combine into new bloodlines at will.",
                         "cost": {
                             "CP": 400
@@ -1021,7 +1033,7 @@
                     },
                     {
                         "id": "perkKekkeiGenkai",
-                        "label": "Kekkei Genkai [500 CP]",
+                        "label": "Kekkei Genkai",
                         "description": "Gain a bloodline limit with 1400 BLP to spend on bloodline abilities and full control of inheritance.",
                         "cost": {
                             "CP": 500,
@@ -1046,7 +1058,7 @@
                 "options": [
                     {
                         "id": "kgEnhancedSenses",
-                        "label": "Enhanced Senses [100 CP]",
+                        "label": "Enhanced Senses ",
                         "description": "Select one of your five senses to magnify tenfold. You can further amplify that sense by channeling chakra, and you may purchase this perk again to enhance additional senses or to double an already-upgraded sense's range and acuteness.",
                         "cost": {
                             "CP": 100
@@ -1055,7 +1067,7 @@
                     },
                     {
                         "id": "kgChakraSensing",
-                        "label": "Chakra Sensing [200 BLP]",
+                        "label": "Chakra Sensing",
                         "description": "Awaken chakra perception with an initial 50 meter range that grows through training. You may tether this sense to another sense such as touch, and after the Jump it can also discern souls.",
                         "cost": {
                             "BLP": 200
@@ -1082,7 +1094,7 @@
                     },
                     {
                         "id": "kgRyuzetsu",
-                        "label": "Ryuzetsu’s Kekkei Genkai [200 BLP]",
+                        "label": "Ryuzetsu’s Kekkei Genkai",
                         "description": "Gain access to the Dragon Life Reincarnation technique, letting you spend your life force to heal impossible wounds or even restore the newly deceased. Reviving others may cost your own life unless your vitality vastly exceeds theirs.",
                         "cost": {
                             "BLP": 200
@@ -1091,7 +1103,7 @@
                     },
                     {
                         "id": "kgRegeneration",
-                        "label": "Regeneration [200 BLP]",
+                        "label": "Regeneration",
                         "description": "Passive healing akin to Hashirama’s legend, shrugging off battle damage and reattaching severed limbs, though it cannot undo unwanted mutations or curse marks.",
                         "cost": {
                             "BLP": 200
@@ -1140,11 +1152,29 @@
                             "BLP": 400
                         },
                         "prerequisites": "kgRegeneration",
-                        "maxSelections": 1
+                        "maxSelections": 1,
+                        "discounts": [
+                            {
+                                "ids": [
+                                    "kgUzumakiClan"
+                                ],
+                                "cost": {
+                                    "BLP": 200
+                                }
+                            },
+                            {
+                                "ids": [
+                                    "kgSenjuClan"
+                                ],
+                                "cost": {
+                                    "BLP": 200
+                                }
+                            }
+                        ]
                     },
                     {
                         "id": "kgSakonUkon",
-                        "label": "Sakon & Ukon [400 BLP]",
+                        "label": "Sakon & Ukon",
                         "description": "Dismantle yourself on a molecular level to merge with others, corroding them from within. Combined with Master of Biology and Sage Mode, you can graft the abilities of others, growing a controllable upper-body clone that wields their techniques.",
                         "cost": {
                             "BLP": 400
@@ -1153,7 +1183,7 @@
                     },
                     {
                         "id": "kgDarkRelease",
-                        "label": "Dark Release [500 BLP]",
+                        "label": "Dark Release ",
                         "description": "Absorb pure chakra or chakra-based techniques and re-emit them empowered. Post-Jump, you can do the same with any energy type, draining foes to the brink or learning their techniques through absorption.",
                         "cost": {
                             "BLP": 500
@@ -1162,7 +1192,7 @@
                     },
                     {
                         "id": "kgAllKillingAshBones",
-                        "label": "All-Killing Ash Bones [600 BLP]",
+                        "label": "All-Killing Ash Bones",
                         "description": "Extrude ultra-hard ash bones to pierce foes; any living target struck rapidly disintegrates to dust.",
                         "cost": {
                             "BLP": 600
@@ -1185,7 +1215,7 @@
                 "options": [
                     {
                         "id": "kgRinhaClan",
-                        "label": "Rinha Clan [200 BLP]",
+                        "label": "Rinha Clan",
                         "description": "Absorb chakra (or analogous energy post-Jump) and inject it into puppets to create remote-controlled replicas that retain the original’s arsenal.",
                         "cost": {
                             "BLP": 200
@@ -1194,7 +1224,7 @@
                     },
                     {
                         "id": "kgShikotsumyaku",
-                        "label": "Shikotsumyaku [300 BLP]",
+                        "label": "Shikotsumyaku",
                         "description": "Manipulate osteoblasts and osteoclasts to weaponize and densify your skeleton, growing new bones or firing them like bullets without harm.",
                         "cost": {
                             "BLP": 300
@@ -1203,7 +1233,7 @@
                     },
                     {
                         "id": "kgIburiClan",
-                        "label": "Iburi Clan [400 BLP]",
+                        "label": "Iburi Clan",
                         "description": "Dissolve into smoke, bypassing physical attacks and possessing foes from within—though powerful winds can disperse your form.",
                         "cost": {
                             "BLP": 400
@@ -1212,7 +1242,7 @@
                     },
                     {
                         "id": "kgJugoClan",
-                        "label": "Jūgo's Clan [400 BLP]",
+                        "label": "Jūgo's Clan",
                         "description": "Passively absorb natural energy and trigger controlled transformations that amplify your body and spawn weaponized appendages.",
                         "cost": {
                             "BLP": 400
@@ -1221,16 +1251,17 @@
                     },
                     {
                         "id": "kgUzumakiClan",
-                        "label": "Uzumaki Clan [400 BLP]",
+                        "label": "Uzumaki Clan",
                         "description": "Heirs to Asura’s vitality—gain vast chakra, longevity, Regeneration Tier I gratis, chakra-healing, and chakra chains. Includes Specialist: Fūinjutsu.",
                         "cost": {
-                            "BLP": 400
+                            "BLP": 400,
+                            "SP": -1
                         },
                         "maxSelections": 1
                     },
                     {
                         "id": "kgSenjuClan",
-                        "label": "Senju Clan [400 BLP]",
+                        "label": "Senju Clan",
                         "description": "Possess immense chakra and life force, accelerated learning, and Regeneration Tier I for free, plus a discount on any single jutsu purchase.",
                         "cost": {
                             "BLP": 400
@@ -1245,7 +1276,7 @@
                 "options": [
                     {
                         "id": "kgWoodRelease",
-                        "label": "Wood Release [200 BLP]",
+                        "label": "Wood Release",
                         "description": "Unlock Wood Release to sculpt living timber into constructs, clones, and chakra-suppressing restraints on a monumental scale.",
                         "cost": {
                             "BLP": 200
@@ -1275,7 +1306,7 @@
                     },
                     {
                         "id": "kgMudRelease",
-                        "label": "Mud Release [100 BLP]",
+                        "label": "Mud Release",
                         "description": "Fuse earth and water to transmute terrain into mud and sculpt it freely. Optional cosmetic: perpetually mud-caked hands.",
                         "cost": {
                             "BLP": 100
@@ -1284,7 +1315,7 @@
                     },
                     {
                         "id": "kgScorchRelease",
-                        "label": "Scorch Release [200 BLP]",
+                        "label": "Scorch Release",
                         "description": "Blend wind and fire to form heat orbs capable of desiccating targets instantly; combining at least three creates a forest-scorching super orb.",
                         "cost": {
                             "BLP": 200
@@ -1293,7 +1324,7 @@
                     },
                     {
                         "id": "kgStormRelease",
-                        "label": "Storm Release [200 BLP]",
+                        "label": "Storm Release",
                         "description": "Channel water and lightning into laser-like torrents that flow like water, curve mid-flight, and strike with light-speed ferocity.",
                         "cost": {
                             "BLP": 200
@@ -1302,7 +1333,7 @@
                     },
                     {
                         "id": "kgSwiftRelease",
-                        "label": "Swift Release [200 BLP]",
+                        "label": "Swift Release",
                         "description": "Harness lightning and wind to move faster than sight. With training, even the Sharingan struggles to track your motions.",
                         "cost": {
                             "BLP": 200
@@ -1311,7 +1342,7 @@
                     },
                     {
                         "id": "kgTyphoonRelease",
-                        "label": "Typhoon Release [200 BLP]",
+                        "label": "Typhoon Release",
                         "description": "Supercharge wind release to conjure island-levelling tempests and gale force assaults.",
                         "cost": {
                             "BLP": 200
@@ -1320,7 +1351,7 @@
                     },
                     {
                         "id": "kgExplosionReleaseStrike",
-                        "label": "Explosion Release – Contact [200 BLP]",
+                        "label": "Explosion Release – Contact",
                         "description": "Combine earth and lightning so your strikes detonate with devastating force.",
                         "cost": {
                             "BLP": 200
@@ -1329,7 +1360,7 @@
                     },
                     {
                         "id": "kgExplosionReleaseClay",
-                        "label": "Explosion Release – Clay Artist [200 BLP]",
+                        "label": "Explosion Release – Clay Artist",
                         "description": "Infuse clay sculptures with explosive chakra, gaining an endless supply of detonating creations.",
                         "cost": {
                             "BLP": 200
@@ -1338,7 +1369,7 @@
                     },
                     {
                         "id": "kgExplosionReleaseCombo",
-                        "label": "Explosion Release – Dual Mastery [300 BLP]",
+                        "label": "Explosion Release – Dual Mastery",
                         "description": "Bundle both the impact-trigger and clay-sculpting Explosion Release styles for a 100 BLP discount.",
                         "cost": {
                             "BLP": -100
@@ -1351,7 +1382,7 @@
                     },
                     {
                         "id": "kgExplosionReleaseClayHands",
-                        "label": "Explosion Release – Clay Artist Hands [50 BLP]",
+                        "label": "Explosion Release – Clay Artist Hands",
                         "description": "Iwagakure Kinjutsu (Deidara’s mouths)",
                         "cost": {
                             "BLP": 50
@@ -1361,7 +1392,7 @@
                     },
                     {
                         "id": "kgBoilRelease",
-                        "label": "Boil Release [300 BLP]",
+                        "label": "Boil Release",
                         "description": "Mix fire and water to produce corrosive vapors or superheated steam, or to bring your chakra to a boiling, strength-boosting state.",
                         "cost": {
                             "BLP": 300
@@ -1370,15 +1401,7 @@
                         "discounts": [
                             {
                                 "ids": [
-                                    "perkJinchurikiKokuo"
-                                ],
-                                "cost": {
-                                    "BLP": 0
-                                }
-                            },
-                            {
-                                "ids": [
-                                    "perkKokuoJinchuriki"
+                                    "tailedKokuo"
                                 ],
                                 "cost": {
                                     "BLP": 0
@@ -1388,7 +1411,7 @@
                     },
                     {
                         "id": "kgLavaRelease",
-                        "label": "Lava Release [300 BLP]",
+                        "label": "Lava Release",
                         "description": "Fuse fire and earth to manifest lava in multiple variants: molten rock, acidic mud, quicklime, vulcanized rubber, or volcanic ash. Select one form on purchase.",
                         "cost": {
                             "BLP": 300
@@ -1397,15 +1420,7 @@
                         "discounts": [
                             {
                                 "ids": [
-                                    "perkJinchurikiSonGoku"
-                                ],
-                                "cost": {
-                                    "BLP": 0
-                                }
-                            },
-                            {
-                                "ids": [
-                                    "perkSonGokuJinchuriki"
+                                    "tailedSonGoku"
                                 ],
                                 "cost": {
                                     "BLP": 0
@@ -1415,7 +1430,7 @@
                     },
                     {
                         "id": "kgLavaReleaseExtra",
-                        "label": "Lava Release Form (Additional) [50 BLP]",
+                        "label": "Lava Release Form (Additional)",
                         "description": "Add another Lava Release variant (molten rock, acidic mud, quicklime, rubber, or ash).",
                         "cost": {
                             "BLP": 50
@@ -1425,7 +1440,7 @@
                     },
                     {
                         "id": "kgMagnetRelease",
-                        "label": "Magnet Release [300 BLP]",
+                        "label": "Magnet Release",
                         "description": "Unite earth and wind to generate magnetic fields, manipulating a chosen medium such as iron sand, gold dust, or standard sand with Gaara-level finesse. Optionally magnetize targets on contact.",
                         "cost": {
                             "BLP": 300
@@ -1434,15 +1449,7 @@
                         "discounts": [
                             {
                                 "ids": [
-                                    "perkJinchurikiShukaku"
-                                ],
-                                "cost": {
-                                    "BLP": 0
-                                }
-                            },
-                            {
-                                "ids": [
-                                    "perkShukakuJinchuriki"
+                                    "tailedShukaku"
                                 ],
                                 "cost": {
                                     "BLP": 0
@@ -1452,7 +1459,7 @@
                     },
                     {
                         "id": "kgMagnetReleaseExtra",
-                        "label": "Magnet Release Medium (Additional) [50 BLP]",
+                        "label": "Magnet Release Medium (Additional)",
                         "description": "Master an extra Magnet Release medium or the chain-magnetization technique.",
                         "cost": {
                             "BLP": 50
@@ -1462,7 +1469,7 @@
                     },
                     {
                         "id": "kgCrystalRelease",
-                        "label": "Crystal Release [300 BLP]",
+                        "label": "Crystal Release",
                         "description": "Crystallize matter—terrain, moisture, or foes—down to the cellular level and shape the resultant crystal constructs. Susceptible to lightning and specific resonance frequencies.",
                         "cost": {
                             "BLP": 300
@@ -1471,7 +1478,7 @@
                     },
                     {
                         "id": "kgIceRelease",
-                        "label": "Ice Release [300 BLP]",
+                        "label": "Ice Release",
                         "description": "Weave wind and water into resilient ice, craft mirrors for instant repositioning, and lower ambient temperatures to summon snowfall.",
                         "cost": {
                             "BLP": 300
@@ -1480,7 +1487,7 @@
                     },
                     {
                         "id": "kgSteelRelease",
-                        "label": "Steel Release [300 BLP]",
+                        "label": "Steel Release",
                         "description": "Transmute your chakra into ultra-hard metal, reinforcing your body or forging weapons on demand.",
                         "cost": {
                             "BLP": 300
@@ -1489,7 +1496,7 @@
                     },
                     {
                         "id": "kgDustRelease",
-                        "label": "Dust Release [600 BLP]",
+                        "label": "Dust Release",
                         "description": "Master the wind-earth-fire Kekkei Tōta, creating molecular disintegration constructs that erase anything caught within.",
                         "cost": {
                             "BLP": 600
@@ -1504,25 +1511,27 @@
                 "options": [
                     {
                         "id": "kgKetsuryugan",
-                        "label": "Ketsuryūgan [400 BLP]",
+                        "label": "Ketsuryūgan",
                         "description": "Cast genjutsu rivaling the Eternal Mangekyō, invade minds for knowledge, and control iron-rich fluids including blood—bolstered by the Blood Transformation and Exploding Human techniques. Includes a free Specialist: Genjutsu.",
                         "cost": {
-                            "BLP": 400
+                            "BLP": 400,
+                            "SP": -1
                         },
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRanmaru",
-                        "label": "Ranmaru’s Dōjutsu [400 BLP]",
+                        "label": "Ranmaru’s Dōjutsu",
                         "description": "Pierce obstructions, negate rival dōjutsu vision, sense chakra and life force at range, and heal allies by sharing your vitality. Includes Specialist: Genjutsu.",
                         "cost": {
-                            "BLP": 400
+                            "BLP": 400,
+                            "SP": -1
                         },
                         "maxSelections": 1
                     },
                     {
                         "id": "kgFutureTelling",
-                        "label": "Future Telling [400 BLP]",
+                        "label": "Future Telling",
                         "description": "Upon death your soul returns to the start of the Jump (or the last decade), letting you act with foreknowledge once per cycle.",
                         "cost": {
                             "BLP": 400
@@ -1541,7 +1550,7 @@
                     },
                     {
                         "id": "kgIsshikiDojutsu",
-                        "label": "Isshiki’s Dōjutsu [800 BLP]",
+                        "label": "Isshiki’s Dōjutsu",
                         "description": "Shrink any sighted non-living target with Sukunahikona and store or redeploy it instantly via Daikokuten’s timeless pocket dimension.",
                         "cost": {
                             "BLP": 800
@@ -1560,10 +1569,11 @@
                     },
                     {
                         "id": "kgByakugan",
-                        "label": "Byakugan [500 BLP]",
+                        "label": "Byakugan ",
                         "description": "Gain near-360° vision out to a kilometre, see chakra pathways, and detect clones and lifeforce in any setting. Includes Specialist: Gentle Fist Taijutsu and optional Hyūga heritage without a cursed seal.",
                         "cost": {
-                            "BLP": 500
+                            "BLP": 500,
+                            "SP": -1
                         },
                         "maxSelections": 1,
                         "discounts": [
@@ -1587,7 +1597,7 @@
                     },
                     {
                         "id": "kgTenseigan",
-                        "label": "Tenseigan [1000 BLP]",
+                        "label": "Tenseigan",
                         "description": "Evolve the Byakugan to command gravity, manifest the Tenseigan Chakra Mode, and wield ten Truth-Seeking Balls. Ōtsutsuki only pay 500 BLP.",
                         "cost": {
                             "BLP": 1000
@@ -1630,30 +1640,40 @@
                 "options": [
                     {
                         "id": "kgSharinganBase",
-                        "label": "Sharingan [500 BLP]",
+                        "label": "Sharingan ",
                         "description": "Gain the Copy Wheel Eye’s insight and hypnotism: perceive and copy techniques, read chakra irregularities, and access Izanagi and Izanami (eyes recover each Jump/decade). Comes with Specialist: Genjutsu.",
                         "cost": {
-                            "BLP": 500
+                            "BLP": 500,
+                            "SP": -1
                         },
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoSharingan",
-                        "label": "Mangekyō Sharingan [500 BLP]",
+                        "label": "Mangekyō Sharingan ",
                         "description": "Evolve your Sharingan to its Mangekyō form, gaining two unique ocular abilities of your choice, access to Susanoo, and 600 SCP to customize that avatar.",
                         "cost": {
                             "BLP": 500,
-                            "SCP": -600
-                        },
-                        "grantsCharges": {
-                            "MangekyoAbility": 2
+                            "SCP": -600,
+                            "MSP": -2
                         },
                         "prerequisites": "kgSharinganBase",
                         "maxSelections": 1
                     },
                     {
+                        "id": "kgConvertBLPToMSP",
+                        "label": "Convert BLP to MSP",
+                        "description": "For 100 BLP, buy 1 MSP",
+                        "cost": {
+                            "BLP": 100,
+                            "MSP": -1
+                        },
+                        "prerequisites": "kgMangekyoSharingan",
+                        "maxSelections": 1
+                    },
+                    {
                         "id": "kgEternalMangekyoSharingan",
-                        "label": "Eternal Mangekyō Sharingan [500 BLP]",
+                        "label": "Eternal Mangekyō Sharingan ",
                         "description": "Upgrade to an Eternal Mangekyō Sharingan, eliminating the risk of blindness and unlocking the EMS’s amplified potency.",
                         "cost": {
                             "BLP": 500
@@ -1663,90 +1683,89 @@
                     },
                     {
                         "id": "kgMangekyoTsukuyomi",
-                        "label": "Tsukuyomi [100 BLP]",
+                        "label": "Tsukuyomi",
                         "description": "Trap foes in an illusion where time and reality answer only to you, inflicting weeks of torment in a heartbeat.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoAmaterasu",
-                        "label": "Amaterasu [100 BLP]",
+                        "label": "Amaterasu",
                         "description": "Summon inextinguishable black flames that burn all material until nothing remains.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoKagutsuchi",
-                        "label": "Blaze Release: Kagutsuchi [100 BLP]",
+                        "label": "Blaze Release: Kagutsuchi",
                         "description": "Shape, direct, and weaponize Amaterasu’s flames without destroying your own gear or allies.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan && kgMangekyoAmaterasu",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoObjectControl",
-                        "label": "Shin’s Object Control [100 BLP]",
+                        "label": "Shin’s Object Control",
                         "description": "Brand and telekinetically command any object you touch, with no limit on the number of branded items.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoPortals",
-                        "label": "Shin’s Portals [100 BLP]",
+                        "label": "Shin’s Portals",
                         "description": "Create Mangekyō warp portals to your branded objects or locations, enabling swift repositioning across the battlefield.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoKotoamatsukami",
-                        "label": "Kotoamatsukami [200 BLP]",
+                        "label": "Kotoamatsukami",
                         "description": "Rewrite a target’s thoughts and memories flawlessly with an undetectable genjutsu that counts as two Mangekyō abilities.",
                         "cost": {
-                            "BLP": 200
+                            "BLP": 200,
+                            "MSP": 2
                         },
-                        "usesCharge": "MangekyoAbility",
-                        "chargeCost": 2,
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoKamuiShort",
-                        "label": "Kamui – Short Range [100 BLP]",
+                        "label": "Kamui – Short Range",
                         "description": "Phase yourself or anything you touch into the Kamui dimension, granting intangibility and near-instant repositioning.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgMangekyoKamuiLong",
-                        "label": "Kamui – Long Range [100 BLP]",
+                        "label": "Kamui – Long Range",
                         "description": "Project Kamui’s spiralling barrier at range to warp targets or parts of targets into the void, storing attacks for later release.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "MSP": 1
                         },
-                        "usesCharge": "MangekyoAbility",
                         "prerequisites": "kgMangekyoSharingan",
                         "maxSelections": 1
                     }
@@ -1758,7 +1777,7 @@
                 "options": [
                     {
                         "id": "kgRinneSharingan",
-                        "label": "Rinne Sharingan [1000 BLP]",
+                        "label": "Rinne Sharingan",
                         "description": "Manifest the primordial eye capable of casting the Infinite Tsukuyomi and wielding Amenominaka’s six personal dimensions, complete with customizable hazards and a concealable third eye.",
                         "cost": {
                             "BLP": 1000
@@ -1770,32 +1789,16 @@
             {
                 "type": "storyBlock",
                 "name": "Rinnegan",
-                "text": "Claim the Rinnegan and expand it with bespoke abilities; Ōtsutsuki purchasers receive two bonus abilities for free.",
+                "text": "Claim the Rinnegan and expand it with bespoke abilities; Ōtsutsuki purchasers receive two abilities.",
                 "options": [
                     {
                         "id": "kgRinnegan",
-                        "label": "Rinnegan [1600 BLP]",
+                        "label": "Rinnegan",
                         "description": "Awaken the Six (and Outer) Paths, full elemental mastery, and the iconic Rinnegan talents including life and death manipulation.",
                         "cost": {
-                            "BLP": 1600
+                            "BLP": 1600,
+                            "RGP": -1
                         },
-                        "grantsCharges": {
-                            "RinneganAbility": 1
-                        },
-                        "grantsChargesConditional": [
-                            {
-                                "requires": "raceOtsutsuki800",
-                                "charges": {
-                                    "RinneganAbility": 1
-                                }
-                            },
-                            {
-                                "requires": "raceOtsutsuki1200",
-                                "charges": {
-                                    "RinneganAbility": 1
-                                }
-                            }
-                        ],
                         "maxSelections": 1,
                         "discounts": [
                             {
@@ -1809,79 +1812,88 @@
                         ]
                     },
                     {
+                        "id": "kgConvertBLPToRGP",
+                        "label": "Convert BLP to RGP",
+                        "description": "For 100 BLP, buy 1 RGP",
+                        "cost": {
+                            "BLP": 100,
+                            "RGP": -1
+                        }
+                    },
+                    {
                         "id": "kgRinneganLimbo",
-                        "label": "Limbo [100 BLP]",
+                        "label": "Limbo",
                         "description": "Project up to four invisible shadows into Limbo, each mirroring your abilities and vulnerable only to Six Paths chakra or senjutsu.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRinneganSpaceTime",
-                        "label": "Sasuke’s Space-Time Technique [100 BLP]",
+                        "label": "Sasuke’s Space-Time Technique",
                         "description": "Open spiralling portals between dimensions; training reduces the considerable chakra toll.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRinneganAmenotejikara",
-                        "label": "Amenotejikara [100 BLP]",
+                        "label": "Amenotejikara",
                         "description": "Swap yourself or chosen targets with anything in range, redirecting attacks or positioning allies and foes instantly.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRinneganPatternRecognition",
-                        "label": "Pattern Recognition [100 BLP]",
+                        "label": "Pattern Recognition",
                         "description": "Decode complex ciphers and patterns in moments by overlaying and analyzing their chakra signatures.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRinneganChakraEdibles",
-                        "label": "Chakra Edible Creation [100 BLP]",
+                        "label": "Chakra Edible Creation",
                         "description": "Convert defeated foes into chakra-rich fruits or pills, permanently granting their abilities to the consumer without demonic side effects.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRinneganAbsorption",
-                        "label": "Absorption [100 BLP]",
+                        "label": "Absorption",
                         "description": "Ingest chakra or energy-based attacks and redeploy them indefinitely, empowering them as your reserves allow.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     },
                     {
                         "id": "kgRinneganTemporalRewind",
-                        "label": "Temporal Rewind [100 BLP]",
+                        "label": "Temporal Rewind",
                         "description": "Rewind reality a few seconds, granting pseudo-clairvoyance as you iterate ideal responses at high chakra expenditure.",
                         "cost": {
-                            "BLP": 100
+                            "BLP": 100,
+                            "RGP": 1
                         },
-                        "usesCharge": "RinneganAbility",
                         "prerequisites": "kgRinnegan",
                         "maxSelections": 1
                     }
@@ -1917,7 +1929,7 @@
                 "options": [
                     {
                         "id": "susanooColorSingle",
-                        "label": "Single Color [FREE]",
+                        "label": "Single Color",
                         "description": "Assign a single dominant hue to your Susanoo.",
                         "cost": {
                             "SCP": 0
@@ -1926,7 +1938,7 @@
                     },
                     {
                         "id": "susanooColorMulti",
-                        "label": "Multi-Colored [100 SCP]",
+                        "label": "Multi-Colored",
                         "description": "Shift your Susanoo's coloration at will or mix multiple hues across its form.",
                         "cost": {
                             "SCP": 100
@@ -1942,7 +1954,7 @@
                 "options": [
                     {
                         "id": "susanooDevRibcage",
-                        "label": "Ribcage [FREE]",
+                        "label": "Ribcage",
                         "description": "Manifest the defensive ribcage form of Susanoo.",
                         "cost": {
                             "SCP": 0
@@ -1950,7 +1962,7 @@
                     },
                     {
                         "id": "susanooDevSkeletal",
-                        "label": "Skeletal [50 SCP]",
+                        "label": "Skeletal",
                         "description": "Access the full skeletal frame, increasing reach and resilience.",
                         "cost": {
                             "SCP": 50
@@ -1958,7 +1970,7 @@
                     },
                     {
                         "id": "susanooDevHumanoid",
-                        "label": "Humanoid [100 SCP]",
+                        "label": "Humanoid",
                         "description": "Achieve the humanoid stage, gaining limbs and weapon capability.",
                         "cost": {
                             "SCP": 100
@@ -1966,7 +1978,7 @@
                     },
                     {
                         "id": "susanooDevArmored",
-                        "label": "Armored [150 SCP]",
+                        "label": "Armored",
                         "description": "Plate your Susanoo in chakra armor for superior defense and striking power.",
                         "cost": {
                             "SCP": 150
@@ -1974,7 +1986,7 @@
                     },
                     {
                         "id": "susanooDevComplete",
-                        "label": "Complete Body [200 SCP]",
+                        "label": "Complete Body",
                         "description": "Unlock the complete body form, matching the might of the greatest Susanoo manifestations.",
                         "cost": {
                             "SCP": 200
@@ -1989,7 +2001,7 @@
                 "options": [
                     {
                         "id": "susanooWeaponsBasic",
-                        "label": "Basic Weapons [FREE]",
+                        "label": "Basic Weapons",
                         "description": "Outfit your Susanoo with up to four mundane armaments—sword, bow, spear, or similar—which can manifest in any hand as needed.",
                         "cost": {
                             "SCP": 0
@@ -1998,7 +2010,7 @@
                     },
                     {
                         "id": "susanooWeaponsYasaka",
-                        "label": "Yasaka Magatama [FREE]",
+                        "label": "Yasaka Magatama",
                         "description": "Create explosive chakra magatama resembling oversized shuriken, adjustable in size and devastating on impact.",
                         "cost": {
                             "SCP": 0
@@ -2007,7 +2019,7 @@
                     },
                     {
                         "id": "susanooWeaponsTsukumo",
-                        "label": "Tsukumo [100 SCP]",
+                        "label": "Tsukumo",
                         "description": "Fire a dense barrage of chakra needles from Susanoo's ribcage or wielded weapons, overwhelming foes in a hail of projectiles.",
                         "cost": {
                             "SCP": 100
@@ -2016,7 +2028,7 @@
                     },
                     {
                         "id": "susanooWeaponsKamui",
-                        "label": "Kamui Shuriken [200 SCP]",
+                        "label": "Kamui Shuriken",
                         "description": "Forge colossal shuriken that warp what they strike into the Kamui dimension, bypassing conventional defenses.\n\nRequires either short range or long range kamui to purchase. If you have both, the cost is waived.",
                         "cost": {
                             "SCP": 200
@@ -2037,7 +2049,7 @@
                     },
                     {
                         "id": "susanooWeaponsTotsuka",
-                        "label": "Sword of Totsuka [400 SCP]",
+                        "label": "Sword of Totsuka",
                         "description": "Wield the spectral Sword of Totsuka—a liquid blade within a gourd sheath that seals those it pierces in a genjutsu of eternal dreams.",
                         "cost": {
                             "SCP": 400
@@ -2046,7 +2058,7 @@
                     },
                     {
                         "id": "susanooWeaponsYata",
-                        "label": "Yata Mirror [400 SCP]",
+                        "label": "Yata Mirror",
                         "description": "Equip an adaptive ethereal shield that reshapes its properties to negate any physical or spiritual assault.",
                         "cost": {
                             "SCP": 400
@@ -2055,7 +2067,7 @@
                     },
                     {
                         "id": "susanooWeaponsImport",
-                        "label": "Weapon Import [100/200/400 SCP]",
+                        "label": "Weapon Import",
                         "description": "Inscribe existing weapons into Susanoo's arsenal: 100 SCP for mundane arms, 200 SCP for advanced tech, or 400 SCP to grant Susanoo ongoing weapon integration.",
                         "cost": {
                             "SCP": 100
@@ -2071,7 +2083,7 @@
                 "options": [
                     {
                         "id": "susanooTechniqueConduit",
-                        "label": "Technique Conduit [FREE]",
+                        "label": "Technique Conduit",
                         "description": "Channel your techniques through Susanoo's frame, amplifying or enabling jutsu once you reach the Humanoid stage.",
                         "cost": {
                             "SCP": 0
@@ -2080,7 +2092,7 @@
                     },
                     {
                         "id": "susanooMajesticAttire",
-                        "label": "Majestic Attire [FREE]",
+                        "label": "Majestic Attire",
                         "description": "Shape Susanoo into external armor for allies, summons, or yourself (when in a Tailed Beast form) upon attaining the Complete Body stage.",
                         "cost": {
                             "SCP": 0
@@ -2089,7 +2101,7 @@
                     },
                     {
                         "id": "susanooMajesticCompressed",
-                        "label": "Majestic Attire: Compressed [100 SCP]",
+                        "label": "Majestic Attire: Compressed",
                         "description": "Condense Susanoo into personal-scale armor via advanced shape transformation.",
                         "cost": {
                             "SCP": 100
@@ -2098,7 +2110,7 @@
                     },
                     {
                         "id": "susanooWings",
-                        "label": "Wings [FREE]",
+                        "label": "Wings",
                         "description": "Manifest wings in the Complete Body stage, granting flight.",
                         "cost": {
                             "SCP": 0
@@ -2107,7 +2119,7 @@
                     },
                     {
                         "id": "susanooWingsExtraArms",
-                        "label": "Wings (Retain Arms) [50 SCP]",
+                        "label": "Wings (Retain Arms)",
                         "description": "Develop wings without sacrificing Susanoo's second pair of arms.",
                         "cost": {
                             "SCP": 50
@@ -2117,7 +2129,7 @@
                     },
                     {
                         "id": "susanooReducedCost",
-                        "label": "Reduced Chakra Cost [50 SCP]",
+                        "label": "Reduced Chakra Cost",
                         "description": "Lower Susanoo's chakra requirements by roughly fifteen percent. Stackable up to six purchases.",
                         "cost": {
                             "SCP": 50
@@ -2126,7 +2138,7 @@
                     },
                     {
                         "id": "susanooInhumanForm",
-                        "label": "Inhuman Form [100 SCP]",
+                        "label": "Inhuman Form",
                         "description": "Recast Susanoo into a non-humanoid shape, such as a dragon or other beast, tailoring its capabilities accordingly.",
                         "cost": {
                             "SCP": 100
@@ -2135,7 +2147,7 @@
                     },
                     {
                         "id": "susanooInhumanTransform",
-                        "label": "Inhuman Form: Shape Transformation [400 SCP]",
+                        "label": "Inhuman Form: Shape Transformation",
                         "description": "Continuously reshape Susanoo on the fly, granting access to a suite of alternate forms.",
                         "cost": {
                             "SCP": 400
@@ -2144,7 +2156,7 @@
                     },
                     {
                         "id": "susanooAutomaticDefense",
-                        "label": "Automatic Defense [100 SCP]",
+                        "label": "Automatic Defense",
                         "description": "Allow Susanoo to trigger reflexively, interposing itself against unseen attacks when chakra reserves permit.",
                         "cost": {
                             "SCP": 100
@@ -2153,7 +2165,7 @@
                     },
                     {
                         "id": "susanooFlashGuard",
-                        "label": "Flash Guard [100 SCP]",
+                        "label": "Flash Guard",
                         "description": "Filter blinding light and deafening sound, sealing Susanoo's sensory vulnerabilities.",
                         "cost": {
                             "SCP": 100
@@ -2162,7 +2174,7 @@
                     },
                     {
                         "id": "susanooMoreArms",
-                        "label": "More Arms [100 SCP]",
+                        "label": "More Arms",
                         "description": "Grant Susanoo an additional pair of arms per purchase.",
                         "cost": {
                             "SCP": 100
@@ -2171,7 +2183,7 @@
                     },
                     {
                         "id": "susanooNaturalWeapons",
-                        "label": "Natural Weapons [100 SCP]",
+                        "label": "Natural Weapons",
                         "description": "Add claws or horns to Susanoo's anatomy. May be selected multiple times for additional adaptations.",
                         "cost": {
                             "SCP": 100
@@ -2180,7 +2192,7 @@
                     },
                     {
                         "id": "susanooTailedBeastVessel",
-                        "label": "Tailed Beast Vessel [100 SCP]",
+                        "label": "Tailed Beast Vessel",
                         "description": "Use Susanoo as a sealing vessel for Tailed Beasts or similar entities, safely channeling their chakra.",
                         "cost": {
                             "SCP": 100
@@ -2195,11 +2207,11 @@
                             "SCP": 0
                         },
                         "maxSelections": 1,
-                        "prerequisites": "tailedJuubi || (pseudoShukaku && pseudoMatatabi && pseudoIsobu && pseudoSonGoku && pseudoKokuo && pseudoSaiken && pseudoChomei && pseudoGyuki && pseudoKuramaHalf__2)"
+                        "prerequisites": "tailedJuubi || (pseudoShukaku && pseudoMatatabi && pseudoIsobu && pseudoSonGoku && pseudoKokuo && pseudoSaiken && pseudoChomei && pseudoGyuki && pseudoKuramaHalf2)"
                     },
                     {
                         "id": "susanooArmorImport",
-                        "label": "Armor Import [100 SCP]",
+                        "label": "Armor Import",
                         "description": "Integrate existing armor into Susanoo, inheriting the equipment's special properties.",
                         "cost": {
                             "SCP": 100
@@ -2208,7 +2220,7 @@
                     },
                     {
                         "id": "susanooArmorIntegration",
-                        "label": "Armor Integration [400 SCP]",
+                        "label": "Armor Integration",
                         "description": "Grant Susanoo the ability to ingest and merge additional armors or protective gear on demand, combining their traits.",
                         "cost": {
                             "SCP": 400
@@ -2217,7 +2229,7 @@
                     },
                     {
                         "id": "susanooExtraBig",
-                        "label": "Extra Big [200 SCP]",
+                        "label": "Extra Big",
                         "description": "Scale Susanoo up to Ten-Tails proportions at will, boosting its strength and durability while retaining enhanced performance at standard size.",
                         "cost": {
                             "SCP": 200
@@ -2226,7 +2238,7 @@
                     },
                     {
                         "id": "susanooRegenerating",
-                        "label": "Regenerating [200 SCP]",
+                        "label": "Regenerating",
                         "description": "Allow Susanoo to self-repair while active, drawing on your chakra reserves to restore damage.",
                         "cost": {
                             "SCP": 200
@@ -2235,7 +2247,7 @@
                     },
                     {
                         "id": "susanooSenjutsu",
-                        "label": "Senjutsu Susanoo [200 SCP]",
+                        "label": "Senjutsu Susanoo",
                         "description": "Blend natural energy with Susanoo, achieving a Sage-enhanced avatar. Free if you already possess Sage Mode or Jūgo's Clan heritage.",
                         "cost": {
                             "SCP": 200
@@ -2270,7 +2282,7 @@
                 "options": [
                     {
                         "id": "perkJinchuriki",
-                        "label": "Jinchūriki [400 CP]",
+                        "label": "Jinchūriki",
                         "description": "Become a host to a tailed beast, gaining immense chakra reserves, beast-specific abilities, and access to 1200 JP for Jinchūriki upgrades.",
                         "cost": {
                             "CP": 400,
@@ -2288,7 +2300,7 @@
                     },
                     {
                         "id": "jinchGeneralBecomeBeast",
-                        "label": "Embody the Beast [400 JP each]",
+                        "label": "Embody the Beast",
                         "description": "For every Beast you purchase, pay 400 JP to assume its full form alongside your native body, toggling shapes while keeping all Jinchūriki boons.",
                         "cost": {
                             "JP": 400
@@ -2297,7 +2309,7 @@
                     },
                     {
                         "id": "jinchGeneralHybridization",
-                        "label": "Unified Beast Form [FREE]",
+                        "label": "Unified Beast Form",
                         "description": "Freely combine multiple housed entities into a single hybrid Beast, defining the appearance and rationale yourself.",
                         "cost": {}
                     }
@@ -2310,7 +2322,7 @@
                 "options": [
                     {
                         "id": "tailedShukaku",
-                        "label": "Shukaku, the One-Tail [400 JP]",
+                        "label": "Shukaku, the One-Tail",
                         "description": "A tanuki, Shukaku possesses the ability to control sand and has a reputation for its powerful defense, with its sand being durable enough to block even a senjutsu-enhanced Susanoo's sword. Shukaku can use Wind and Earth Release nature transformations and can combine them to create Magnet Release. Uniquely, it possesses the ability to produce powerful cursed seals from the markings on its arms.",
                         "cost": {
                             "JP": 400
@@ -2318,7 +2330,7 @@
                     },
                     {
                         "id": "tailedMatatabi",
-                        "label": "Matatabi, the Two-Tails [400 JP]",
+                        "label": "Matatabi, the Two-Tails",
                         "description": "A two-tailed cat wreathed entirely in blue flames with a pair of heterochromatic eyes, green and blue. Matatabi possesses the ability to generate powerful blue flames. It can use Fire Release nature transformation and can grant its Jinchūriki the ability to transform their nails into powerful claws.",
                         "cost": {
                             "JP": 400
@@ -2326,7 +2338,7 @@
                     },
                     {
                         "id": "tailedIsobu",
-                        "label": "Isobu, the Three-Tails [400 JP]",
+                        "label": "Isobu, the Three-Tails",
                         "description": "A three-tailed turtle, Isobu has the unique ability to generate coral for powerful attacks and can produce a potent hallucinogenic mist that preys upon a victim's insecurities. It can move around at high speeds by curling up and rolling, and its shell is incredibly durable. Isobu's body contains numerous miniature versions of itself that live inside its stomach. Finally, it possesses a space-time ninjutsu that it can use to hide in a pocket dimension to regain its strength.",
                         "cost": {
                             "JP": 400
@@ -2334,7 +2346,7 @@
                     },
                     {
                         "id": "tailedSonGoku",
-                        "label": "Son Gokū, the Four-Tails [400 JP]",
+                        "label": "Son Gokū, the Four-Tails",
                         "description": "A four-tailed ape, Son Gokū possesses immense physical strength and considerable agility. It can use Earth and Fire Release nature transformations and bring them together in order to utilize Lava Release, allowing it to summon and control lava, create volcanos, and unleash powerful jets of green flames.",
                         "cost": {
                             "JP": 400
@@ -2342,7 +2354,7 @@
                     },
                     {
                         "id": "tailedKokuo",
-                        "label": "Kokuō, the Five-Tails [400 JP]",
+                        "label": "Kokuō, the Five-Tails",
                         "description": "A five-tailed horse-like creature, Kokuō has tremendous willpower and considerable physical might. It possesses the ability to use Fire and Water Release nature transformations and can bring them together to use Boil Release. It can use the steam this power generates to enhance its strength and that of its host.",
                         "cost": {
                             "JP": 400
@@ -2350,7 +2362,7 @@
                     },
                     {
                         "id": "tailedSaiken",
-                        "label": "Saiken, the Six-Tails [400 JP]",
+                        "label": "Saiken, the Six-Tails",
                         "description": "A six-tailed slug, Saiken has the ability to produce powerful corrosive substances in the form of liquids and gases. Its squishy body is immensely durable. It can also use Soap Bubble ninjutsu and can produce a strong adhesive slime from its mouth.",
                         "cost": {
                             "JP": 400
@@ -2358,7 +2370,7 @@
                     },
                     {
                         "id": "tailedChomei",
-                        "label": "Chōmei, the Seven-Tails [400 JP]",
+                        "label": "Chōmei, the Seven-Tails",
                         "description": "A seven-tailed Kabutomushi, Chōmei has six wings that take the place of most of its tails, allowing it to fly. It has the ability to produce blinding powder from its wings and durable silk cocoons that can impede the absorption of chakra. By manifesting its wings, Chōmei's Jinchūriki can fly around at high speeds.",
                         "cost": {
                             "JP": 400
@@ -2366,7 +2378,7 @@
                     },
                     {
                         "id": "tailedGyuki",
-                        "label": "Gyūki, the Eight-Tails [400 JP]",
+                        "label": "Gyūki, the Eight-Tails",
                         "description": "An eight-tailed Ushioni, Gyūki can generate ink to use as a smokescreen, a weapon, or a conduit for fūinjutsu. It can use its tentacles as mediums to maneuver its chakra or shed its host while leaving a clone behind. Gyūki also has the ability to supercharge its Tailed Beast Ball, amplifying its power several times over.",
                         "cost": {
                             "JP": 400
@@ -2374,7 +2386,7 @@
                     },
                     {
                         "id": "tailedKurama",
-                        "label": "Kurama, the Nine-Tails [600/1200 JP]",
+                        "label": "Kurama, the Nine-Tails",
                         "description": "A nine-tailed fox, Kurama possesses an enormous amount of chakra, far exceeding that of the other eight Tailed Beasts. Its chakra also replenishes at an incredible pace. It can sense negative emotion and natural energy and can use Wind and Fire Release nature transformations. Kurama grants its host potent regenerative abilities and is immensely strong and durable. It also possesses a special Nine-Tails Chakra Mode and Baryon Mode, two special states that require absolute trust between Kurama and its host. The former dramatically enhances the user's strength, durability, and speed well beyond the normal benefits of a Chakra Shroud and serves as the foundation for creating a Tailed Beast Mode Chakra Shroud. Baryon Mode consumes the chakra of both Kurama and its host in a process similar to nuclear fusion, producing a new, powerful form of energy. Aside from providing an immense boost to the user's speed, toughness, and power, this state allows them to drain the life force of those they touch. However, Baryon Mode risks the life of its user and could potentially kill them if pushed too far. For 600 JP, you can get half of Kurama, either the Yin or Yang version.",
                         "cost": {
                             "JP": 600
@@ -2383,7 +2395,7 @@
                     },
                     {
                         "id": "tailedJuubi",
-                        "label": "Jūbi, The Ten-Tails [2400 JP]",
+                        "label": "Jūbi, The Ten-Tails",
                         "description": "The one-eyed behemoth formed by combining all nine Tailed Beasts. This being possesses a pool of chakra so vast as to be considered immeasurable, even by the standards of other Tailed Beasts. It is capable of launching mountain range-destroying Tailed Beast Balls at targets a country away and can summon forth natural disasters spanning an entire continent. The Jūbi Jinchūriki is granted the ability to create Truth-Seeking Balls, fly, and they develop a Rinne Sharingan. They also gain Six Paths Senjutsu, a special Sage Mode variant created by the Sage of Six Paths. This bestows the same benefits as Sage Mode but with enhanced sensing capabilities, letting the user sense things even in Limbo. This senjutsu is always active and renders the user immune to the effects of ninjutsu; they can only be harmed with senjutsu, taijutsu, and techniques that employ the power of the Six Paths. The Jinchūriki gains all five basic nature transformations and can use yin-yang release. Their durability is increased to massive levels, such that Madara was able to withstand Might Guy's attacks practically unharmed, even when he had released seven of the Eight Gates. Whether your appearance changes or not is up to you. If you want, your Ten-Tails can have the monstrous rabbit-like appearance that Kaguya briefly takes, or it may have a blend of different features from its various stages of development and the Tailed Beasts that comprise it.",
                         "cost": {
                             "JP": 2400
@@ -2402,7 +2414,7 @@
                 "options": [
                     {
                         "id": "genryuFire",
-                        "label": "Fire Genryū [600 JP]",
+                        "label": "Fire Genryū",
                         "description": "Master of flame, this Genryū magnifies Fire Release techniques to apocalyptic levels while remaining vulnerable to water-aligned chakra.",
                         "cost": {
                             "JP": 600
@@ -2411,7 +2423,7 @@
                     },
                     {
                         "id": "genryuWater",
-                        "label": "Water Genryū [600 JP]",
+                        "label": "Water Genryū",
                         "description": "Ruler of torrents, this Genryū empowers Water Release arts, overwhelming foes with crushing tides yet suffering against lightning's edge.",
                         "cost": {
                             "JP": 600
@@ -2420,7 +2432,7 @@
                     },
                     {
                         "id": "genryuEarth",
-                        "label": "Earth Genryū [600 JP]",
+                        "label": "Earth Genryū",
                         "description": "Heir to stone, this Genryū turns Earth Release into unyielding bulwarks and seismic devastation, but wind-carved strikes cut deep.",
                         "cost": {
                             "JP": 600
@@ -2429,7 +2441,7 @@
                     },
                     {
                         "id": "genryuWind",
-                        "label": "Wind Genryū [600 JP]",
+                        "label": "Wind Genryū",
                         "description": "Sovereign of gales, this Genryū sharpens Wind Release into unstoppable blades and tempests, though it falters before earth-forged defenses.",
                         "cost": {
                             "JP": 600
@@ -2438,7 +2450,7 @@
                     },
                     {
                         "id": "genryuLightning",
-                        "label": "Lightning Genryū [600 JP]",
+                        "label": "Lightning Genryū",
                         "description": "Bearer of storms, this Genryū elevates Lightning Release to blinding speed and cataclysmic force, yet earth-grounded counters remain a threat.",
                         "cost": {
                             "JP": 600
@@ -2454,7 +2466,7 @@
                 "options": [
                     {
                         "id": "pseudoShukaku",
-                        "label": "Pseudo One-Tail (Shukaku) [200 JP]",
+                        "label": "Pseudo One-Tail (Shukaku)",
                         "description": "Channel half of Shukaku's chakra reserves and sand mastery without hosting the tanuki itself.",
                         "cost": {
                             "JP": 200
@@ -2463,7 +2475,7 @@
                     },
                     {
                         "id": "pseudoMatatabi",
-                        "label": "Pseudo Two-Tails (Matatabi) [200 JP]",
+                        "label": "Pseudo Two-Tails (Matatabi)",
                         "description": "Harness Matatabi's blue inferno and feral enhancements through a pseudo-jinchūriki link.",
                         "cost": {
                             "JP": 200
@@ -2472,7 +2484,7 @@
                     },
                     {
                         "id": "pseudoIsobu",
-                        "label": "Pseudo Three-Tails (Isobu) [200 JP]",
+                        "label": "Pseudo Three-Tails (Isobu)",
                         "description": "Gain coral creation, hallucinogenic mist, and Isobu's resilient chakra shell without the turtle itself.",
                         "cost": {
                             "JP": 200
@@ -2481,7 +2493,7 @@
                     },
                     {
                         "id": "pseudoSonGoku",
-                        "label": "Pseudo Four-Tails (Son Gokū) [200 JP]",
+                        "label": "Pseudo Four-Tails (Son Gokū)",
                         "description": "Tap Son Gokū's lava release and brute strength while remaining Beast-free.",
                         "cost": {
                             "JP": 200
@@ -2490,7 +2502,7 @@
                     },
                     {
                         "id": "pseudoKokuo",
-                        "label": "Pseudo Five-Tails (Kokuō) [200 JP]",
+                        "label": "Pseudo Five-Tails (Kokuō)",
                         "description": "Access Kokuō's steam-empowered might and stamina without sealing the Beast.",
                         "cost": {
                             "JP": 200
@@ -2499,7 +2511,7 @@
                     },
                     {
                         "id": "pseudoSaiken",
-                        "label": "Pseudo Six-Tails (Saiken) [200 JP]",
+                        "label": "Pseudo Six-Tails (Saiken)",
                         "description": "Wield corrosive slime, soap techniques, and Saiken's resilience via borrowed chakra.",
                         "cost": {
                             "JP": 200
@@ -2508,7 +2520,7 @@
                     },
                     {
                         "id": "pseudoChomei",
-                        "label": "Pseudo Seven-Tails (Chōmei) [200 JP]",
+                        "label": "Pseudo Seven-Tails (Chōmei)",
                         "description": "Borrow Chōmei's blinding powder, flight, and silk cocoons without a full seal.",
                         "cost": {
                             "JP": 200
@@ -2517,7 +2529,7 @@
                     },
                     {
                         "id": "pseudoGyuki",
-                        "label": "Pseudo Eight-Tails (Gyūki) [200 JP]",
+                        "label": "Pseudo Eight-Tails (Gyūki)",
                         "description": "Gain Gyūki's ink techniques and enhanced Tailed Beast Ball output at half cost.",
                         "cost": {
                             "JP": 200
@@ -2526,16 +2538,26 @@
                     },
                     {
                         "id": "pseudoKuramaHalf",
-                        "label": "Pseudo Nine-Tails [300 JP each]",
-                        "description": "Acquire half of Kurama's chakra reserve. Select twice to emulate both Yin and Yang halves without sealing Kurama.",
+                        "label": "Pseudo Nine-Tails",
+                        "description": "Acquire half of Kurama's chakra reserve: Either Yin or Yang.",
                         "cost": {
                             "JP": 300
                         },
-                        "maxSelections": 2
+                        "maxSelections": 1
+                    },
+                    {
+                        "id": "pseudoKuramaHalf2",
+                        "label": "Pseudo Nine-Tails (Both Halves)",
+                        "description": "Emulate both Yin and Yang halves without sealing Kurama.",
+                        "cost": {
+                            "JP": 300
+                        },
+                        "maxSelections": 1,
+                        "prerequisites": "pseudoKuramaHalf"
                     },
                     {
                         "id": "darkSpiritBeast",
-                        "label": "Spirit Beast [400 JP]",
+                        "label": "Spirit Beast",
                         "description": "Command the malign catfish demon imprisoned in the Valley of Evil, infecting foes with corrupt chakra, draining their strength, and firing purple rays of resentment.",
                         "cost": {
                             "JP": 400
@@ -2544,7 +2566,7 @@
                     },
                     {
                         "id": "darkThreeHeaded",
-                        "label": "Three-Headed Guardian Beast [400 JP]",
+                        "label": "Three-Headed Guardian Beast",
                         "description": "Unleash volcanic roars, seismic shockwaves, and laser-like beams from the triune lion that once threatened the world in three cries.",
                         "cost": {
                             "JP": 400
@@ -2553,7 +2575,7 @@
                     },
                     {
                         "id": "darkUltimateSummon",
-                        "label": "Ultimate Summoning Beast [400 JP]",
+                        "label": "Ultimate Summoning Beast",
                         "description": "Bond with the anti-ninja summon that devours other summons for their abilities, wields diverse jutsu, and drains chakra while remaining loyal to your call.",
                         "cost": {
                             "JP": 400
@@ -2562,7 +2584,7 @@
                     },
                     {
                         "id": "darkZeroTails",
-                        "label": "Zero Tails [400 JP]",
+                        "label": "Zero Tails",
                         "description": "Harness the leech-born shadow spirit fed by negative emotions, manifesting dark chakra limbs, emotion sensing, and seal-free techniques without bodily collapse.",
                         "cost": {
                             "JP": 400
@@ -2571,7 +2593,7 @@
                     },
                     {
                         "id": "darkMechaKurama",
-                        "label": "Mecha-Kurama [600 JP]",
+                        "label": "Mecha-Kurama",
                         "description": "Deploy Orochimaru's metallic fox: an indomitable war machine firing eye lasers, transforming into vehicles, and launching missile salvos.",
                         "cost": {
                             "JP": 600
@@ -2580,7 +2602,7 @@
                     },
                     {
                         "id": "darkGozuTenno",
-                        "label": "Gozu Tennō [600 JP]",
+                        "label": "Gozu Tennō",
                         "description": "Master the Nue seal experiment, siphoning chakra through Hashirama-infused fūinjutsu, summoning Nue, and weaponizing tangible negative chakra constructs.",
                         "cost": {
                             "JP": 600
@@ -2589,7 +2611,7 @@
                     },
                     {
                         "id": "darkMoryo",
-                        "label": "Mōryō [600 JP]",
+                        "label": "Mōryō",
                         "description": "Consume the swamp demon's power to strip drawbacks from your jutsu, cloak battlefields in darkness, and summon near-indestructible golems while manifesting serpentine chakra heads.",
                         "cost": {
                             "JP": 600
@@ -2598,7 +2620,7 @@
                     },
                     {
                         "id": "darkSatori",
-                        "label": "Satori [600 JP]",
+                        "label": "Satori",
                         "description": "Bind the Sage-era terror that senses fear, hurls feather blades, mirrors Tailed Beast Ball force, and grants the indestructible Box of Ultimate Bliss.",
                         "cost": {
                             "JP": 600
@@ -2607,7 +2629,7 @@
                     },
                     {
                         "id": "darkBlackKurama",
-                        "label": "Black Nine Tails [600 JP]",
+                        "label": "Black Nine Tails",
                         "description": "Partner with Menma's dark Kurama, commanding nine masked extensions, dark Sage Mode, levitation, and spiralling ring techniques.",
                         "cost": {
                             "JP": 600
@@ -2645,7 +2667,7 @@
                 "options": [
                     {
                         "id": "immortalityColorCourse",
-                        "label": "Color Course Change [400 PP]",
+                        "label": "Color Course Change",
                         "description": "A lesser form of immortality developed by Fūka, this ability allows you to distribute your chakra and consciousness across multiple bodies. Though you are only able to use one body at a time, you can switch between the bodies you have active near-instantaneously, quickly restoring yourself to an undamaged state. If a body is fatally injured, it crumbles to dust and is instantly replaced with a new one. Destroyed bodies can be replaced by partitioning off a significant portion of chakra to become a new one. While you start with a total of five bodies, you can increase your total stock in the same way that you would replace destroyed ones. However, this immortality has a critical weakness in that your soul is stored in your hair rather than any of your bodies. Damage to your hair results in massively amplified damage to your bodies. Should you run out of bodies, or if your hair is completely destroyed, you will die.",
                         "cost": {
                             "PP": 400
@@ -2653,7 +2675,7 @@
                     },
                     {
                         "id": "immortalitySasori",
-                        "label": "Sasori [400 PP]",
+                        "label": "Sasori",
                         "description": "Much like Sasori, you implanted your core into a puppet body equal to that of Sasori himself. In place of your intestines, there is instead a thick cable coiled around a pole allowing you to pierce others and retract it if necessary. Attached to your back is a scroll holder containing four scrolls. The first allows you to expel streams of fire, the second allows you to store other objects, and the third allows you to expel streams of high-pressure water. The effect of the fourth is up to you, though it should be comparable in scope to the others. Attached to your hips are a pair of poles, each equipped with five blades that can spin akin to a propeller to enhance your speed or use as a melee weapon. In each of your hands are pipes that can spew out the fire and water of the first and second scrolls. On top of that, you can still use chakra. Post-Jump, your puppet body becomes an alt-form if you so wish.",
                         "cost": {
                             "PP": 400
@@ -2661,7 +2683,7 @@
                     },
                     {
                         "id": "immortalityWhiteSnake",
-                        "label": "White Snake [400 PP]",
+                        "label": "White Snake",
                         "description": "Through extensive modifications, your true form becomes a massive white snake with smaller snakes as scales. Your blood becomes a powerful paralyzing poison that evaporates upon contact with air. Once every three years, you can perform Living Corpse Reincarnation by swallowing your victims. Upon doing so, you gain control of their body, to which the following modifications occur. You gain the ability to stretch and bend your body, reconnect any severed body parts and the ability to heal by shedding skin. If you are not compatible with a host, the body will start to reject you, though it is guaranteed to last for at least long enough for you to use Living Corpse Reincarnation again. If for whatever reason a host absorbs you, you can gain a new body if they run low on whatever energy they use, as happened during Sasuke’s fight against Itachi. If you bought the Master of Biology and Sage Mode perks you also gain knowledge of how to make Orochimaru’s curse marks (even the filler curse mark Mizuki has). So long as a curse mark exists, you’ll never truly die. However, you’ll be bound to the curse mark as a disembodied spirit until someone frees you.",
                         "cost": {
                             "PP": 400
@@ -2669,7 +2691,7 @@
                     },
                     {
                         "id": "immortalityEarthGrudge",
-                        "label": "Earth Grudge Fear [600 PP]",
+                        "label": "Earth Grudge Fear",
                         "description": "Much like Kakuzu, you stole and implanted the Jiongu into yourself, a secret kinjutsu that has turned you into something similar to a doll. Your entire internal structure has become composed of countless thick grey threads that now hold your body together. Due to your ragdoll nature, you can separate and control individual body parts so long as they are connected via the threads. You can even manipulate them underground. These threads can pierce the flesh and bodies of others, allowing you to remove their organs, or to be more specific, remove their hearts and integrate them into your own body, extending your life. In order for you to die, you have to be killed as many times as you have hearts. However, you have a limit of 5 hearts in your body, including your original one. On the bright side, you also gain the nature affinity of that heart. For example, if the original owner is a wind user, you gain the wind element. You can also detach those hearts and have them take a body of their own made by the threads, with each heart able to attack individually. Similarly, integrating the heart of an individual with their own special abilities will grant you access to those powers. Post-Jump, you may store any extra hearts inside your body rather than on your back.",
                         "cost": {
                             "PP": 600
@@ -2677,7 +2699,7 @@
                     },
                     {
                         "id": "immortalityHidan",
-                        "label": "Hidan [600/800 PP]",
+                        "label": "Hidan",
                         "description": "Whether as a result of a Jashinist technique or just luck, you have become unable to die from any cause barring malnutrition. With this immortality you can survive anything from your head being cut off to all your intestines being pulled from your body. Regardless of the injury you can survive and heal from it. The only limit to this are limbs taken from you and are not destroyed; those types of injuries cannot be healed and the limb in question must be reattached, even the head. If it isn’t, you’re stuck. Post-Jump, you can turn this immortality on or off. Add the Ritual Mastery upgrade below if you also want Hidan’s signature techniques.",
                         "cost": {
                             "PP": 600
@@ -2685,7 +2707,7 @@
                     },
                     {
                         "id": "immortalityHidanRitual",
-                        "label": "Hidan Ritual Mastery [200 PP]",
+                        "label": "Hidan Ritual Mastery",
                         "description": "For 800 PP total, you have also gained access to and mastered to a certain extent both the Death Controlling Possessed Blood and the Body Controlling Manipulated Blood techniques. The former is the one Hidan made most famous. In order to use it, the user must draw, in their own blood, the symbol of Jashin and they must remain in the center of that symbol. While in that symbol, the user must then drink the blood of their target. Once the blood is drunk the user's skin turns black with white markings, resembling a skeleton. Once this occurs the victim is linked to the user until the user leaves the circle. While linked, any injury inflicted on the user, whether self-inflicted or through enemy attack, is inflicted upon the target whose blood they drank as well. The second technique is activated much the same way as the first. The only difference being that the user doesn’t drink the blood and instead uses it on a puppet. This links the puppet and the target together, so that any damage inflicted onto the puppet is inflicted onto the user. However, even if the target dies, the connection isn’t severed, leaving the target’s corpse as a puppet.",
                         "cost": {
                             "PP": 200
@@ -2694,7 +2716,7 @@
                     },
                     {
                         "id": "immortalityHidanTechniques",
-                        "label": "Hidan Ritual Techniques Only [400 PP]",
+                        "label": "Hidan Ritual Techniques Only",
                         "description": "Alternatively, you may buy the two jutsu without purchasing the immortality for 400 PP, granting both Death Controlling Possessed Blood and Body Controlling Manipulated Blood while leaving you fully mortal.",
                         "cost": {
                             "PP": 400
@@ -2706,7 +2728,7 @@
                     },
                     {
                         "id": "immortalityChimera",
-                        "label": "Chimera Technique [800 PP]",
+                        "label": "Chimera Technique",
                         "description": "This Jutsu combines multiple creatures into a single being with the traits of all involved. Like Hiruko, you’ve also learned to use this to gain others’ Kekkei Genkai. However, you will start out with none unless you buy one or more from the previous section. After you absorb a fifth Kekkei Genkai, you’ll gain immortality. Since you are paying, the preparation time needed just to merge with others via body horror surgery is waived. You’ll still have to deal with the increasingly convoluted rituals to get Kekkei Genkai after the fifth though. Post-Jump, this technique can be used to acquire other biological powers, such as My Hero Academia’s Quirks.",
                         "cost": {
                             "PP": 800
@@ -2714,7 +2736,7 @@
                     },
                     {
                         "id": "immortalityEdoTensei",
-                        "label": "Edo Tensei [1200 PP]",
+                        "label": "Edo Tensei",
                         "description": "Somehow, you have gained the body of an Edo Tensei. Your body has been entirely made immortal, any damage you take regenerating over time. Even if your body is completely annihilated, you will regenerate from nothing, so long as your soul remains intact. Even age is rendered moot before you. For clarification, this perk does not grant the limitless chakra other versions of Edo Tensei give, it only gives you the regenerating body. Post-Jump, you can turn this immortality on and off.",
                         "cost": {
                             "PP": 1200
@@ -2753,7 +2775,7 @@
                 "options": [
                     {
                         "id": "itemsRaisingSpirit",
-                        "label": "The Raising Fighting Spirit [FREE]",
+                        "label": "The Raising Fighting Spirit",
                         "description": "Stream the entire Naruto and Boruto soundtracks in your head, controlling playback and sharing it ambiently. Merge with other musical perks and produce Naruto-style remixes backed by physical media copies.",
                         "cost": {
                             "IP": 0
@@ -2762,7 +2784,7 @@
                     },
                     {
                         "id": "itemsRaisingSpiritUpgrade",
-                        "label": "Raising Fighting Spirit: Companion Tracks [50 IP]",
+                        "label": "Raising Fighting Spirit: Companion Tracks",
                         "description": "Add unique themes for yourself and companions, fully compatible with other music perks and items.",
                         "cost": {
                             "IP": 50
@@ -2772,7 +2794,7 @@
                     },
                     {
                         "id": "itemsNinjaTools",
-                        "label": "Ninja Tools [FREE]",
+                        "label": "Ninja Tools",
                         "description": "Receive a replenishing warehouse stock of standard shinobi gear such as kunai, shuriken, explosive tags, and wire.",
                         "cost": {
                             "IP": 0
@@ -2781,7 +2803,7 @@
                     },
                     {
                         "id": "itemsNinjaSpecialized",
-                        "label": "Specialized Ninja Tool [50 IP]",
+                        "label": "Specialized Ninja Tool",
                         "description": "Add a specialized piece of equipment—chakra-conductive weaponry, a basic puppet, or similar—to your arsenal. May be purchased multiple times.",
                         "cost": {
                             "IP": 50
@@ -2791,7 +2813,7 @@
                     },
                     {
                         "id": "itemsTaijutsuUniform",
-                        "label": "Taijutsu Master Uniform [50 IP]",
+                        "label": "Taijutsu Master Uniform",
                         "description": "A breathable, durable training uniform accompanied by heavy limb weights; aesthetics may be customized without altering properties.",
                         "cost": {
                             "IP": 50
@@ -2800,7 +2822,7 @@
                     },
                     {
                         "id": "itemsTrainingJournal",
-                        "label": "Training Journal [50 IP]",
+                        "label": "Training Journal",
                         "description": "A compendium of shinobi training essays containing a curated selection of techniques from prior owners.",
                         "cost": {
                             "IP": 50
@@ -2809,7 +2831,7 @@
                     },
                     {
                         "id": "itemsTrainingJournalComprehensive",
-                        "label": "Training Journal: Comprehensive Edition [200 IP]",
+                        "label": "Training Journal: Comprehensive Edition",
                         "description": "Upgrades the journal so it periodically reveals new sections, ultimately cataloguing the full Naruto roster over centuries of study.",
                         "cost": {
                             "IP": 200
@@ -2819,7 +2841,7 @@
                     },
                     {
                         "id": "itemsAkimichiPills",
-                        "label": "Akimichi Three Colored Pills [100 IP]",
+                        "label": "Akimichi Three Colored Pills",
                         "description": "Spinach, Curry, and Chili Pills that safely transmute stored fat into chakra, replenished each day without detrimental side effects.",
                         "cost": {
                             "IP": 100
@@ -2828,7 +2850,7 @@
                     },
                     {
                         "id": "itemsResonatingSpeaker",
-                        "label": "Resonating Echo Speaker [100 IP]",
+                        "label": "Resonating Echo Speaker",
                         "description": "A durable gauntlet that amplifies, redirects, or absorbs soundwaves for offensive and defensive purposes.",
                         "cost": {
                             "IP": 100
@@ -2837,7 +2859,7 @@
                     },
                     {
                         "id": "itemsRockLeeMedicine",
-                        "label": "Rock Lee's Medicine [100 IP]",
+                        "label": "Rock Lee's Medicine",
                         "description": "An endless draught that induces—or enhances mastery of—the Drunken Fist for several hours per dose.",
                         "cost": {
                             "IP": 100
@@ -2846,7 +2868,7 @@
                     },
                     {
                         "id": "itemsShinigamiMask",
-                        "label": "Shinigami Mask [100 IP]",
+                        "label": "Shinigami Mask",
                         "description": "Release selected souls from the Reaper Death Seal without harming yourself; choose which spirits remain bound.",
                         "cost": {
                             "IP": 100
@@ -2855,7 +2877,7 @@
                     },
                     {
                         "id": "itemsDeepPockets",
-                        "label": "Deep Pockets [100 IP]",
+                        "label": "Deep Pockets",
                         "description": "An untraceable trust fund paying 250,000 units annually in the currency of your choice. Each purchase increases the payout by a factor of ten.",
                         "cost": {
                             "IP": 100
@@ -2864,7 +2886,7 @@
                     },
                     {
                         "id": "itemsAirCannon",
-                        "label": "Air Cannon [100 IP]",
+                        "label": "Air Cannon",
                         "description": "Forearm vents emit devastating air-sound blasts capable of shattering stone—use caution to avoid obstructing the outlets.",
                         "cost": {
                             "IP": 100
@@ -2873,7 +2895,7 @@
                     },
                     {
                         "id": "itemsChakraDisruption",
-                        "label": "Chakra Disruption Device [100 IP]",
+                        "label": "Chakra Disruption Device",
                         "description": "A reusable restraint that rapidly drains chakra and stuns targets; replacements appear daily if lost.",
                         "cost": {
                             "IP": 100
@@ -2882,7 +2904,7 @@
                     },
                     {
                         "id": "itemsChakraDisruptionUnlimited",
-                        "label": "Chakra Disruption Device Supply [300 IP]",
+                        "label": "Chakra Disruption Device Supply",
                         "description": "Upgrade to an endless supply of chakra disruption devices, ready for deployment whenever needed.",
                         "cost": {
                             "IP": 300
@@ -2892,7 +2914,7 @@
                     },
                     {
                         "id": "itemsHeroWater",
-                        "label": "Purified Hero Water [100 IP]",
+                        "label": "Purified Hero Water",
                         "description": "A flask of Hero Water that boosts chakra tenfold without shortening lifespan. Refills each Jump or decade and respawns if lost.",
                         "cost": {
                             "IP": 100
@@ -2901,7 +2923,7 @@
                     },
                     {
                         "id": "itemsHeroWaterInfinite",
-                        "label": "Purified Hero Water: Endless Flask [400 IP]",
+                        "label": "Purified Hero Water: Endless Flask",
                         "description": "Keep the flask permanently full; each individual may benefit only once per Jump or decade.",
                         "cost": {
                             "IP": 400
@@ -2929,7 +2951,7 @@
                     },
                     {
                         "id": "itemsDanzosArm",
-                        "label": "Danzo's Arm [200 IP]",
+                        "label": "Danzo's Arm",
                         "description": "A prosthetic arm cultivated from Shin Uchiha tissue, grafted with Hashirama cells and ten Sharingan. The eyes lack direct sensory input, but they empower an enhanced Izanagi that rewrites undesired outcomes—including your death—for one minute per eye. All ten Sharingan fully restore at the start of each new Jump. Creepy shoulder-mouth that grows trees remains optional.",
                         "cost": {
                             "IP": 200
@@ -2938,7 +2960,7 @@
                     },
                     {
                         "id": "itemsDanzosArmMangekyo",
-                        "label": "Danzo's Arm: Mangekyō Array [100 IP]",
+                        "label": "Danzo's Arm: Mangekyō Array",
                         "description": "Augment the prosthetic's Sharingan to Mangekyō variants, unlocking a single unique Mangekyō ability (other than Susanoo) and amplifying Izanagi's potency without extending its duration.",
                         "cost": {
                             "IP": 100
@@ -2948,7 +2970,7 @@
                     },
                     {
                         "id": "itemsDragonBlade",
-                        "label": "Dragon Blade [200 IP]",
+                        "label": "Dragon Blade",
                         "description": "Even among the countless weapons of this world, the Dragon Blade stands apart. It always returns to you across any distance and can slice or absorb chakra and other energies much like Samehada, demanding tremendous reserves to wield. This purchase grants the blade alone; without the orbs it cannot channel the five basic nature transformations.",
                         "cost": {
                             "IP": 200
@@ -2957,7 +2979,7 @@
                     },
                     {
                         "id": "itemsDragonBladeOrbs",
-                        "label": "Dragon Blade: Elemental Orbs [100 IP]",
+                        "label": "Dragon Blade: Elemental Orbs",
                         "description": "A complete set of five orbs that slot into the Dragon Blade's core, unlocking the basic elemental transformations: red fire, green wind, yellow lightning, orange earth, and blue water. Requires the Dragon Blade and lets you swap elements at will.",
                         "cost": {
                             "IP": 100
@@ -3066,7 +3088,7 @@
                 "options": [
                     {
                         "id": "itemsCelestialShortSwords",
-                        "label": "Weaknessless Soaring Short Swords [100 IP]",
+                        "label": "Weaknessless Soaring Short Swords",
                         "description": "Twin blades that streamline wind chakra shaping, allowing wind jutsu to be cast through them without signs and at a greatly reduced chakra cost. Post-Jump, they similarly boost other wind-based techniques.",
                         "cost": {
                             "IP": 100
@@ -3075,7 +3097,7 @@
                     },
                     {
                         "id": "itemsCelestialGarian",
-                        "label": "Garian Sword [100 IP]",
+                        "label": "Garian Sword",
                         "description": "A tri-pronged sword whose segments extend and flex like a puppet limb. Each prong channels chakra into a dragon-like construct that can be directed at will.",
                         "cost": {
                             "IP": 100
@@ -3084,7 +3106,7 @@
                     },
                     {
                         "id": "itemsCelestialSun",
-                        "label": "Sword of the Sun [100 IP]",
+                        "label": "Sword of the Sun",
                         "description": "A two-handed blade that summons vast firestorms and emerald light beams, and can call the other celestial tools to the wielder.",
                         "cost": {
                             "IP": 100
@@ -3093,7 +3115,7 @@
                     },
                     {
                         "id": "itemsCelestialArmor",
-                        "label": "Infinite Armor [100 IP]",
+                        "label": "Infinite Armor",
                         "description": "Tiger-faced armor that drains chakra on contact, channeling it through weapons to restore stamina or heal injuries. When combined with the other tools, all effects intensify, granting flight, mental control, and a wide-area chakra-devouring vortex. Post-Jump it absorbs other energy types as well as chakra.",
                         "cost": {
                             "IP": 100
@@ -3102,7 +3124,7 @@
                     },
                     {
                         "id": "itemsCelestialFused",
-                        "label": "Fused Celestial Tools [400 IP]",
+                        "label": "Fused Celestial Tools",
                         "description": "Obtain all four tools already merged, unlocking their enhanced synergy immediately. Eligible for one discount slot despite containing the whole set.",
                         "cost": {
                             "IP": 400
@@ -3118,7 +3140,7 @@
                 "options": [
                     {
                         "id": "itemsPuppetsHundred",
-                        "label": "Performance of a Hundred Puppets [200 CP]",
+                        "label": "Performance of a Hundred Puppets",
                         "description": "By purchasing this, you gain access to a scroll containing the 100 puppets created by Sasori, the greatest puppet master of this time and possibly in all of history. Mastering them all at once requires Sasori's immortality upgrade below.",
                         "cost": {
                             "IP": 200
@@ -3127,7 +3149,7 @@
                     },
                     {
                         "id": "itemsPuppetsHundredSasori",
-                        "label": "Performance of a Hundred Puppets: Sasori Mastery [FREE]",
+                        "label": "Performance of a Hundred Puppets: Sasori Mastery",
                         "description": "If you purchased Immortality: Sasori, you also receive the knowledge and skill needed on how to control every single puppet at once. This add-on is free once you own the puppet scroll and Sasori's immortality.",
                         "cost": {
                             "IP": 0
@@ -3140,7 +3162,7 @@
                     },
                     {
                         "id": "itemsPuppetArmorHiruko",
-                        "label": "Puppet Armor Hiruko [200 CP]",
+                        "label": "Puppet Armor Hiruko",
                         "description": "A special form of armor that makes use of the Puppet Technique to bolster the wearer's defensive and offensive abilities simultaneously. This armor is equipped with a highly durable armored shell, an extendable scorpion-like tail tipped with a deadly blade, an arm-mounted senbon grenade, and a rapid-fire senbon launcher in the mouth. All of its blades feature a unique and deadly poison. Gruff and growly voice when in use is optional.",
                         "cost": {
                             "IP": 200
@@ -3183,7 +3205,7 @@
                     },
                     {
                         "id": "itemsAburameBikochu",
-                        "label": "Bikochū [100 IP]",
+                        "label": "Bikochū",
                         "description": "A form of tracking insect. This species possesses an incredible sense of smell that is stronger than even a dog’s. What makes this species so loved by the Aburame is its ability to remember the first scent it smells after it changes from its infant stage into an adult form, and they will always try to return to that smell.",
                         "cost": {
                             "IP": 100
@@ -3193,7 +3215,7 @@
                     },
                     {
                         "id": "itemsAburameKidaichu",
-                        "label": "Kidaichū [100 IP]",
+                        "label": "Kidaichū",
                         "description": "When given an incorrect amount of chakra, these insects begin to devour the flesh of their host, rapidly growing in size. But don't worry, while they are in your body, they won’t eat you, as you will always give them the correct amount of chakra. Post-Jump, you can mentally command this species if you wish for them to devour a person.",
                         "cost": {
                             "IP": 100
@@ -3203,7 +3225,7 @@
                     },
                     {
                         "id": "itemsAburameKikaichu",
-                        "label": "Kikaichū [100 IP]",
+                        "label": "Kikaichū",
                         "description": "The most common species utilized by the Aburame, this species is primarily used for the express purpose of battle. In combat, they are spread across an area to cut off the target’s escape. Once done, they then swarm the target and rapidly deplete the target's chakra until they can no longer move. Of course, this species can also be used for other purposes as well. They can help to expel poison from the body, distribute stolen chakra to others, or impersonate their host to act as a decoy. Much like Bikochū, they can also be used as a method of tracking by observing the target and returning to their host to report what they heard and the target's location. Once a Kikaichū has locked onto a chakra signature, they can continue to follow it so long as the target remains within a certain range. Finally, by planting a female of the species onto a person, that person can be tracked via smell. They also breed very rapidly. If the population is decimated, so long as one survives, it’s only a matter of days before it has been fully restored.",
                         "cost": {
                             "IP": 100
@@ -3213,7 +3235,7 @@
                     },
                     {
                         "id": "itemsAburameKochu",
-                        "label": "Kochū [100 IP]",
+                        "label": "Kochū",
                         "description": "A more nefarious tool than the others, this species produces a poison that will both paralyze and kill the target within a few seconds of biting the victim. As an additional benefit, the poison also disappears upon death, preventing the cause of death from being determined and stymying the development of an antidote.",
                         "cost": {
                             "IP": 100
@@ -3223,7 +3245,7 @@
                     },
                     {
                         "id": "itemsAburameRinkaichu",
-                        "label": "Rinkaichū [100 IP]",
+                        "label": "Rinkaichū",
                         "description": "This species is a tad bit special among the Aburame’s insect species. Unlike other insects, this species is nano-sized and venomous, able to destroy the victim’s cells; however, this brand of insects can only be passed from user to victim via physical contact even through clothing. The Rinkaichū act similarly to viruses, spreading and multiplying as they thrive on living cells. However, if they stray too far from their host or the host dies, they too will die. If you touch and infect someone you didn't mean to, you can recall the insects by touching the initial area and mentally calling them back.",
                         "cost": {
                             "IP": 100
@@ -3233,7 +3255,7 @@
                     },
                     {
                         "id": "itemsAburameShokaichu",
-                        "label": "Shokaichū [100 IP]",
+                        "label": "Shokaichū",
                         "description": "These insects resemble worms; they can burrow into the ground and locate chakra signatures. They can then report the signature back to the user.",
                         "cost": {
                             "IP": 100
@@ -3263,7 +3285,7 @@
                     },
                     {
                         "id": "itemsCableCannon",
-                        "label": "Cable Cannon [50 IP]",
+                        "label": "Cable Cannon",
                         "description": "This allows you to fire and control a large bundle of cables that can be used to entrap opponents or pull yourself to nearby locations.",
                         "cost": {
                             "IP": 50
@@ -3273,7 +3295,7 @@
                     },
                     {
                         "id": "itemsNinjaTool",
-                        "label": "Ninja Tool [50 IP]",
+                        "label": "Ninja Tool",
                         "description": "This incorporates a ninja tool or other device into the armor such as a burst of senbon, poison mist storage, kunai launcher, gas mask, extendable sword blade, or the like. This option may also be used to import a similar item into the armor, including those bought in this Jump. You may purchase this option multiple times.",
                         "cost": {
                             "IP": 50
@@ -3283,7 +3305,7 @@
                     },
                     {
                         "id": "itemsPistonFist",
-                        "label": "Piston Fist [50 IP]",
+                        "label": "Piston Fist",
                         "description": "These large cylindrical gauntlets massively increase the user’s punching strength.",
                         "cost": {
                             "IP": 50
@@ -3293,7 +3315,7 @@
                     },
                     {
                         "id": "itemsWings",
-                        "label": "Wings [100 IP]",
+                        "label": "Wings",
                         "description": "These wings allow flight and are also capable of cutting through ninja wire and other similar materials.",
                         "cost": {
                             "IP": 100
@@ -3303,7 +3325,7 @@
                     },
                     {
                         "id": "itemsEvolvingDefense",
-                        "label": "Evolving Defense [100 IP]",
+                        "label": "Evolving Defense",
                         "description": "The armor becomes intrinsically linked to the wearer. If the wearer has greater defensive abilities then the armor would normally grant, then the armor’s own defensive abilities are strengthened to be as proportionally powerful to the wearer as the default armor would have been to the average shinobi. Any other features of the armor are similarly strengthened relative to your abilities as to remain relevant as well.",
                         "cost": {
                             "IP": 100
@@ -3313,7 +3335,7 @@
                     },
                     {
                         "id": "itemsChakraAugmentation",
-                        "label": "Chakra Augmentation [150 IP]",
+                        "label": "Chakra Augmentation",
                         "description": "This augmentation greatly increases the power of the wearer’s jutsu and other similar techniques.",
                         "cost": {
                             "IP": 150
@@ -3333,7 +3355,7 @@
                 "options": [
                     {
                         "id": "itemsSageToolsBashosen",
-                        "label": "Bashōsen [200 IP]",
+                        "label": "Bashōsen",
                         "description": "This large fan unleashes any of the five basic elemental natures at a thought, producing torrents of flame, lightning, water, wind, or earth. Its sturdy frame doubles as an exceptional shield against ninjutsu and taijutsu alike.",
                         "cost": {
                             "IP": 200
@@ -3342,7 +3364,7 @@
                     },
                     {
                         "id": "itemsSageToolsBenihisago",
-                        "label": "Benihisago [200 IP]",
+                        "label": "Benihisago",
                         "description": "A colossal gourd wrapped in scarlet cloth that seals the word soul of those ensnared by Kōkinjō. Once cursed, speaking the word they have uttered most in their life—or even remaining silent—pulls the victim into the gourd until freed by new habits.",
                         "cost": {
                             "IP": 200
@@ -3351,7 +3373,7 @@
                     },
                     {
                         "id": "itemsSageToolsKohaku",
-                        "label": "Kohaku no Jōhei [200 IP]",
+                        "label": "Kohaku no Jōhei",
                         "description": "An immense sealing pot that captures anyone whose name you call. Should the target answer, the vessel records their voice and binds them within, inescapable without outside intervention.",
                         "cost": {
                             "IP": 200
@@ -3360,7 +3382,7 @@
                     },
                     {
                         "id": "itemsSageToolsKokinjou",
-                        "label": "Kōkinjō [200 IP]",
+                        "label": "Kōkinjō",
                         "description": "A golden rope wielded to draw forth the mystic word soul from a target. Once exposed, the soul can be severed by Shichiseiken or siphoned into the Benihisago for sealing.",
                         "cost": {
                             "IP": 200
@@ -3369,7 +3391,7 @@
                     },
                     {
                         "id": "itemsSageToolsShichiseiken",
-                        "label": "Shichiseiken [200 IP]",
+                        "label": "Shichiseiken",
                         "description": "A broad, folding sword engraved with the words of those it strikes when commanded to curse. Severing the word soul inscribes their most common utterance upon its blade, changing as their habits change.",
                         "cost": {
                             "IP": 200
@@ -3391,7 +3413,7 @@
                 "options": [
                     {
                         "id": "itemsHiramekarei",
-                        "label": "Hiramekarei [200 IP]",
+                        "label": "Hiramekarei",
                         "description": "The blade is wide and flat with two curved indentations at the base, creating a cross guard of sorts and it possess two handles connected to each other with a short length of cord. These handles allow the blade to be split in to two, should the need arise.\n\nThe blade possesses the ability to store chakra, and, with a command phrase of your choice, the stored chakra can be emitted from the holes in the sword’s tip. The chakra then coats the sword, being able to be shaped into a variety of different weapons. The sword is also capable of generating a large amount of blue crystals that can cause a lot of damage to a target and restrain their movement.",
                         "cost": {
                             "IP": 200
@@ -3400,7 +3422,7 @@
                     },
                     {
                         "id": "itemsKabutowari",
-                        "label": "Kabutowari [200 IP]",
+                        "label": "Kabutowari",
                         "description": "This ‘sword’ is made up of a giant axe and hammer linked to one other by a rope. By striking a target with the axe and then striking the back of the axe with the hammer, this weapon can break through almost any defense.This ‘sword’ is made up of a giant axe and hammer linked to one other by a rope. By striking a target with the axe and then striking the back of the axe with the hammer, this weapon can break through almost any defense.",
                         "cost": {
                             "IP": 200
@@ -3409,7 +3431,7 @@
                     },
                     {
                         "id": "itemsKiba",
-                        "label": "Kiba [200 IP]",
+                        "label": "Kiba",
                         "description": "Not the character obviously, these swords are slim and straight possessing two bladed prongs on each sword, one near the tip and the another near the base. These swords are imbued with lightning, granting them enhanced cutting power and the power to transform and manipulate lightning, even allowing the user to perform their lightning techniques without hand seals. Such attacks can also be enhanced with minimal cost. These swords can also be used to channel natural lightning and can be connected to form one large sword. Not only that, but the swords capable of amplifying the chakra channeled into and returning it to the wielder, enhancing their chakra for a short time.",
                         "cost": {
                             "IP": 200
@@ -3418,7 +3440,7 @@
                     },
                     {
                         "id": "itemsKubikiribocho",
-                        "label": "Kubikiribōchō [200 IP]",
+                        "label": "Kubikiribōchō",
                         "description": "A massive broadsword closer to a butcher’s blade than a normal sword. The blade is quite heavy, and it takes quite a bit of strength to truly wield it as a master. Despite the masterful quality of the sword, the only ability this sword possesses is the ability to reform itself using iron harvested from blood, capable of regenerating itself almost instantaneously, even if the blade itself had been split in half.",
                         "cost": {
                             "IP": 200
@@ -3427,7 +3449,7 @@
                     },
                     {
                         "id": "itemsNuibari",
-                        "label": "Nuibari [200 IP]",
+                        "label": "Nuibari",
                         "description": "A long sword with a long length of wire attached to the bottom. This sword looks and acts very much like an oversized sewing needle. It can pierce through most people in a single strike and then stitch them together by pulling the attached wire tightly. A master of this weapon could crucify people with the blade and wire alone.",
                         "cost": {
                             "IP": 200
@@ -3436,7 +3458,7 @@
                     },
                     {
                         "id": "itemsShibuki",
-                        "label": "Shibuki [200 IP]",
+                        "label": "Shibuki",
                         "description": "This ‘sword’ is made up of a scroll and an edge. The scroll component is made up of explosive tags, allowing the wielder to incorporate the art of explosions into their swordsmanship. Once the target is struck by the sword, the explosive tags in the scroll ignite and detach from the sword, providing an opportunity for the wielder to escape the blast radius. The sword automatically reloads another segment of tags after they detach. It does this as if there was an endless number of explosive tags within the blade.",
                         "cost": {
                             "IP": 200
@@ -3445,7 +3467,7 @@
                     },
                     {
                         "id": "itemsSamehada",
-                        "label": "Samehada [300 IP]",
+                        "label": "Samehada",
                         "description": "This is less of a sword and more of a bunch of scales. Because of these scales, Samehada does not inflict injuries through cutting. It shreds. Moving on to its other abilities, Samehada is quite unique. The handle of Samehada is capable of stretching, allowing the weapon act as if it was a flail. The scales are also capable of extending into spikes.\n\nUnlike other weapons, Samehada is sentient and shares a symbiotic relationship with its wielder. It feeds on the chakra of its wielder and the wielder in turn gains Samehada’s loyalty and friendship.\n\nIn battle, Samehada is capable of absorbing the chakra and energy of opponents, even their attacks, by slicing. This allows it to quickly bring down the energy of most opponents as few can withstand losing so much chakra to the blade. Samehada is also fighting separately from its wielder along with transferring the energy it has absorbed and, should the need arise, it can fuse with its wielder to grant a formidable and shark-like transformation.\n\nYou need not fear losing Samehada’s loyalty. By purchasing it here, Samehada will always be loyal to you and you alone. It will not even let others wield without your permission.",
                         "cost": {
                             "IP": 300
@@ -3477,7 +3499,7 @@
                 "options": [
                     {
                         "id": "itemsJumperClan200",
-                        "label": "The Jumper Clan [200 IP]",
+                        "label": "The Jumper Clan",
                         "description": "For 200 CP, your clan can have up to ten people in it, each of them having 300 CP worth of perks such as Tsunade’s Strength, items such as the Aburame Clan’s insects, or to convert into PP to purchase Kekkai Genkai as signature clan traits (these have to be abilities that you also have and are the same for every member). Each member also has one chakra nature that you also have, and together, the clan has enough influence to have a representative in lower-level meetings of the local government.",
                         "cost": {
                             "IP": 200
@@ -3486,7 +3508,7 @@
                     },
                     {
                         "id": "itemsJumperClan400",
-                        "label": "The Jumper Clan [400 IP]",
+                        "label": "The Jumper Clan",
                         "description": "For 400 CP, the clan numbers up to thirty people, each with 300 CP worth of signature clan traits and up to two of your chakra natures and one purchase of the Specialist perk (one that you have). Now, your clan has major influence over the lower levels of government and has a representative in the higher levels.",
                         "cost": {
                             "IP": 400
@@ -3659,7 +3681,7 @@
                     },
                     {
                         "id": "companionWhiteZetsu200",
-                        "label": "White Zetsu Army [200 CP]",
+                        "label": "White Zetsu Army",
                         "description": "A small legion of White Zetsu, human-like plant-based creatures that may or may not actually be humans mutated by the effects of Kaguya’s Infinite Tsukuyomi. They possess enhanced physical abilities and toughness, to the point of being able to endure the attacks of higher-level Chúnin with relative ease. They also possess the ability to use the Mayfly technique to travel quickly and stealthily through the earth and plant life.",
                         "cost": {
                             "CP": 200
@@ -3667,7 +3689,7 @@
                     },
                     {
                         "id": "companionWhiteZetsu400",
-                        "label": "White Zetsu Army [400 CP]",
+                        "label": "White Zetsu Army",
                         "description": "Their Parasite Clone Technique allows them to manufacture clones in the form of spores that latch onto a target and spawn by draining their chakra. Uniquely, these clones do not vanish upon receiving fatal injuries, allowing them to be used to feign death.",
                         "cost": {
                             "CP": 400
@@ -3675,7 +3697,7 @@
                     },
                     {
                         "id": "companionWhiteZetsu600",
-                        "label": "White Zetsu Army [600 CP]",
+                        "label": "White Zetsu Army",
                         "description": "Their most notable ability is to the ability to absorb chakra from others and transform into flawless copies of them via the Substitution Technique. Though this does not make them equal to the victim in terms of power, the imitation is utterly flawless, including their clothing, equipment, techniques, and chakra signature.",
                         "cost": {
                             "CP": 600
@@ -3683,7 +3705,7 @@
                     },
                     {
                         "id": "companionCanonCharacter100",
-                        "label": "Canon Character [100 CP]",
+                        "label": "Canon Character",
                         "description": "Take a canon character with you as a Companion. Up to Kage-class characters cost 100 CP.",
                         "cost": {
                             "CP": 100
@@ -3691,7 +3713,7 @@
                     },
                     {
                         "id": "companionCanonCharacter200",
-                        "label": "Canon Character [200 CP]",
+                        "label": "Canon Character",
                         "description": "Take a canon character with you as a Companion. Team 7 and higher-class characters cost 200 CP.",
                         "cost": {
                             "CP": 200
@@ -3699,7 +3721,7 @@
                     },
                     {
                         "id": "companionCanonCharacterKurama",
-                        "label": "Canon Character -- Kurama [600 CP]",
+                        "label": "Canon Character -- Kurama",
                         "description": "Take a canon character with you as a Companion. Kurama costs 600 CP",
                         "cost": {
                             "CP": 600
@@ -4004,7 +4026,7 @@
                     {
                         "id": "drawbackBloodPrisoner300",
                         "label": "Blood Prisoner 300",
-                        "description": "Wait, that was an illusion? [+200 CP] What is real to you? Well, probably just what you perceive, as you suck at identifying genjutsu. You will almost never think you’re in a genjutsu until it’s completely obvious or you get stabbed in the back. Considering how many people use genjutsu, this won’t be a problem too often, but it will be one that comes up often enough to get you killed pretty early if you don’t train up and learn for yourself the tells of being in a genjutsu. Blood Prisoner [+200/300 CP Your starting location has been overwritten. Instead of starting your Jump comfortably in your home village, you’ll be starting in line to be processed for containment in Hozuki Castle, the Blood Prison. Within an hour of starting the Jump, you’ll be subjected to an invasive cavity search to strip you of your items, and then subjected to the wardens’ special techniques; Fire Release: Heavenly Prison, which will suppress your ability to mold chakra, and Ice Release: Earthen Consecutive Chains of Ice, which will cause your body temperature to rapidly drop to unsurvivable levels if you don’t dedicate your chakra to fending off the cold.\n\nThus, you are faced with limited options and not much time to choose between them. You can either attempt to escape the prison before you are branded with these techniques or accept your imprisonment with the hope of escaping from the inside or with the hope that your village will request your release.",
+                        "description": "Your starting location has been overwritten. Instead of starting your Jump comfortably in your home village, you’ll be starting in line to be processed for containment in Hozuki Castle, the Blood Prison. Within an hour of starting the Jump, you’ll be subjected to an invasive cavity search to strip you of your items, and then subjected to the wardens’ special techniques; Fire Release: Heavenly Prison, which will suppress your ability to mold chakra, and Ice Release: Earthen Consecutive Chains of Ice, which will cause your body temperature to rapidly drop to unsurvivable levels if you don’t dedicate your chakra to fending off the cold. Thus, you are faced with limited options and not much time to choose between them. You can either attempt to escape the prison before you are branded with these techniques or accept your imprisonment with the hope of escaping from the inside or with the hope that your village will request your release.",
                         "cost": {
                             "CP": -300
                         },
@@ -4029,19 +4051,16 @@
                         "description": "You know, you’re lucky you had the choice to be born at the start of Canon, as it’s the safest point in history apart from the beginning of Boruto. With this drawback, you are now placed in any of the first three Shinobi World Wars, the Warring States Period",
                         "cost": {
                             "CP": -200
-                        },
-                        "conflictsWith": [
-                            "drawbackWarNeverChangesKaguya"
-                        ]
+                        }
                     },
                     {
                         "id": "drawbackWarNeverChangesKaguya",
                         "label": "War Never Changes -- Kaguya",
                         "description": "You know, you’re lucky you had the choice to be born at the start of Canon, as it’s the safest point in history apart from the beginning of Boruto. With this drawback, you are now placed when Kaguya was alive",
                         "cost": {
-                            "CP": -300
+                            "CP": -100
                         },
-                        "conflictsWith": [
+                        "prerequisites": [
                             "drawbackWarNeverChanges"
                         ]
                     },
