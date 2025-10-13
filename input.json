@@ -1785,6 +1785,16 @@
                         "cost": {
                             "BLP": 1000
                         },
+                        "discounts": [
+                            {
+                                "ids": [
+                                    "tailedJuubi"
+                                ],
+                                "cost": {
+                                    "BLP": 0
+                                }
+                            }
+                        ],
                         "maxSelections": 1
                     }
                 ]
