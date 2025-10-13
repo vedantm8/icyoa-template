@@ -32,12 +32,29 @@ function getOptionEffectiveCost(option) {
     let bestCost = baseCost;
     let bestTotal = Object.entries(baseCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
 
-    (option.discounts || []).forEach(discount => {
-        const target = discount.ids || discount.id;
-        const requiredIds = Array.isArray(target) ? target : [target];
-        if (!requiredIds.every(req => meetsCountRequirement(req))) return;
+    (option.discounts || []).forEach(d => {
+        let qualifies = false;
 
-        const mergedCost = { ...baseCost, ...(discount.cost || {}) };
+        // Existing behavior: require ALL of id/ids
+        if (d.id || d.ids) {
+            const target = d.ids || d.id;
+            const requiredIds = Array.isArray(target) ? target : [target];
+            if (requiredIds.every(req => meetsCountRequirement(req))) {
+                qualifies = true;
+            }
+        }
+
+        // NEW behavior: require at least N of idsAny
+        if (!qualifies && d.idsAny && Number.isInteger(d.minSelected)) {
+            const chosenCount = d.idsAny.reduce((n, depId) => n + ((selectedOptions[depId] || 0) > 0 ? 1 : 0), 0);
+            if (chosenCount >= d.minSelected) {
+                qualifies = true;
+            }
+        }
+
+        if (!qualifies) return;
+
+        const mergedCost = { ...baseCost, ...(d.cost || {}) };
         const total = Object.entries(mergedCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
         if (total < bestTotal) {
             bestTotal = total;

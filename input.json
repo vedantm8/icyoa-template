@@ -19,7 +19,8 @@
             "PP": 0,
             "IP": 600,
             "MSP": 0,
-            "RGP": 0
+            "RGP": 0,
+            "TSBP": 0
         },
         "allowNegative": [
             "RP",
@@ -546,7 +547,8 @@
                         "label": "Six Paths Senjutsu",
                         "description": "Elevate Sage Mode into its Six Paths form, massively amplifying every senjutsu boost, granting immunity to non-senjutsu attacks, empowering any dōjutsu, awakening Yin-Yang Release, Truth-Seeking Balls, and flight. Costs CP unless you are a Jūbi Jinchūriki.",
                         "cost": {
-                            "CP": 400
+                            "CP": 400,
+                            "TSBP": -10
                         },
                         "prerequisites": "perkSageMode",
                         "maxSelections": 1,
@@ -554,7 +556,7 @@
                             {
                                 "id": "tailedJuubi",
                                 "cost": {
-                                    "CP": 200
+                                    "CP": 0
                                 }
                             }
                         ]
@@ -1600,7 +1602,8 @@
                         "label": "Tenseigan",
                         "description": "Evolve the Byakugan to command gravity, manifest the Tenseigan Chakra Mode, and wield ten Truth-Seeking Balls. Ōtsutsuki only pay 500 BLP.",
                         "cost": {
-                            "BLP": 1000
+                            "BLP": 1000,
+                            "TSBP": -10
                         },
                         "prerequisites": "kgByakugan",
                         "maxSelections": 1,
@@ -2290,6 +2293,16 @@
                         }
                     },
                     {
+                        "id": "jinchConvertCPToJP",
+                        "label": "Convert CP to JP",
+                        "description": "Convert CP to JP at 1:2 ratio",
+                        "cost": {
+                            "CP": 50,
+                            "JP": -100
+                        },
+                        "maxSelections": 20
+                    },
+                    {
                         "id": "jinchGeneralSealRemoval",
                         "label": "Seal Liberation [Gain 200 JP]",
                         "description": "Lift the seal's emotional buffer, allowing your Beast to influence you directly in exchange for 200 JP. Applies across every Beast you host.",
@@ -2398,7 +2411,8 @@
                         "label": "Jūbi, The Ten-Tails",
                         "description": "The one-eyed behemoth formed by combining all nine Tailed Beasts. This being possesses a pool of chakra so vast as to be considered immeasurable, even by the standards of other Tailed Beasts. It is capable of launching mountain range-destroying Tailed Beast Balls at targets a country away and can summon forth natural disasters spanning an entire continent. The Jūbi Jinchūriki is granted the ability to create Truth-Seeking Balls, fly, and they develop a Rinne Sharingan. They also gain Six Paths Senjutsu, a special Sage Mode variant created by the Sage of Six Paths. This bestows the same benefits as Sage Mode but with enhanced sensing capabilities, letting the user sense things even in Limbo. This senjutsu is always active and renders the user immune to the effects of ninjutsu; they can only be harmed with senjutsu, taijutsu, and techniques that employ the power of the Six Paths. The Jinchūriki gains all five basic nature transformations and can use yin-yang release. Their durability is increased to massive levels, such that Madara was able to withstand Might Guy's attacks practically unharmed, even when he had released seven of the Eight Gates. Whether your appearance changes or not is up to you. If you want, your Ten-Tails can have the monstrous rabbit-like appearance that Kaguya briefly takes, or it may have a blend of different features from its various stages of development and the Tailed Beasts that comprise it.",
                         "cost": {
-                            "JP": 2400
+                            "JP": 2400,
+                            "TSBP": -10
                         }
                     }
                 ]
@@ -3486,9 +3500,23 @@
                         "label": "Truth Seeking Balls",
                         "description": "Each purchase grants one orb. Can be purchased multiple times.",
                         "cost": {
-                            "IP": 200
+                            "IP": 200,
+                            "TSBP": -1
                         },
-                        "maxSelections": 20
+                        "maxSelections": 20,
+                        "discounts": [
+                            {
+                                "idsAny": [
+                                    "kgTenseigan",
+                                    "tailedJuubi",
+                                    "perkSixPathsSenjutsu"
+                                ],
+                                "minSelected": 2,
+                                "cost": {
+                                    "IP": 50
+                                }
+                            }
+                        ]
                     }
                 ]
             },
@@ -3534,15 +3562,14 @@
                         "maxSelections": 1
                     }
                 ],
-                "conditionalCosts": [
+                "discounts": [
                     {
-                        "requires": "tailedJuubi",
-                        "multiplyCost": {
-                            "IP": 0.5
+                        "id": "tailedJuubi",
+                        "cost": {
+                            "CP": 500
                         }
                     }
-                ],
-                "discounts": []
+                ]
             }
         ]
     },
@@ -4051,7 +4078,10 @@
                         "description": "You know, you’re lucky you had the choice to be born at the start of Canon, as it’s the safest point in history apart from the beginning of Boruto. With this drawback, you are now placed in any of the first three Shinobi World Wars, the Warring States Period",
                         "cost": {
                             "CP": -200
-                        }
+                        },
+                        "conflictsWith": [
+                            "drawbackTeam7Luck2"
+                        ]
                     },
                     {
                         "id": "drawbackWarNeverChangesKaguya",
@@ -4118,21 +4148,16 @@
                         "description": "No, this is not referring to plot armor. This is referring to the fact that Team 7 is a bundle of trouble magnets. Oh, you’re going on your first C-rank mission? Here are two A-rank level opponents. You’re taking part in an exam meant for Genin? Here’s your S-rank level opponent and his two armies. Your missions will consistently get bumped up to higher ranks than you were expecting, and trouble will swirl around you like a vortex of ill-fated plot. This won’t ever increase danger beyond general canon levels for your current time period. You won’t run into an Ōtsutsuki in part one, but you might run into an Akatsuki member. For 300 CP, you just get more dangerous missions.",
                         "cost": {
                             "CP": -300
-                        },
-                        "conflictsWith": [
-                            "drawbackTeam7Luck2"
-                        ]
+                        }
                     },
                     {
                         "id": "drawbackTeam7Luck2",
                         "label": "Team 7 Luck - 2",
-                        "description": "No, this is not referring to plot armor. This is referring to the fact that Team 7 is a bundle of trouble magnets. Oh, you’re going on your first C-rank mission? Here are two A-rank level opponents. You’re taking part in an exam meant for Genin? Here’s your S-rank level opponent and his two armies. Your missions will consistently get bumped up to higher ranks than you were expecting, and trouble will swirl around you like a vortex of ill-fated plot. This won’t ever increase danger beyond general canon levels for your current time period. You won’t run into an Ōtsutsuki in part one, but you might run into an Akatsuki member. for 500 CP, you join Team 7, either as a replacement or as an extra member. And you’re stuck with them for the rest of the Jump by the power of Friendship. This means that your starting location is automatically set to Konohagakure and you cannot escape the plot. You must join your teammates and travel through blood and steel until you defeat Kaguya and ensure that the world is at peace.\n\nIf you join Team 7 and fail to save the world, it will result in chain failure.",
+                        "description": "You join Team 7, either as a replacement or as an extra member. And you’re stuck with them for the rest of the Jump by the power of Friendship. This means that your starting location is automatically set to Konohagakure and you cannot escape the plot. You must join your teammates and travel through blood and steel until you defeat Kaguya and ensure that the world is at peace. If fail to save the world, it will result in chain failure. Good luck.",
                         "cost": {
-                            "CP": -300
+                            "CP": -200
                         },
-                        "conflictsWith": [
-                            "drawbackTeam7Luck"
-                        ]
+                        "prerequisites": "drawbackTeam7Luck"
                     },
                     {
                         "id": "drawbackChakraIneptitude",
@@ -4233,7 +4258,7 @@
                         "maxSelections": 20
                     },
                     {
-                        "id": "drawbackTruthSeekingOrbs",
+                        "id": "drawbackTargetedByOrochimaru",
                         "label": "Targeted by Orochimaru",
                         "description": "Orochimaru is hunting you. Maybe it’s because of your Kekkei Genkai, or maybe it’s because he thinks you'll be an ideal vessel for his soul. Whatever the reason, the S-class criminal will be devoting a lot of his resources and energy to capturing and experimenting on you.",
                         "cost": {
@@ -4269,7 +4294,7 @@
             {
                 "type": "storyBlock",
                 "name": "What is Love",
-                "text": "People in this world love deeply. Maybe a little too deeply. You have the misfortune of being involved with some form of toxic affection, either with a canon character or an original one. This drawback can be purchased multiple times.",
+                "text": "People in this world love deeply. Maybe a little too deeply. You have the misfortune of being involved with some form of toxic affection, either with a canon character or an original one.",
                 "options": [
                     {
                         "id": "drawbackFanClub",
@@ -4278,7 +4303,7 @@
                         "cost": {
                             "CP": -100
                         },
-                        "maxSelections": 20
+                        "maxSelections": 1
                     },
                     {
                         "id": "drawbackShannaro",
@@ -4287,7 +4312,7 @@
                         "cost": {
                             "CP": -200
                         },
-                        "maxSelections": 20
+                        "maxSelections": 1
                     },
                     {
                         "id": "drawbackBigBadBigBrother",
@@ -4296,7 +4321,7 @@
                         "cost": {
                             "CP": -300
                         },
-                        "maxSelections": 20
+                        "maxSelections": 1
                     },
                     {
                         "id": "drawbackYandere",
@@ -4305,7 +4330,7 @@
                         "cost": {
                             "CP": -400
                         },
-                        "maxSelections": 20
+                        "maxSelections": 1
                     },
                     {
                         "id": "drawbackBecauseYoureMyFriend",
@@ -4314,7 +4339,7 @@
                         "cost": {
                             "CP": -500
                         },
-                        "maxSelections": 20
+                        "maxSelections": 1
                     }
                 ]
             }
