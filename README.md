@@ -28,8 +28,15 @@ icyoa-template/
 
 ### 1. Run the Template
 
-Simply open `index.html` in your browser.  
-The page will automatically load `input.json` and render your interactive CYOA experience.
+You need to use a local server to run the template (opening `index.html` directly may not work due to browser security restrictions).
+
+If you have [live-server](https://www.npmjs.com/package/live-server) installed, run:
+
+```sh
+live-server --no-browser
+```
+
+Then open the provided local URL (usually `http://127.0.0.1:8080/`) in your browser.
 
 You’ll see:
 - The **title and description** from `input.json`
