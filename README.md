@@ -14,8 +14,11 @@ This project was created as a test to explore how OpenAI Codex / ChatGPT handles
 ```
 icyoa-template/
 ├── index.html       # Main UI template
+├── editor.html      # Visual editor entry point
 ├── style.css        # Visual styling and layout
+├── editor.css       # Editor page styling
 ├── script.js        # Core logic
+├── editor.js        # Visual editor logic
 ├── logicExpr.js     # Logical expression parsing
 ├── input.json       # Configuration
 ├── LICENSE          # Open-source license
@@ -45,9 +48,49 @@ You’ll see:
 - A live **points tracker** fixed to the bottom of the screen
 - **Import/Export/Reset** buttons to manage your choices
 
+#### Temp file workflow (local editing)
+
+Run the built-in dev server to keep a working copy separate from `input.json` while you experiment in the visual editor:
+
+```sh
+node server.js
+```
+
+This serves the site at `http://localhost:3000/`, creates `temp-input.json` the first time it runs (copying the current `input.json`), and writes any editor changes back to that temp file. The Character Builder continues to read `input.json`, so you can compare before promoting changes. If the server is offline the editor simply falls back to `input.json`.
+
 ---
 
-### 2. Edit `input.json`
+### 2. Use the Visual Editor (optional)
+
+Open `editor.html` while the dev server is running to work in a split view: configuration controls on the left, a live instance of the Character Builder on the right. Edits are sent to the preview immediately and (when the local server is available) written to `temp-input.json` so you can iterate safely before touching the canonical `input.json`.
+
+**Layout**
+- `Visual Editor` panel: buttons to add a category, import existing JSON, or export your current draft; status bar shows autosave/preview messages.
+- `Live Preview` panel: embeds `index.html`, updates in-place whenever you change data, and reports success or errors.
+
+**Global settings**
+- Title, description, and header image URL.
+- Point pools: add/remove currencies, rename them inline, allow negatives per currency, and manage attribute sliders with custom min/max values.
+- Derived points: define formulas (`name = expression`) that are evaluated by `logicExpr.js`.
+
+**Category builder**
+- Each category and subcategory is editable in-place: rename, reorder (↑/↓), duplicate whole sections, set min/max selections, and provide descriptive text.
+- Subcategories can be retyped (e.g., `storyBlock`, `perks`, etc.) and removed with confirmation.
+
+**Option editor**
+- For every option you can edit IDs, labels, descriptions, optional image URLs, input types/labels, and multi-currency costs.
+- Quick actions let you reorder, clone, or delete an option.
+- Advanced properties (prerequisites, conflicts, discounts, custom fields) appear in a JSON textarea—paste structured data and it merges back into the option.
+
+**Workflow utilities**
+- Import: load an arbitrary JSON file and populate the editor.
+- Export: download the current configuration as `input.json`.
+- Temp syncing: when `node server.js` is running the editor reads/writes `temp-input.json`; if the service goes offline it falls back gracefully to `input.json`.
+- Collapsible sections remember their open/closed state to keep your focus while editing.
+
+---
+
+### 3. Edit `input.json`
 
 This file defines all game logic and content. It controls:
 - Starting points  
