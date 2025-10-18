@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYOA Visual Editor</title>
+    <link rel="stylesheet" href="editor.css">
+</head>
+
+<body>
+    <div class="editor-layout">
+        <section class="editor-panel">
+            <header class="panel-header">
+                <h1>Visual Editor</h1>
+                <p class="panel-subtitle">Configure your CYOA content without touching JSON and preview changes instantly.</p>
+                <div id="editorMessage" class="editor-message"></div>
+                <div class="panel-actions">
+                    <button id="addCategoryBtn" type="button">Add Category</button>
+                    <button id="importJsonBtn" type="button">Import JSON</button>
+                    <button id="exportJsonBtn" type="button">Export JSON</button>
+                </div>
+                <input id="importFileInput" type="file" accept="application/json" hidden>
+            </header>
+            <div id="globalSettings"></div>
+            <div id="categoryList"></div>
+        </section>
+        <section class="preview-panel">
+            <div class="preview-header">
+                <div class="preview-title">Live Preview</div>
+                <div id="previewStatus" class="preview-status" data-state="pending">Loading preview…</div>
+            </div>
+            <iframe id="previewFrame" class="preview-frame" title="CYOA Preview" src="index.html"></iframe>
+        </section>
+    </div>
+    <script src="editor.js"></script>
+</body>
+
+</html>

@@ -15,6 +15,30 @@ let originalAttributeRanges = {}; // Stores the initial, base ranges from input.
 const subcategoryDiscountSelections = {};
 const categoryDiscountSelections = {};
 
+function clearObject(obj) {
+    if (!obj) return;
+    Object.keys(obj).forEach(key => delete obj[key]);
+}
+
+function resetGlobalState() {
+    clearObject(selectedOptions);
+    clearObject(discountedSelections);
+    clearObject(storyInputs);
+    clearObject(attributeSliderValues);
+    clearObject(dynamicSelections);
+    clearObject(subcategoryDiscountSelections);
+    clearObject(categoryDiscountSelections);
+    openCategories.clear();
+    openSubcategories.clear();
+    points = {};
+    categories = [];
+    formulas = {};
+    originalPoints = {};
+    attributeRanges = {};
+    originalAttributeRanges = {};
+    allowNegativeTypes = new Set();
+}
+
 function meetsCountRequirement(rawId) {
     if (typeof rawId !== 'string') return false;
     let id = rawId;
@@ -143,6 +167,9 @@ const modalTextarea = document.getElementById("modalTextarea");
 const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 const modalClose = document.getElementById("modalClose");
 let modalMode = null;
+const initialTitleText = document.getElementById("cyoaTitle")?.textContent || "";
+const initialDescriptionHTML = document.getElementById("cyoaDescription")?.innerHTML || "";
+const initialHeaderImageHTML = document.getElementById("headerImageContainer")?.innerHTML || "";
 
 function escapeHtml(text = "") {
     return String(text).replace(/[&<>"']/g, (ch) => ({
@@ -515,74 +542,140 @@ function validateInputJson(data, pointsEntry) {
     }
 }
 
+function applyCyoaData(rawData, {
+    silent = false,
+    notifyParent = false
+} = {}) {
+    try {
+        if (!Array.isArray(rawData)) {
+            throw new Error("CYOA data must be an array.");
+        }
+
+        const data = JSON.parse(JSON.stringify(rawData));
+        const pointsEntry = data.find(entry => entry.type === "points");
+        validateInputJson(data, pointsEntry);
+
+        const preservedCategoryOpen = new Set(openCategories);
+        const preservedSubcategoryOpen = new Set(openSubcategories);
+
+        resetGlobalState();
+
+        preservedCategoryOpen.forEach(name => openCategories.add(name));
+        preservedSubcategoryOpen.forEach(key => openSubcategories.add(key));
+
+        const titleEntry = data.find(entry => entry.type === "title");
+        const titleEl = document.getElementById("cyoaTitle");
+        if (titleEl) {
+            titleEl.textContent = titleEntry?.text || initialTitleText;
+        }
+
+        const descriptionEntry = data.find(entry => entry.type === "description");
+        const descEl = document.getElementById("cyoaDescription");
+        if (descEl) {
+            if (descriptionEntry?.text) {
+                setMultilineText(descEl, descriptionEntry.text);
+            } else {
+                descEl.innerHTML = initialDescriptionHTML;
+            }
+        }
+
+        const headerImageEntry = data.find(entry => entry.type === "headerImage");
+        const headerContainer = document.getElementById("headerImageContainer");
+        if (headerContainer) {
+            if (headerImageEntry?.url) {
+                headerContainer.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image" />`;
+            } else {
+                headerContainer.innerHTML = initialHeaderImageHTML;
+            }
+        }
+
+        originalAttributeRanges = pointsEntry?.attributeRanges ? JSON.parse(JSON.stringify(pointsEntry.attributeRanges)) : {};
+        attributeRanges = JSON.parse(JSON.stringify(originalAttributeRanges));
+
+        allowNegativeTypes = new Set(pointsEntry?.allowNegative || []);
+        originalPoints = pointsEntry?.values ? {
+            ...pointsEntry.values
+        } : {};
+        points = {
+            ...originalPoints
+        };
+
+        categories = data.filter(entry => !entry.type || entry.name);
+
+        const formulaEntry = data.find(entry => entry.type === "formulas");
+        formulas = formulaEntry?.values ? {
+            ...formulaEntry.values
+        } : {};
+
+        renderAccordion();
+        evaluateFormulas();
+        updatePointsDisplay();
+
+        if (notifyParent && window.parent && window.parent !== window) {
+            window.parent.postMessage({
+                type: "cyoa-data-update-result",
+                success: true
+            }, "*");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Failed to apply CYOA data:", error);
+        if (!silent) {
+            alert("Failed to load CYOA data: " + error.message);
+        }
+        if (notifyParent && window.parent && window.parent !== window) {
+            window.parent.postMessage({
+                type: "cyoa-data-update-result",
+                success: false,
+                error: error?.message || String(error)
+            }, "*");
+        }
+        return false;
+    }
+}
+
 
 // Load and parse the input.json file
 fetch("input.json")
     .then(res => res.json())
     .then(data => {
-        try {
-            const pointsEntry = data.find(entry => entry.type === "points");
-            validateInputJson(data, pointsEntry);
-
-            // Set Title
-            const titleEntry = data.find(entry => entry.type === "title");
-            if (titleEntry?.text) {
-                const titleEl = document.getElementById("cyoaTitle");
-                if (titleEl) titleEl.textContent = titleEntry.text;
-            }
-
-            // Set Description
-            const descriptionEntry = data.find(entry => entry.type === "description");
-            if (descriptionEntry?.text) {
-                const descEl = document.getElementById("cyoaDescription");
-                setMultilineText(descEl, descriptionEntry.text);
-            }
-
-            // Set Header Image
-            const headerImageEntry = data.find(entry => entry.type === "headerImage");
-            if (headerImageEntry?.url) {
-                const container = document.getElementById("headerImageContainer");
-                container.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image" />`;
-            }
-
-            // Initialize points and attribute ranges
-            // Store originalAttributeRanges immediately after parsing, before any modifications
-            originalAttributeRanges = pointsEntry?.attributeRanges ? JSON.parse(JSON.stringify(pointsEntry.attributeRanges)) : {};
-            attributeRanges = JSON.parse(JSON.stringify(originalAttributeRanges)); // Deep copy to current working object
-
-            allowNegativeTypes = new Set(pointsEntry?.allowNegative || []);
-            originalPoints = pointsEntry?.values ? {
-                ...pointsEntry.values
-            } : {};
-            points = {
-                ...originalPoints
-            };
-
-            // Filter out special entries to get only categories
-            categories = data.filter(entry => !entry.type || entry.name);
-
-            // Initialize formulas
-            const formulaEntry = data.find(entry => entry.type === "formulas");
-            if (formulaEntry?.values) {
-                formulas = {
-                    ...formulaEntry.values
-                };
-            }
-
-            // Initial render
-            renderAccordion();
-            evaluateFormulas(); // Evaluate formulas after initial points are set
-            updatePointsDisplay();
-        } catch (validationError) {
-            console.error("Validation error in input.json:", validationError);
-            alert("Invalid input.json: " + validationError.message);
-            throw validationError; // Re-throw to stop further execution
+        if (!applyCyoaData(data)) {
+            throw new Error("Failed to initialize from input.json");
         }
     })
     .catch(err => {
         console.error("Failed to load input.json:", err);
         alert("Failed to load input.json. Please check the file path and format.");
     });
+
+window.addEventListener("message", (event) => {
+    if (!event || !event.data || event.data.type !== "cyoa-data-update") return;
+
+    let payload = event.data.payload;
+    if (typeof payload === "string") {
+        try {
+            payload = JSON.parse(payload);
+        } catch (parseError) {
+            console.error("Failed to parse CYOA payload from message:", parseError);
+            if (event.source && typeof event.source.postMessage === "function") {
+                event.source.postMessage({
+                    type: "cyoa-data-update-result",
+                    success: false,
+                    error: "Invalid JSON payload"
+                }, "*");
+            }
+            return;
+        }
+    }
+
+    applyCyoaData(payload, {
+        silent: true,
+        notifyParent: true
+    });
+});
+
+window.loadCyoaData = (data, options = {}) => applyCyoaData(data, options);
 
 
 /**
@@ -1369,10 +1462,11 @@ function renderAccordion() {
                     const wrapper = document.createElement("div");
                     wrapper.className = "option-wrapper";
 
-                    // Only add image if img URL is provided
-                    if (opt.img) {
+                    // Only add image if image URL is provided (support both image/img keys)
+                    const imageUrl = opt.image || opt.img;
+                    if (imageUrl) {
                         const img = document.createElement("img");
-                        img.src = opt.img;
+                        img.src = imageUrl;
                         img.alt = opt.label;
                         wrapper.appendChild(img);
                     }
