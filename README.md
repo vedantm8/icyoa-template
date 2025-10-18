@@ -31,15 +31,15 @@ icyoa-template/
 
 ### 1. Run the Template
 
-You need to use a local server to run the template (opening `index.html` directly may not work due to browser security restrictions).
-
-If you have [live-server](https://www.npmjs.com/package/live-server) installed, run:
+Run the bundled dev server so the site serves correctly and the editor can manage a temp working copy:
 
 ```sh
-live-server --no-browser
+node server.js
 ```
 
-Then open the provided local URL (usually `http://127.0.0.1:8080/`) in your browser.
+Open the links printed in the terminal:
+- `http://localhost:3000/` – Character Builder (`index.html`)
+- `http://localhost:3000/editor.html` – Visual Editor with live preview
 
 You’ll see:
 - The **title and description** from `input.json`
@@ -48,15 +48,11 @@ You’ll see:
 - A live **points tracker** fixed to the bottom of the screen
 - **Import/Export/Reset** buttons to manage your choices
 
-#### Temp file workflow (local editing)
+#### Visual Editor
 
 Run the built-in dev server to keep a working copy separate from `input.json` while you experiment in the visual editor:
 
-```sh
-node server.js
-```
-
-This serves the site at `http://localhost:3000/`, creates `temp-input.json` the first time it runs (copying the current `input.json`), and writes any editor changes back to that temp file. The Character Builder continues to read `input.json`, so you can compare before promoting changes. If the server is offline the editor simply falls back to `input.json`.
+This creates `temp-input.json` the first time it runs (copying the current `input.json`), and writes any editor changes back to that temp file. The Character Builder continues to read `input.json`, so you can compare before promoting changes. If the server is offline the editor simply falls back to `input.json`.
 
 ---
 

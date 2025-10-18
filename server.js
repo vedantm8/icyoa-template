@@ -187,5 +187,7 @@ server.listen(PORT, () => {
     ensureTempFileExists().catch((err) => {
         console.warn("Failed to initialize temp config file:", err);
     });
-    console.log(`ICYOA dev server running at http://localhost:${PORT}`);
+    const baseUrl = `http://localhost:${PORT}`;
+    console.log(`View CYOA at ${baseUrl}/`);
+    console.log(`Open the visual editor at ${baseUrl}/editor.html`);
 });
