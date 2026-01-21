@@ -58,6 +58,69 @@ The visual editor (`editor.html`) allows you to modify the configuration in a GU
     *   Changes are saved to `temp-input.json`. The main implementation reads `input.json`, keeping your live environment stable until you are ready to publish.
     *   **Export**: When satisfied, export the JSON and overwrite your main `input.json`.
 
+## Tutorial: How to Build Your Own CYOA
+
+This guide walks you through creating a unique CYOA from this template.
+
+### Step 1: Setup
+1.  **Fork** this repository on GitHub to your own account.
+2.  **Clone** your forked repository to your local machine.
+3.  Open the folder in your code editor (e.g., VS Code).
+
+### Step 2: Clean Slate
+Open `input.json`. This file contains the "Naruto Jumpchain" example.
+Delete everything inside the array to start fresh, or keep the structure as a reference. Use this minimal starter template:
+
+```json
+[
+  { "type": "title", "text": "My New CYOA" },
+  { "type": "description", "text": "A brief introduction." },
+  {
+    "type": "points",
+    "values": { "Points": 100 },
+    "allowNegative": []
+  },
+  {
+    "name": "First Category",
+    "subcategories": []
+  }
+]
+```
+
+### Step 3: Define Your Points
+In the `points` block (see above), define the currencies for your game.
+*   **values**: The starting amount for each currency.
+*   **allowNegative**: List point types that can go below zero (useful for "Drawbacks" that give you points).
+
+### Step 4: Add Content
+Add objects to the `subcategories` array. A "Row" of options is a subcategory.
+
+```json
+{
+  "name": "General Perks",
+  "options": [
+    {
+      "id": "perkStrong",
+      "label": "Super Strength",
+      "description": "You are very strong.",
+      "cost": { "Points": 10 },
+      "image": "https://example.com/strength.jpg" // Optional
+    }
+  ]
+}
+```
+
+### Step 5: Advanced Logic (Optional)
+*   **Prerequisites**: Add `"prerequisites": "perkStrong"` to an option so it can only be selected if "Super Strength" is already active.
+*   **Conflicts**: Add `"conflictsWith": ["perkWeak"]` to prevent incompatible choices.
+*   **Formulas**: Use the `formulas` block (see Configuration below) to create derived stats.
+
+### Step 6: Publish
+1.  Commit your changes: `git commit -am "My first CYOA"`
+2.  Push to GitHub: `git push`
+3.  Go to your GitHub repo settings -> **Pages** -> Deploy from `main` branch.
+4.  Your CYOA is now live!
+
 ### 3. Configuration (input.json)
 
 The `input.json` file is the core of the application. It defines the entire structure of the CYOA.
