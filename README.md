@@ -56,6 +56,7 @@ The visual editor (`editor.html`) allows you to modify the configuration in a GU
     *   Open `editor.html` alongside `index.html`.
     *   Use the editor panel to add categories, change point formulas, or edit options.
     *   Changes are saved to `temp-input.json`. The main implementation reads `input.json`, keeping your live environment stable until you are ready to publish.
+    *   **Note**: `temp-input.json` is a temporary working file. It is safe to delete and is automatically excluded from git if you use the provided `.gitignore`.
     *   **Export**: When satisfied, export the JSON and overwrite your main `input.json`.
 
 ## Tutorial: How to Build Your Own CYOA
