@@ -4,7 +4,7 @@ const selectedOptions = {};
 const discountedSelections = {};
 const openCategories = new Set();
 const storyInputs = {};
-let formulas = {};
+
 const openSubcategories = new Set();
 const attributeSliderValues = {};
 let originalPoints = {};
@@ -32,7 +32,7 @@ function resetGlobalState() {
     openSubcategories.clear();
     points = {};
     categories = [];
-    formulas = {};
+
     originalPoints = {};
     attributeRanges = {};
     originalAttributeRanges = {};
@@ -257,7 +257,7 @@ document.getElementById("resetBtn").onclick = () => {
     attributeRanges = JSON.parse(JSON.stringify(originalAttributeRanges)); // Reset ranges to original
 
     // Re-evaluate formulas to ensure all derived points are correctly reset
-    evaluateFormulas();
+    applyDynamicCosts();
     updatePointsDisplay();
     renderAccordion(); // Re-render to show reset state
 };
@@ -340,7 +340,7 @@ modalConfirmBtn.onclick = () => {
         // Reset attribute ranges to original before re-applying dynamic effects
         attributeRanges = JSON.parse(JSON.stringify(originalAttributeRanges));
 
-        evaluateFormulas(); // Evaluate formulas after initial points are set and ranges reset
+        applyDynamicCosts(); // Evaluate formulas after initial points are set and ranges reset
         updatePointsDisplay();
         renderAccordion();
         closeModal();
@@ -365,7 +365,7 @@ function openModal(mode) {
             dynamicSelections,
             subcategoryDiscountSelections,
             categoryDiscountSelections,
-            computedPoints: Object.keys(formulas), // For debugging/info, not strictly needed for import
+
         }, null, 2);
         modalConfirmBtn.style.display = "none";
     } else {
@@ -602,13 +602,10 @@ function applyCyoaData(rawData, {
 
         categories = data.filter(entry => !entry.type || entry.name);
 
-        const formulaEntry = data.find(entry => entry.type === "formulas");
-        formulas = formulaEntry?.values ? {
-            ...formulaEntry.values
-        } : {};
+
 
         renderAccordion();
-        evaluateFormulas();
+        applyDynamicCosts();
         updatePointsDisplay();
 
         if (notifyParent && window.parent && window.parent !== window) {
@@ -794,32 +791,19 @@ function removeSelection(option) {
         removeDependentOptions(option.id); // Remove any options that depended on this one
     }
 
-    evaluateFormulas(); // Re-evaluate formulas to reflect changes
+    applyDynamicCosts(); // Re-evaluate formulas to reflect changes
     updatePointsDisplay();
     renderAccordion(); // Re-render to update UI elements (sliders, etc.)
     window.scrollTo(0, scrollY); // Restore scroll position
 }
 
 /**
- * Evaluates all defined formulas and updates point values.
- * Also handles dynamic cost effects like attribute capping and boosting.
+ * Evaluates dynamic cost effects like attribute capping and boosting.
  */
-function evaluateFormulas() {
+function applyDynamicCosts() {
     // IMPORTANT: Reset attribute ranges to their original defaults first
     // This ensures that previous dynamic caps are removed before new ones are applied.
     attributeRanges = JSON.parse(JSON.stringify(originalAttributeRanges));
-
-    // First, apply base formulas that might affect point types
-    Object.entries(formulas).forEach(([pointType, {
-        formula
-    }]) => {
-        try {
-            const evalFunc = new Function("points", `return ${formula}`);
-            points[pointType] = evalFunc(points);
-        } catch (err) {
-            console.warn(`Failed to evaluate formula for ${pointType}:`, err);
-        }
-    });
 
     // --- Reset all dynamic resistance/weakness points to their original values before applying new effects ---
     // Find all point types affected by dynamicCost (e.g., Fire, Frost, etc.)
@@ -988,7 +972,7 @@ function addSelection(option) {
 
     selectedOptions[option.id] = current + 1;
 
-    evaluateFormulas();
+    applyDynamicCosts();
     updatePointsDisplay();
     renderAccordion();
     window.scrollTo(0, scrollY); // Restore scroll position

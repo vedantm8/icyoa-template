@@ -41,10 +41,6 @@
         "attributeRanges": {}
     },
     {
-        "type": "formulas",
-        "values": {}
-    },
-    {
         "name": "Starting Options",
         "subcategories": [
             {
@@ -80,12 +76,6 @@
                         "description": "The path to peace is not always sunshine and rainbows. In a war-torn world such as this, you’ve come to realize that the only true path to peace is through power. Power to manipulate. Power to control. Power to decide your own fate. You are free to choose whether you begin your jump in your village’s good graces or if you’ve already abandoned them to pursue your own ends.",
                         "cost": {},
                         "image": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fimg4.wikia.nocookie.net%2F__cb20140823143758%2Fwwwdynapaul%2Fimages%2F4%2F4a%2FObito_Uchiha.png&f=1&nofb=1&ipt=b1b6236615dda42cfd0ba4c4f66ef152bc82bb2e7e2b0137429ec0a0a0af7b38"
-                    },
-                    {
-                        "label": "What a World",
-                        "description": "",
-                        "cost": {},
-                        "id": "randomIdent"
                     }
                 ]
             },

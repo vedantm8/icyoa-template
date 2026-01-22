@@ -122,7 +122,6 @@ Add objects to the `subcategories` array. A "Row" of options is a subcategory.
 ### Step 6: Advanced Logic (Optional)
 *   **Prerequisites**: Add `"prerequisites": "perkStrong"` to an option so it can only be selected if "Super Strength" is already active.
 *   **Conflicts**: Add `"conflictsWith": ["perkWeak"]` to prevent incompatible choices.
-*   **Formulas**: Use the `formulas` block (see Configuration below) to create derived stats.
 
 ### Step 7: Publish
 1.  Commit your changes: `git commit -am "My first CYOA"`
@@ -164,21 +163,7 @@ The array contains configuration blocks (identified by `type`) and category bloc
 ]
 ```
 
-#### Formulas
-You can define derived point values calculated from other points using JavaScript expressions.
 
-```json
-{
-  "type": "formulas",
-  "values": {
-    "TotalScore": { "formula": "points.CP + points.Bonus" },
-    "DangerLevel": { "formula": "points.Drawbacks * 1.5" }
-  }
-}
-```
-
-*   `values`: An object where keys are the new point names.
-*   `formula`: A string containing a JavaScript expression. The variable `points` is available to access current totals (e.g., `points.CP`).
 
 #### Categories and Subcategories
 Any object in the main array that has a `name` property (and no special `type`) is treated as a Category.

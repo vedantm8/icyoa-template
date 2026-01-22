@@ -1,5 +1,5 @@
 (function () {
-    const CORE_TYPES_ORDER = ["title", "description", "headerImage", "points", "formulas"];
+    const CORE_TYPES_ORDER = ["title", "description", "headerImage", "points"];
     const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost"]);
 
     const state = {
@@ -447,12 +447,7 @@
         if (!pointsEntry.attributeRanges) pointsEntry.attributeRanges = {};
         fragment.appendChild(renderPointsSection(pointsEntry));
 
-        const formulasEntry = ensureEntry("formulas", () => ({
-            type: "formulas",
-            values: {}
-        })).entry;
-        if (!formulasEntry.values) formulasEntry.values = {};
-        fragment.appendChild(renderFormulasSection(formulasEntry));
+
 
         globalSettingsEl.innerHTML = "";
         globalSettingsEl.appendChild(fragment);
@@ -675,93 +670,7 @@
         return container;
     }
 
-    function renderFormulasSection(formulasEntry) {
-        const {
-            container,
-            body
-        } = createSectionContainer("Derived Points", {
-            defaultOpen: false
-        });
 
-        const list = document.createElement("div");
-        list.className = "list-stack";
-
-        Object.entries(formulasEntry.values).forEach(([name, expression]) => {
-            const row = document.createElement("div");
-            row.className = "list-row formula-row";
-
-            const nameInput = document.createElement("input");
-            nameInput.type = "text";
-            nameInput.value = name;
-            nameInput.placeholder = "Name";
-
-            const exprInput = document.createElement("input");
-            exprInput.type = "text";
-            exprInput.value = expression;
-            exprInput.placeholder = "Expression (e.g., CP + RP)";
-
-            const removeBtn = document.createElement("button");
-            removeBtn.type = "button";
-            removeBtn.className = "button-icon danger";
-            removeBtn.title = "Remove formula";
-            removeBtn.textContent = "✕";
-
-            exprInput.addEventListener("input", () => {
-                formulasEntry.values[name] = exprInput.value;
-                schedulePreviewUpdate();
-            });
-
-            nameInput.addEventListener("blur", () => {
-                const newName = nameInput.value.trim();
-                if (!newName || newName === name) {
-                    nameInput.value = name;
-                    return;
-                }
-                if (formulasEntry.values.hasOwnProperty(newName)) {
-                    showEditorMessage(`Formula "${newName}" already exists.`, "warning");
-                    nameInput.value = name;
-                    return;
-                }
-                const existing = formulasEntry.values[name];
-                delete formulasEntry.values[name];
-                formulasEntry.values[newName] = existing;
-                renderGlobalSettings();
-                schedulePreviewUpdate();
-            });
-
-            removeBtn.addEventListener("click", () => {
-                delete formulasEntry.values[name];
-                renderGlobalSettings();
-                schedulePreviewUpdate();
-            });
-
-            row.appendChild(nameInput);
-            row.appendChild(exprInput);
-            row.appendChild(removeBtn);
-            list.appendChild(row);
-        });
-
-        const addBtn = document.createElement("button");
-        addBtn.type = "button";
-        addBtn.className = "button-subtle";
-        addBtn.textContent = "Add formula";
-        addBtn.addEventListener("click", () => {
-            let base = "New Formula";
-            let suffix = 1;
-            let candidate = base;
-            while (formulasEntry.values.hasOwnProperty(candidate)) {
-                suffix += 1;
-                candidate = `${base} ${suffix}`;
-            }
-            formulasEntry.values[candidate] = "";
-            renderGlobalSettings();
-            schedulePreviewUpdate();
-        });
-
-        body.appendChild(list);
-        body.appendChild(addBtn);
-        return container;
-    }
 
     function renderCategories() {
         const categories = getCategorySnapshots();
