@@ -636,17 +636,40 @@ function applyCyoaData(rawData, {
 }
 
 
-// Load and parse the input.json file
-fetch("input.json")
-    .then(res => res.json())
+// Load and parse the input configuration
+// Strategy: Try loading from the local temp API first (for live editing).
+// If that fails (e.g., on GitHub Pages), fall back to input.json.
+async function loadConfiguration() {
+    try {
+        // 1. Try temp config from local server
+        const tempRes = await fetch("/api/temp-config");
+        if (tempRes.ok) {
+            const tempData = await tempRes.json();
+            if (Array.isArray(tempData) && tempData.length > 0) {
+                console.log("Loaded configuration from temp-input.json");
+                return tempData;
+            }
+        }
+    } catch (e) {
+        // Ignore errors from temp config (expected in production)
+    }
+
+    // 2. Fallback to production input.json
+    console.log("Loading configuration from input.json");
+    const res = await fetch("input.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+}
+
+loadConfiguration()
     .then(data => {
         if (!applyCyoaData(data)) {
-            throw new Error("Failed to initialize from input.json");
+            throw new Error("Failed to initialize CYOA data");
         }
     })
     .catch(err => {
-        console.error("Failed to load input.json:", err);
-        alert("Failed to load input.json. Please check the file path and format.");
+        console.error("Failed to load configuration:", err);
+        alert("Failed to load CYOA configuration. Please check the console for details.");
     });
 
 window.addEventListener("message", (event) => {

@@ -67,9 +67,17 @@ This guide walks you through creating a unique CYOA from this template.
 1.  **Fork** this repository on GitHub to your own account.
 2.  **Clone** your forked repository to your local machine.
 3.  Open the folder in your code editor (e.g., VS Code).
+4.  Run `node server.js` in your terminal. This starts the local server at `http://localhost:3000/`.
 
-### Step 2: Clean Slate
-Open `input.json`. This file contains the "Naruto Jumpchain" example.
+### Step 2: Use the Visual Editor (Recommended)
+You can edit `input.json` manually, but utilizing the built-in editor is easier.
+
+1.  Open **[http://localhost:3000/editor.html](http://localhost:3000/editor.html)** in your browser.
+2.  Use the interface to add categories, options, and points.
+3.  **Note**: Changes are saved locally to `temp-input.json`. When you are ready to save permanently, click **Export JSON** and overwrite your `input.json` file.
+
+### Step 3: Manual Configuration (Optional)
+If you prefer editing the raw JSON, open `input.json`.
 Delete everything inside the array to start fresh, or keep the structure as a reference. Use this minimal starter template:
 
 ```json
@@ -88,12 +96,12 @@ Delete everything inside the array to start fresh, or keep the structure as a re
 ]
 ```
 
-### Step 3: Define Your Points
+### Step 4: Define Your Points
 In the `points` block (see above), define the currencies for your game.
 *   **values**: The starting amount for each currency.
 *   **allowNegative**: List point types that can go below zero (useful for "Drawbacks" that give you points).
 
-### Step 4: Add Content
+### Step 5: Add Content
 Add objects to the `subcategories` array. A "Row" of options is a subcategory.
 
 ```json
@@ -111,12 +119,12 @@ Add objects to the `subcategories` array. A "Row" of options is a subcategory.
 }
 ```
 
-### Step 5: Advanced Logic (Optional)
+### Step 6: Advanced Logic (Optional)
 *   **Prerequisites**: Add `"prerequisites": "perkStrong"` to an option so it can only be selected if "Super Strength" is already active.
 *   **Conflicts**: Add `"conflictsWith": ["perkWeak"]` to prevent incompatible choices.
 *   **Formulas**: Use the `formulas` block (see Configuration below) to create derived stats.
 
-### Step 6: Publish
+### Step 7: Publish
 1.  Commit your changes: `git commit -am "My first CYOA"`
 2.  Push to GitHub: `git push`
 3.  Go to your GitHub repo settings -> **Pages** -> Deploy from `main` branch.
