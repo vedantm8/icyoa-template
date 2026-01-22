@@ -74,7 +74,7 @@ You can edit `input.json` manually, but utilizing the built-in editor is easier.
 
 1.  Open **[http://localhost:3000/editor.html](http://localhost:3000/editor.html)** in your browser.
 2.  Use the interface to add categories, options, and points.
-3.  **Note**: Changes are saved locally to `temp-input.json`. When you are ready to save permanently, click **Export JSON** and overwrite your `input.json` file.
+3.  **Note**: Changes are saved locally to `temp-input.json`. When you are ready to save permanently, overwrite your `input.json` file.
 
 ### Step 3: Manual Configuration (Optional)
 If you prefer editing the raw JSON, open `input.json`.
