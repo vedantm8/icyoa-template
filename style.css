@@ -178,6 +178,22 @@ button:disabled {
     background-color: #fbc02d !important;
 }
 
+.prereq-help {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    background: #eef3ff;
+    color: #0366d6;
+    font-weight: 600;
+    font-size: 12px;
+    margin-left: 6px;
+    cursor: help;
+    border: 1px solid rgba(3,102,214,0.12);
+}
+
 .header-image-container {
     width: 100%;
     max-height: 300px;

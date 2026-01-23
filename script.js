@@ -1510,6 +1510,12 @@ function renderAccordion() {
                             const tokens = opt.prerequisites.match(/!?[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?/g) || [];
                             const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
                             const seen = new Set();
+                            let exprTrue = false;
+                            try {
+                                exprTrue = !!window.evaluatePrereqExpr(opt.prerequisites, id => selectedOptions[id] || 0);
+                            } catch (e) {
+                                exprTrue = false;
+                            }
                             tokens.forEach(token => {
                                 const negated = token.startsWith('!');
                                 const core = negated ? token.slice(1) : token;
@@ -1517,8 +1523,13 @@ function renderAccordion() {
                                 if (reserved.has(id) || seen.has(core)) return;
                                 seen.add(core);
                                 const requiredCount = minSuffix ? Number(minSuffix) : 1;
-                                const actual = selectedOptions[id] || 0;
-                                const satisfied = negated ? actual < requiredCount : actual >= requiredCount;
+                                let satisfied;
+                                if (exprTrue) {
+                                    satisfied = true; // mark all prereq tokens satisfied when overall expression is true
+                                } else {
+                                    const actual = selectedOptions[id] || 0;
+                                    satisfied = negated ? actual < requiredCount : actual >= requiredCount;
+                                }
                                 const label = getOptionLabel(id) + (requiredCount > 1 ? ` (x${requiredCount})` : "");
                                 prereqLines.push(`${satisfied ? "✅" : "❌"} ${label}`);
                             });
@@ -1548,7 +1559,29 @@ function renderAccordion() {
                                     return `${symbol} ${label}`;
                                 }));
                         }
-                        requirements.innerHTML += `🔒 Requires:<br>${prereqLines.join("<br>")}`;
+                        // Build a human-readable version of the prerequisite expression
+                        let prereqHelpTitle = "Prerequisites are checked against selected options. String expressions support &&, ||, and !. When the overall expression evaluates true the UI marks referenced prerequisites as satisfied for clarity.";
+                        if (typeof opt.prerequisites === 'string') {
+                            const rawExpr = opt.prerequisites;
+                            // extract identifier tokens
+                            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+                            // replace ids with labels for readability
+                            let human = rawExpr;
+                            const seenIds = new Set();
+                            tokens.forEach(tok => {
+                                const [id] = tok.split('__');
+                                if (seenIds.has(tok)) return;
+                                seenIds.add(tok);
+                                const label = getOptionLabel(id) || id;
+                                // escape token for regex
+                                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+                            });
+                            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+                            prereqHelpTitle = `${human}\n\nExpression: ${rawExpr}`;
+                        }
+                        const helpHtml = `<span class=\"prereq-help\" title=\"${prereqHelpTitle.replace(/\"/g, '&quot;')}\">?</span>`;
+                        requirements.innerHTML += `🔒 Requires: ${helpHtml}<br>${prereqLines.join("<br>")}`;
                     }
 
                     const desc = document.createElement("div");
