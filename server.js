@@ -212,12 +212,12 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    if (req.method === "GET" && pathname === "/api/temp-config") {
+    if (req.method === "GET" && pathname === "/api/config") {
         await handleGetConfig(req, res);
         return;
     }
 
-    if (req.method === "PUT" && pathname === "/api/temp-config") {
+    if (req.method === "PUT" && pathname === "/api/config") {
         await handlePutConfig(req, res);
         return;
     }

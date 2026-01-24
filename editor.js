@@ -8,7 +8,7 @@
         lastPreviewError: null,
         selectedFile: new URLSearchParams(window.location.search).get('cyoa') || null
     };
-    const TEMP_CONFIG_ENDPOINT = "/api/temp-config";
+    const CONFIG_ENDPOINT = "/api/config";
     const tempSyncState = {
         enabled: false,
         pendingData: null,
@@ -84,8 +84,8 @@
         tempSyncState.saving = true;
         try {
             const endpoint = state.selectedFile
-                ? `${TEMP_CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
-                : TEMP_CONFIG_ENDPOINT;
+                ? `${CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
+                : CONFIG_ENDPOINT;
             const res = await fetch(endpoint, {
                 method: "PUT",
                 headers: {
@@ -113,8 +113,8 @@
     async function loadSelectedConfig() {
         try {
             const endpoint = state.selectedFile
-                ? `${TEMP_CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
-                : TEMP_CONFIG_ENDPOINT;
+                ? `${CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
+                : CONFIG_ENDPOINT;
             const res = await fetch(endpoint, {
                 cache: "no-store"
             });
