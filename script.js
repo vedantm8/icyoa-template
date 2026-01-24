@@ -973,20 +973,20 @@ function addSelection(option) {
         }
     }
 
-    const effectiveCost = getOptionEffectiveCost(option);
-    const actualCost = {};
-    Object.entries(effectiveCost).forEach(([type, cost]) => {
-        let finalCost;
-        if (cost < 0) { // If cost is negative (a gain), it's never discounted
-            finalCost = cost;
-            points[type] -= cost; // Direct addition for gains
-        } else {
-            const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
-            finalCost = Math.max(0, cost - discount);
-            points[type] -= finalCost;
-        }
-        actualCost[type] = finalCost;
-    });
+        const effectiveCost = getOptionEffectiveCost(option);
+        const actualCost = {};
+        Object.entries(effectiveCost).forEach(([type, cost]) => {
+            let finalCost;
+            if (cost < 0) { // If cost is negative (a gain), it's never discounted
+                finalCost = cost;
+                points[type] -= cost; // Direct addition for gains
+            } else {
+                const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
+                finalCost = Math.max(0, cost - discount);
+                points[type] -= finalCost;
+            }
+            actualCost[type] = finalCost;
+        });
 
     if (!discountedSelections[option.id]) {
         discountedSelections[option.id] = [];
@@ -1675,6 +1675,28 @@ function renderAccordion() {
                         }
                         const helpHtml = `<span class=\"prereq-help\" title=\"${prereqHelpTitle.replace(/\"/g, '&quot;')}\">?</span>`;
                         requirements.innerHTML += `🔒 Requires: ${helpHtml}<br>${prereqLines.join("<br>")}`;
+
+                    // Show incompatibilities (conflictsWith) similar to prerequisites
+                    if (opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
+                        const conflictLines = opt.conflictsWith.map(id => {
+                            const label = getOptionLabel(id) || id;
+                            const selected = !!selectedOptions[id];
+                            const symbol = selected ? '❌' : '✅';
+                            return `${symbol} ${label}`;
+                        });
+                        requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
+                    }
+                    }
+
+                    // If conflicts weren't rendered earlier (e.g., no prerequisites block), render them here
+                    if ((!requirements.innerHTML || !requirements.innerHTML.includes('Incompatible With')) && opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
+                        const conflictLines = opt.conflictsWith.map(id => {
+                            const label = getOptionLabel(id) || id;
+                            const selected = !!selectedOptions[id];
+                            const symbol = selected ? '❌' : '✅';
+                            return `${symbol} ${label}`;
+                        });
+                        requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
                     }
 
                     const desc = document.createElement("div");
