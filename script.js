@@ -427,15 +427,38 @@ function validateInputJson(data, pointsEntry) {
 
         // Handle category-level requiresOption applying to all its options
         if (entry.requiresOption) {
-            const requiredIds = Array.isArray(entry.requiresOption) ? entry.requiresOption : [entry.requiresOption];
+            const requiredItems = Array.isArray(entry.requiresOption) ? entry.requiresOption : [entry.requiresOption];
             (entry.subcategories || [{
                 options: entry.options || []
             }]).forEach(subcat => {
                 (subcat.options || []).forEach(opt => {
                     const node = dependencyGraph.get(opt.id);
-                    if (node) {
-                        requiredIds.forEach(req => node.prerequisites.add(req));
-                    }
+                    if (!node) return;
+                    requiredItems.forEach(req => {
+                        // If the requiresOption looks like a logical expression (contains operators or parentheses),
+                        // treat it as a string prerequisite expression for the node so validation can parse it.
+                        const looksLikeExpr = (typeof req === 'string') && /[()!&|\s]/.test(req);
+                        if (looksLikeExpr) {
+                            const existing = node.prerequisites;
+                            if (typeof existing === 'string') {
+                                node.prerequisites = `(${existing}) && (${req})`;
+                            } else {
+                                const arr = Array.from(existing || []);
+                                if (arr.length === 0) {
+                                    node.prerequisites = req;
+                                } else {
+                                    node.prerequisites = `(${arr.join(' && ')}) && (${req})`;
+                                }
+                            }
+                        } else {
+                            // simple id; add to set (or combine with existing string)
+                            if (typeof node.prerequisites === 'string') {
+                                node.prerequisites = `(${node.prerequisites}) && (${req})`;
+                            } else {
+                                node.prerequisites.add(req);
+                            }
+                        }
+                    });
                 });
             });
         }
@@ -1300,18 +1323,55 @@ function renderAccordion() {
 
         // Check category-level requirements
         const requires = cat.requiresOption;
-        const requiredIds = Array.isArray(requires) ? requires : requires ? [requires] : [];
-        const categoryUnlocked = requiredIds.every(id => selectedOptions[id]);
+        const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];
+        // Determine if the category is unlocked. Support logical expressions as strings.
+        let categoryUnlocked = true;
+        if (requiredItems.length) {
+            categoryUnlocked = requiredItems.every(req => {
+                if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                    try {
+                        return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                return !!selectedOptions[req];
+            });
+        }
 
         if (!categoryUnlocked) {
             const lockMsg = document.createElement("div");
             lockMsg.style.padding = "8px";
             lockMsg.style.color = "#666";
-            const lines = requiredIds.map(id => {
-                const label = getOptionLabel(id);
-                const isSelected = selectedOptions[id];
-                const symbol = isSelected ? "✅" : "❌";
-                return `${symbol} ${label}`;
+            const lines = [];
+            requiredItems.forEach(req => {
+                if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                    // Build human-readable expression using labels
+                    const rawExpr = req;
+                    const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+                    let human = rawExpr;
+                    const seen = new Set();
+                    tokens.forEach(tok => {
+                        if (seen.has(tok)) return;
+                        seen.add(tok);
+                        const [id] = tok.split('__');
+                        const label = getOptionLabel(id) || id;
+                        const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+                    });
+                    human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+                    const satisfied = (() => {
+                        try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; }
+                    })();
+                    const symbol = satisfied ? '✅' : '❌';
+                    lines.push(`${symbol} ${human}`);
+                } else {
+                    const id = req;
+                    const label = getOptionLabel(id);
+                    const isSelected = selectedOptions[id];
+                    const symbol = isSelected ? "✅" : "❌";
+                    lines.push(`${symbol} ${label}`);
+                }
             });
             lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
             content.appendChild(lockMsg);
@@ -1353,8 +1413,20 @@ function renderAccordion() {
                 const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
                 // Check subcategory-level requirements
                 const subcatRequires = subcat.requiresOption;
-                const subcatReqIds = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
-                const subcatUnlocked = subcatReqIds.every(id => selectedOptions[id]);
+                const subcatReqItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+                let subcatUnlocked = true;
+                if (subcatReqItems.length) {
+                    subcatUnlocked = subcatReqItems.every(req => {
+                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                            try {
+                                return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+                            } catch (e) {
+                                return false;
+                            }
+                        }
+                        return !!selectedOptions[req];
+                    });
+                }
 
                 const subcatHeader = document.createElement("div");
                 subcatHeader.className = "subcategory-header";
@@ -1389,11 +1461,32 @@ function renderAccordion() {
                     const lockMsg = document.createElement("div");
                     lockMsg.style.padding = "8px";
                     lockMsg.style.color = "#666";
-                    const lines = subcatReqIds.map(id => {
-                        const label = getSubcategoryOptionLabel(id);
-                        const isSelected = selectedOptions[id];
-                        const symbol = isSelected ? "✅" : "❌";
-                        return `${symbol} ${label}`;
+                    const lines = [];
+                    subcatReqItems.forEach(req => {
+                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                            const rawExpr = req;
+                            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+                            let human = rawExpr;
+                            const seen = new Set();
+                            tokens.forEach(tok => {
+                                if (seen.has(tok)) return;
+                                seen.add(tok);
+                                const [id] = tok.split('__');
+                                const label = getSubcategoryOptionLabel(id) || id;
+                                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+                            });
+                            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+                            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; }})();
+                            const symbol = satisfied ? '✅' : '❌';
+                            lines.push(`${symbol} ${human}`);
+                        } else {
+                            const id = req;
+                            const label = getSubcategoryOptionLabel(id);
+                            const isSelected = selectedOptions[id];
+                            const symbol = isSelected ? "✅" : "❌";
+                            lines.push(`${symbol} ${label}`);
+                        }
                     });
                     lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
                     subcatContent.appendChild(lockMsg);
