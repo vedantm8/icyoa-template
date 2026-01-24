@@ -657,40 +657,79 @@ function applyCyoaData(rawData, {
 
 
 // Load and parse the input configuration
-// Strategy: Try loading from the local temp API first (for live editing).
-// If that fails (e.g., on GitHub Pages), fall back to input.json.
 async function loadConfiguration() {
-    try {
-        // 1. Try temp config from local server
-        const tempRes = await fetch("/api/temp-config");
-        if (tempRes.ok) {
-            const tempData = await tempRes.json();
-            if (Array.isArray(tempData) && tempData.length > 0) {
-                console.log("Loaded configuration from temp-input.json");
-                return tempData;
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedCyoa = urlParams.get('cyoa');
+
+    if (selectedCyoa) {
+        try {
+            const res = await fetch(`CYOAs/${selectedCyoa}`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const data = await res.json();
+            if (applyCyoaData(data)) {
+                return;
             }
+        } catch (err) {
+            console.error(`Failed to load CYOA ${selectedCyoa}:`, err);
         }
-    } catch (e) {
-        // Ignore errors from temp config (expected in production)
     }
 
-    // 2. Fallback to production input.json
-    console.log("Loading configuration from input.json");
-    const res = await fetch("input.json");
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
+    // If no CYOA selected or failed to load, show selection modal
+    showCyoaSelectionModal();
 }
 
-loadConfiguration()
-    .then(data => {
-        if (!applyCyoaData(data)) {
-            throw new Error("Failed to initialize CYOA data");
+async function fetchCyoaList() {
+    try {
+        // 1. Try local API first
+        const res = await fetch("/api/cyoas");
+        if (res.ok) {
+            return await res.json();
         }
-    })
-    .catch(err => {
-        console.error("Failed to load configuration:", err);
-        alert("Failed to load CYOA configuration. Please check the console for details.");
+    } catch (e) {
+        // Ignore API errors
+    }
+
+    try {
+        // 2. Fallback to manifest.json for static sites
+        const res = await fetch("CYOAs/manifest.json");
+        if (res.ok) {
+            return await res.json();
+        }
+    } catch (e) {
+        console.error("Failed to fetch CYOA list:", e);
+    }
+    return [];
+}
+
+async function showCyoaSelectionModal() {
+    const modal = document.getElementById("cyoaSelectionModal");
+    const listContainer = document.getElementById("cyoaList");
+    modal.style.display = "block";
+
+    const cyoas = await fetchCyoaList();
+    listContainer.innerHTML = "";
+
+    if (cyoas.length === 0) {
+        listContainer.innerHTML = "<p>No CYOAs found in CYOAs/ directory.</p>";
+        return;
+    }
+
+    cyoas.forEach(cyoa => {
+        const item = document.createElement("div");
+        item.className = "cyoa-item";
+        item.textContent = cyoa.title || cyoa.filename;
+        item.onclick = () => {
+            const newUrl = new URL(window.location.href);
+            newUrl.searchParams.set('cyoa', cyoa.filename);
+            window.location.href = newUrl.toString();
+        };
+        listContainer.appendChild(item);
     });
+}
+
+loadConfiguration().catch(err => {
+    console.error("Initialization error:", err);
+});
 
 window.addEventListener("message", (event) => {
     if (!event || !event.data || event.data.type !== "cyoa-data-update") return;
@@ -973,20 +1012,20 @@ function addSelection(option) {
         }
     }
 
-        const effectiveCost = getOptionEffectiveCost(option);
-        const actualCost = {};
-        Object.entries(effectiveCost).forEach(([type, cost]) => {
-            let finalCost;
-            if (cost < 0) { // If cost is negative (a gain), it's never discounted
-                finalCost = cost;
-                points[type] -= cost; // Direct addition for gains
-            } else {
-                const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
-                finalCost = Math.max(0, cost - discount);
-                points[type] -= finalCost;
-            }
-            actualCost[type] = finalCost;
-        });
+    const effectiveCost = getOptionEffectiveCost(option);
+    const actualCost = {};
+    Object.entries(effectiveCost).forEach(([type, cost]) => {
+        let finalCost;
+        if (cost < 0) { // If cost is negative (a gain), it's never discounted
+            finalCost = cost;
+            points[type] -= cost; // Direct addition for gains
+        } else {
+            const discount = discounted ? (subcat?.discountAmount?.[type] || 0) : 0;
+            finalCost = Math.max(0, cost - discount);
+            points[type] -= finalCost;
+        }
+        actualCost[type] = finalCost;
+    });
 
     if (!discountedSelections[option.id]) {
         discountedSelections[option.id] = [];
@@ -1477,7 +1516,7 @@ function renderAccordion() {
                                 human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
                             });
                             human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; }})();
+                            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; } })();
                             const symbol = satisfied ? '✅' : '❌';
                             lines.push(`${symbol} ${human}`);
                         } else {
@@ -1676,16 +1715,16 @@ function renderAccordion() {
                         const helpHtml = `<span class=\"prereq-help\" title=\"${prereqHelpTitle.replace(/\"/g, '&quot;')}\">?</span>`;
                         requirements.innerHTML += `🔒 Requires: ${helpHtml}<br>${prereqLines.join("<br>")}`;
 
-                    // Show incompatibilities (conflictsWith) similar to prerequisites
-                    if (opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
-                        const conflictLines = opt.conflictsWith.map(id => {
-                            const label = getOptionLabel(id) || id;
-                            const selected = !!selectedOptions[id];
-                            const symbol = selected ? '❌' : '✅';
-                            return `${symbol} ${label}`;
-                        });
-                        requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
-                    }
+                        // Show incompatibilities (conflictsWith) similar to prerequisites
+                        if (opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
+                            const conflictLines = opt.conflictsWith.map(id => {
+                                const label = getOptionLabel(id) || id;
+                                const selected = !!selectedOptions[id];
+                                const symbol = selected ? '❌' : '✅';
+                                return `${symbol} ${label}`;
+                            });
+                            requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
+                        }
                     }
 
                     // If conflicts weren't rendered earlier (e.g., no prerequisites block), render them here

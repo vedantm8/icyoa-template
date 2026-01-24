@@ -5,10 +5,9 @@ const path = require("path");
 const url = require("url");
 
 const ROOT = __dirname;
-const INPUT_FILE = path.join(ROOT, "input.json");
-const TEMP_FILE = path.join(ROOT, "temp-input.json");
+const CYOAS_DIR = path.join(ROOT, "CYOAs");
 const PORT = Number(process.env.PORT) || 3000;
-const MAX_BODY_SIZE = 2 * 1024 * 1024; // 2MB
+const MAX_BODY_SIZE = 10 * 1024 * 1024; // Increased to 10MB for larger CYOAs
 
 const MIME_TYPES = {
     ".html": "text/html; charset=utf-8",
@@ -27,6 +26,8 @@ const MIME_TYPES = {
 };
 
 async function ensureTempFileExists() {
+    const TEMP_FILE = path.join(CYOAS_DIR, "temp-input.json");
+    const INPUT_FILE = path.join(CYOAS_DIR, "input.json");
     try {
         await fsp.access(TEMP_FILE);
     } catch {
@@ -69,9 +70,36 @@ function readRequestBody(req) {
     });
 }
 
+async function getCyoaTitle(filename) {
+    try {
+        const filePath = path.join(CYOAS_DIR, filename);
+        const content = await fsp.readFile(filePath, "utf8");
+        const data = JSON.parse(content);
+        const titleEntry = data.find(e => e.type === "title");
+        return titleEntry ? titleEntry.text : filename;
+    } catch (err) {
+        console.error(`Error reading title from ${filename}:`, err);
+        return filename;
+    }
+}
+
+async function handleGetCyoas(res) {
+    try {
+        const files = await fsp.readdir(CYOAS_DIR);
+        const jsonFiles = files.filter(f => f.endsWith(".json") && f !== "manifest.json");
+        const cyoas = await Promise.all(jsonFiles.map(async (f) => {
+            const title = await getCyoaTitle(f);
+            return { filename: f, title };
+        }));
+        sendJson(res, 200, cyoas);
+    } catch (err) {
+        sendJson(res, 500, { ok: false, error: err.message });
+    }
+}
+
 async function handleGetTempConfig(res) {
     try {
-        await ensureTempFileExists();
+        const TEMP_FILE = path.join(CYOAS_DIR, "temp-input.json");
         const data = await fsp.readFile(TEMP_FILE, "utf8");
         res.writeHead(200, {
             "Content-Type": "application/json",
@@ -88,6 +116,7 @@ async function handleGetTempConfig(res) {
 
 async function handlePutTempConfig(req, res) {
     try {
+        const TEMP_FILE = path.join(CYOAS_DIR, "temp-input.json");
         const raw = await readRequestBody(req);
         const parsed = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(parsed)) {
@@ -161,6 +190,11 @@ async function serveStaticAsset(res, pathname) {
 const server = http.createServer(async (req, res) => {
     const parsedUrl = url.parse(req.url || "/");
     const pathname = parsedUrl.pathname || "/";
+
+    if (req.method === "GET" && pathname === "/api/cyoas") {
+        await handleGetCyoas(res);
+        return;
+    }
 
     if (req.method === "GET" && pathname === "/api/temp-config") {
         await handleGetTempConfig(res);
