@@ -25,26 +25,6 @@ const MIME_TYPES = {
     ".ttf": "font/ttf"
 };
 
-async function ensureTempFileExists() {
-    const TEMP_FILE = path.join(CYOAS_DIR, "temp-input.json");
-    const INPUT_FILE = path.join(CYOAS_DIR, "input.json");
-    try {
-        await fsp.access(TEMP_FILE);
-    } catch {
-        let sourceData = [];
-        try {
-            const raw = await fsp.readFile(INPUT_FILE, "utf8");
-            sourceData = JSON.parse(raw);
-            if (!Array.isArray(sourceData)) {
-                sourceData = [];
-            }
-        } catch {
-            sourceData = [];
-        }
-        await fsp.writeFile(TEMP_FILE, JSON.stringify(sourceData, null, 2), "utf8");
-    }
-}
-
 function sendJson(res, status, body) {
     const payload = JSON.stringify(body);
     res.writeHead(status, {
@@ -124,13 +104,8 @@ async function handleGetConfig(req, res) {
         try {
             await fsp.access(filePath);
         } catch {
-            // If file doesn't exist and it's temp-input.json, try to create it from input.json
-            if (fileName === "temp-input.json") {
-                await ensureTempFileExists();
-            } else {
-                sendJson(res, 404, { ok: false, error: "File not found." });
-                return;
-            }
+            sendJson(res, 404, { ok: false, error: "File not found." });
+            return;
         }
 
         const data = await fsp.readFile(filePath, "utf8");
@@ -259,9 +234,6 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-    ensureTempFileExists().catch((err) => {
-        console.warn("Failed to initialize temp config file:", err);
-    });
     const baseUrl = `http://localhost:${PORT}`;
     console.log(`View CYOA at ${baseUrl}/`);
     console.log(`Open the visual editor at ${baseUrl}/editor.html`);

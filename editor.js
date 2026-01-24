@@ -110,7 +110,7 @@
         }
     }
 
-    async function tryLoadTempConfig() {
+    async function loadSelectedConfig() {
         try {
             const endpoint = state.selectedFile
                 ? `${TEMP_CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
@@ -128,7 +128,7 @@
             if (!Array.isArray(data)) {
                 return {
                     ok: false,
-                    error: "Temp file must contain a JSON array."
+                    error: "Config file must contain a JSON array."
                 };
             }
             tempSyncState.enabled = true;
@@ -146,19 +146,6 @@
         }
     }
 
-    async function loadPrimaryInputJson() {
-        const res = await fetch("CYOAs/input.json", {
-            cache: "no-store"
-        });
-        if (!res.ok) {
-            throw new Error(`HTTP ${res.status}`);
-        }
-        const data = await res.json();
-        if (!Array.isArray(data)) {
-            throw new Error("input.json must contain a JSON array.");
-        }
-        return data;
-    }
 
     function findInsertIndexForType(type) {
         const orderIndex = CORE_TYPES_ORDER.indexOf(type);
@@ -1436,16 +1423,16 @@
             previewFrame.src = `index.html?cyoa=${encodeURIComponent(state.selectedFile)}`;
         }
 
-        const temp = await tryLoadTempConfig();
-        if (temp.ok) {
-            state.data = temp.data;
+        const config = await loadSelectedConfig();
+        if (config.ok) {
+            state.data = config.data;
             renderGlobalSettings();
             renderCategories();
             showEditorMessage(`Loaded ${state.selectedFile}`, "success");
             return;
         }
 
-        showEditorMessage(`Failed to load ${state.selectedFile}: ${temp.error}`, "error", 10000);
+        showEditorMessage(`Failed to load ${state.selectedFile}: ${config.error}`, "error", 10000);
         // If it fails, maybe show the selection modal again after a delay
         setTimeout(() => showSelectionModal(), 3000);
     }
