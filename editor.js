@@ -6,6 +6,7 @@
         data: [],
         previewReady: false,
         lastPreviewError: null,
+        selectedFile: new URLSearchParams(window.location.search).get('cyoa') || null
     };
     const TEMP_CONFIG_ENDPOINT = "/api/temp-config";
     const tempSyncState = {
@@ -44,6 +45,7 @@
     const addCategoryBtn = document.getElementById("addCategoryBtn");
     const importJsonBtn = document.getElementById("importJsonBtn");
     const exportJsonBtn = document.getElementById("exportJsonBtn");
+    const selectCyoaBtn = document.getElementById("selectCyoaBtn");
     const importFileInput = document.getElementById("importFileInput");
 
     let previewUpdateHandle = null;
@@ -81,7 +83,10 @@
         tempSyncState.pendingData = null;
         tempSyncState.saving = true;
         try {
-            const res = await fetch(TEMP_CONFIG_ENDPOINT, {
+            const endpoint = state.selectedFile
+                ? `${TEMP_CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
+                : TEMP_CONFIG_ENDPOINT;
+            const res = await fetch(endpoint, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
@@ -107,7 +112,10 @@
 
     async function tryLoadTempConfig() {
         try {
-            const res = await fetch(TEMP_CONFIG_ENDPOINT, {
+            const endpoint = state.selectedFile
+                ? `${TEMP_CONFIG_ENDPOINT}?file=${encodeURIComponent(state.selectedFile)}`
+                : TEMP_CONFIG_ENDPOINT;
+            const res = await fetch(endpoint, {
                 cache: "no-store"
             });
             if (!res.ok) {
@@ -139,7 +147,7 @@
     }
 
     async function loadPrimaryInputJson() {
-        const res = await fetch("input.json", {
+        const res = await fetch("CYOAs/input.json", {
             cache: "no-store"
         });
         if (!res.ok) {
@@ -1417,7 +1425,76 @@
         }
     }
 
+    async function loadInitialData() {
+        if (!state.selectedFile) {
+            showSelectionModal();
+            return;
+        }
+
+        // Update preview iframe to load the correct CYOA
+        if (previewFrame) {
+            previewFrame.src = `index.html?cyoa=${encodeURIComponent(state.selectedFile)}`;
+        }
+
+        const temp = await tryLoadTempConfig();
+        if (temp.ok) {
+            state.data = temp.data;
+            renderGlobalSettings();
+            renderCategories();
+            showEditorMessage(`Loaded ${state.selectedFile}`, "success");
+            return;
+        }
+
+        showEditorMessage(`Failed to load ${state.selectedFile}: ${temp.error}`, "error", 10000);
+        // If it fails, maybe show the selection modal again after a delay
+        setTimeout(() => showSelectionModal(), 3000);
+    }
+
+    async function fetchCyoaList() {
+        try {
+            const res = await fetch("/api/cyoas");
+            if (res.ok) return await res.json();
+        } catch (e) { }
+        return [];
+    }
+
+    async function showSelectionModal() {
+        const modal = document.getElementById("cyoaSelectionModal");
+        const listContainer = document.getElementById("cyoaList");
+        if (!modal || !listContainer) return;
+
+        modal.style.display = "block";
+        const cyoas = await fetchCyoaList();
+        listContainer.innerHTML = "";
+
+        if (cyoas.length === 0) {
+            listContainer.innerHTML = "<p>No CYOAs found in CYOAs/ directory.</p>";
+            return;
+        }
+
+        cyoas.forEach(cyoa => {
+            const item = document.createElement("div");
+            item.className = "cyoa-item";
+            item.textContent = cyoa.title || cyoa.filename;
+            item.onclick = () => {
+                const newUrl = new URL(window.location.href);
+                newUrl.searchParams.set('cyoa', cyoa.filename);
+                window.location.href = newUrl.toString();
+            };
+            listContainer.appendChild(item);
+        });
+    }
+
     function setupEventListeners() {
+        selectCyoaBtn?.addEventListener("click", () => {
+            showSelectionModal();
+        });
+
+        document.getElementById("closeSelectionModal")?.addEventListener("click", () => {
+            const modal = document.getElementById("cyoaSelectionModal");
+            if (modal) modal.style.display = "none";
+        });
+
         addCategoryBtn?.addEventListener("click", () => {
             state.data.push(createDefaultCategory());
             renderCategories();

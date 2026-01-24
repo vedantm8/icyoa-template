@@ -1,10 +1,10 @@
 [
   {
-    "filename": "input.json",
+    "filename": "naruto.json",
     "title": "Naruto Jumpchain CYOA"
   },
   {
-    "filename": "temp-input.json",
+    "filename": "superheroAmalgam.json",
     "title": "Becoming a Superhero"
   }
 ]

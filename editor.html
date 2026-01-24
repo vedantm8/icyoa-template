@@ -13,15 +13,31 @@
         <section class="editor-panel">
             <header class="panel-header">
                 <h1>Visual Editor</h1>
-                <p class="panel-subtitle">Configure your CYOA content without touching JSON and preview changes instantly.</p>
+                <p class="panel-subtitle">Configure your CYOA content without touching JSON and preview changes
+                    instantly.</p>
                 <div id="editorMessage" class="editor-message"></div>
                 <div class="panel-actions">
                     <button id="addCategoryBtn" type="button">Add Category</button>
                     <button id="importJsonBtn" type="button">Import JSON</button>
                     <button id="exportJsonBtn" type="button">Export JSON</button>
+                    <button id="selectCyoaBtn" type="button">Select CYOA</button>
                 </div>
                 <input id="importFileInput" type="file" accept="application/json" hidden>
             </header>
+
+            <!-- CYOA Selection Modal -->
+            <div id="cyoaSelectionModal" class="modal">
+                <div class="modal-content">
+                    <h3>Choose a CYOA to Edit</h3>
+                    <div id="cyoaList" class="cyoa-list">
+                        <!-- CYOAs will be listed here -->
+                        <p>Loading CYOAs...</p>
+                    </div>
+                    <div class="modal-buttons" style="margin-top: 15px; justify-content: center;">
+                        <button id="closeSelectionModal" class="button-subtle">Close</button>
+                    </div>
+                </div>
+            </div>
             <div id="globalSettings"></div>
             <div id="categoryList"></div>
         </section>

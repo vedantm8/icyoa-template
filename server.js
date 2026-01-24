@@ -97,10 +97,43 @@ async function handleGetCyoas(res) {
     }
 }
 
-async function handleGetTempConfig(res) {
+async function validateFileParam(pathname) {
+    if (!pathname) return null;
+    const normalized = path.normalize(pathname).replace(/^(\.\.(\/|\\|$))+/, '');
+    if (normalized.includes("..") || !normalized.endsWith(".json")) {
+        return null;
+    }
+    const filePath = path.join(CYOAS_DIR, normalized);
+    if (!filePath.startsWith(CYOAS_DIR)) {
+        return null;
+    }
+    return filePath;
+}
+
+async function handleGetConfig(req, res) {
     try {
-        const TEMP_FILE = path.join(CYOAS_DIR, "temp-input.json");
-        const data = await fsp.readFile(TEMP_FILE, "utf8");
+        const parsedUrl = url.parse(req.url, true);
+        const fileName = parsedUrl.query.file || "temp-input.json";
+        const filePath = await validateFileParam(fileName);
+
+        if (!filePath) {
+            sendJson(res, 400, { ok: false, error: "Invalid file parameter." });
+            return;
+        }
+
+        try {
+            await fsp.access(filePath);
+        } catch {
+            // If file doesn't exist and it's temp-input.json, try to create it from input.json
+            if (fileName === "temp-input.json") {
+                await ensureTempFileExists();
+            } else {
+                sendJson(res, 404, { ok: false, error: "File not found." });
+                return;
+            }
+        }
+
+        const data = await fsp.readFile(filePath, "utf8");
         res.writeHead(200, {
             "Content-Type": "application/json",
             "Cache-Control": "no-store"
@@ -114,19 +147,27 @@ async function handleGetTempConfig(res) {
     }
 }
 
-async function handlePutTempConfig(req, res) {
+async function handlePutConfig(req, res) {
     try {
-        const TEMP_FILE = path.join(CYOAS_DIR, "temp-input.json");
+        const parsedUrl = url.parse(req.url, true);
+        const fileName = parsedUrl.query.file || "temp-input.json";
+        const filePath = await validateFileParam(fileName);
+
+        if (!filePath) {
+            sendJson(res, 400, { ok: false, error: "Invalid file parameter." });
+            return;
+        }
+
         const raw = await readRequestBody(req);
         const parsed = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(parsed)) {
             sendJson(res, 400, {
                 ok: false,
-                error: "Temp config must be a JSON array."
+                error: "Config must be a JSON array."
             });
             return;
         }
-        await fsp.writeFile(TEMP_FILE, JSON.stringify(parsed, null, 2), "utf8");
+        await fsp.writeFile(filePath, JSON.stringify(parsed, null, 2), "utf8");
         sendJson(res, 200, {
             ok: true
         });
@@ -197,12 +238,12 @@ const server = http.createServer(async (req, res) => {
     }
 
     if (req.method === "GET" && pathname === "/api/temp-config") {
-        await handleGetTempConfig(res);
+        await handleGetConfig(req, res);
         return;
     }
 
     if (req.method === "PUT" && pathname === "/api/temp-config") {
-        await handlePutTempConfig(req, res);
+        await handlePutConfig(req, res);
         return;
     }
 
