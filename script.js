@@ -15,6 +15,23 @@ let originalAttributeRanges = {}; // Stores the initial, base ranges from input.
 const subcategoryDiscountSelections = {};
 const categoryDiscountSelections = {};
 
+// Theme State
+let isDarkMode = localStorage.getItem('cyoa-dark-mode') === 'true';
+const DARK_THEME_VARS = {
+    "bg-color": "#0f172a",
+    "container-bg": "#1e293b",
+    "text-color": "#f1f5f9",
+    "text-muted": "#94a3b8",
+    "accent-color": "#38bdf8",
+    "accent-text": "#ffffff",
+    "border-color": "#334155",
+    "item-bg": "#334155",
+    "item-header-bg": "#475569",
+    "points-bg": "#38bdf8",
+    "points-border": "#0ea5e9",
+    "shadow-color": "rgba(0, 0, 0, 0.4)"
+};
+
 function clearObject(obj) {
     if (!obj) return;
     Object.keys(obj).forEach(key => delete obj[key]);
@@ -575,17 +592,23 @@ function applyCyoaData(rawData, {
         }
 
         const data = JSON.parse(JSON.stringify(rawData));
+        window._lastCyoaData = rawData; // Cache for theme toggle
         const pointsEntry = data.find(entry => entry.type === "points");
         validateInputJson(data, pointsEntry);
 
         // Apply theme if present
         const themeEntry = data.find(entry => entry.type === "theme");
         const root = document.documentElement;
-        if (themeEntry) {
+
+        function updateRootProperty(key, value) {
+            root.style.setProperty(`--${key}`, value);
+        }
+
+        if (isDarkMode) {
+            Object.entries(DARK_THEME_VARS).forEach(([key, value]) => updateRootProperty(key, value));
+        } else if (themeEntry) {
             Object.entries(themeEntry).forEach(([key, value]) => {
-                if (key !== "type") {
-                    root.style.setProperty(`--${key}`, value);
-                }
+                if (key !== "type") updateRootProperty(key, value);
             });
         } else {
             // Reset to default theme variables
@@ -603,10 +626,10 @@ function applyCyoaData(rawData, {
                 "points-border": "#cccccc",
                 "shadow-color": "rgba(0, 0, 0, 0.1)"
             };
-            Object.entries(defaults).forEach(([key, value]) => {
-                root.style.setProperty(`--${key}`, value);
-            });
+            Object.entries(defaults).forEach(([key, value]) => updateRootProperty(key, value));
         }
+
+        updateThemeToggleButton();
 
         const preservedCategoryOpen = new Set(openCategories);
         const preservedSubcategoryOpen = new Set(openSubcategories);
@@ -2163,3 +2186,22 @@ function prereqReferencesId(prereq, id) {
 
     return false;
 }
+
+function updateThemeToggleButton() {
+    const btn = document.getElementById('themeToggle');
+    if (btn) {
+        btn.textContent = isDarkMode ? '☀️' : '🌙';
+    }
+}
+
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    localStorage.setItem('cyoa-dark-mode', isDarkMode);
+    // Re-apply the theme with the new dark mode state
+    // We can just call applyCyoaData with the current categories to force a theme refresh
+    if (window._lastCyoaData) {
+        applyCyoaData(window._lastCyoaData);
+    }
+}
+
+document.getElementById('themeToggle')?.addEventListener('click', toggleDarkMode);
