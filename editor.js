@@ -873,6 +873,26 @@
             nameField.appendChild(nameInput);
             body.appendChild(nameField);
 
+            const requiresField = document.createElement("div");
+            requiresField.className = "field";
+            const requiresLabel = document.createElement("label");
+            requiresLabel.textContent = "Requires Option (Optional)";
+            const requiresInput = document.createElement("input");
+            requiresInput.type = "text";
+            requiresInput.value = category.requiresOption || "";
+            requiresInput.placeholder = "e.g. some_id && !another_id";
+            requiresInput.addEventListener("input", () => {
+                if (requiresInput.value.trim()) {
+                    category.requiresOption = requiresInput.value.trim();
+                } else {
+                    delete category.requiresOption;
+                }
+                schedulePreviewUpdate();
+            });
+            requiresField.appendChild(requiresLabel);
+            requiresField.appendChild(requiresInput);
+            body.appendChild(requiresField);
+
             const subcategoriesContainer = document.createElement("div");
             subcategoriesContainer.className = "subcategory-list";
             category.subcategories.forEach((subcat, subIndex) => {
@@ -1453,30 +1473,6 @@
         container.appendChild(addBtn);
     }
 
-    async function loadInitialData() {
-        let activeSource = "input.json";
-        try {
-            const tempResult = await tryLoadTempConfig();
-            if (tempResult.ok) {
-                state.data = tempResult.data;
-                activeSource = "temp file";
-            } else {
-                if (tempResult.error && !tempSyncState.loadFallbackWarned) {
-                    showEditorMessage("Temp file server unavailable. Falling back to input.json.", "info");
-                    tempSyncState.loadFallbackWarned = true;
-                }
-                state.data = await loadPrimaryInputJson();
-            }
-            renderGlobalSettings();
-            renderCategories();
-            schedulePreviewUpdate();
-        } catch (err) {
-            showEditorMessage(`Failed to load ${activeSource}: ${err.message}`, "error", 0);
-            state.data = [];
-            renderGlobalSettings();
-            renderCategories();
-        }
-    }
 
     function exportJson() {
         const blob = new Blob([JSON.stringify(state.data, null, 2)], {
