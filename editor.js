@@ -1460,6 +1460,9 @@
         }
 
         cyoas.forEach(cyoa => {
+            const container = document.createElement("div");
+            container.className = "cyoa-item-container";
+
             const item = document.createElement("div");
             item.className = "cyoa-item";
             item.textContent = cyoa.title || cyoa.filename;
@@ -1468,8 +1471,84 @@
                 newUrl.searchParams.set('cyoa', cyoa.filename);
                 window.location.href = newUrl.toString();
             };
-            listContainer.appendChild(item);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.type = "button";
+            deleteBtn.className = "delete-cyoa-btn";
+            deleteBtn.innerHTML = "🗑️";
+            deleteBtn.title = "Move to trash";
+            deleteBtn.onclick = async (e) => {
+                e.stopPropagation();
+                if (!confirm(`Move "${cyoa.title || cyoa.filename}" to trash?`)) return;
+                try {
+                    const res = await fetch(`/api/cyoas?file=${encodeURIComponent(cyoa.filename)}`, {
+                        method: "DELETE"
+                    });
+                    const text = await res.text();
+                    let result;
+                    try {
+                        result = JSON.parse(text);
+                    } catch (parseErr) {
+                        if (res.status === 404) throw new Error("API endpoint not found. Please restart server.js to enable management features.");
+                        throw new Error(text.slice(0, 50) || `Server error ${res.status}`);
+                    }
+                    if (result.ok) {
+                        showEditorMessage(`Moved ${cyoa.filename} to trash.`, "success");
+                        // If we deleted the file we are currently editing, redirect to default
+                        if (state.selectedFile === cyoa.filename) {
+                            window.location.href = window.location.pathname; // Reload without query params
+                        } else {
+                            showSelectionModal(); // Refresh list
+                        }
+                    } else {
+                        throw new Error(result.error || "Failed to delete");
+                    }
+                } catch (err) {
+                    showEditorMessage(`Delete failed: ${err.message}`, "error");
+                }
+            };
+
+            container.appendChild(item);
+            container.appendChild(deleteBtn);
+            listContainer.appendChild(container);
         });
+    }
+
+    async function handleCreateCyoa() {
+        const titleInput = document.getElementById("newCyoaTitle");
+        const title = titleInput.value.trim();
+        if (!title) {
+            showEditorMessage("Please enter a title for the new CYOA.", "warning");
+            return;
+        }
+
+        // Generate filename from title
+        const filename = title.toLowerCase().replace(/[^a-z0-9]/g, "_") + ".json";
+
+        try {
+            const res = await fetch("/api/cyoas", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ filename, title })
+            });
+            const text = await res.text();
+            let result;
+            try {
+                result = JSON.parse(text);
+            } catch (parseErr) {
+                if (res.status === 404) throw new Error("API endpoint not found. Please restart server.js to enable management features.");
+                throw new Error(text.slice(0, 50) || `Server error ${res.status}`);
+            }
+            if (result.ok) {
+                showEditorMessage(`Created ${filename}!`, "success");
+                titleInput.value = "";
+                showSelectionModal(); // Refresh list
+            } else {
+                throw new Error(result.error || "Failed to create");
+            }
+        } catch (err) {
+            showEditorMessage(`Create failed: ${err.message}`, "error");
+        }
     }
 
     function setupEventListeners() {
@@ -1480,6 +1559,14 @@
         document.getElementById("closeSelectionModal")?.addEventListener("click", () => {
             const modal = document.getElementById("cyoaSelectionModal");
             if (modal) modal.style.display = "none";
+        });
+
+        document.getElementById("confirmCreateCyoaBtn")?.addEventListener("click", () => {
+            handleCreateCyoa();
+        });
+
+        document.getElementById("newCyoaTitle")?.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") handleCreateCyoa();
         });
 
         addCategoryBtn?.addEventListener("click", () => {

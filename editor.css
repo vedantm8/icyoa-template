@@ -554,3 +554,61 @@ textarea {
     gap: 8px;
     margin-top: 20px;
 }
+
+.create-cyoa-form {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.create-cyoa-form input {
+    flex: 1;
+}
+
+.cyoa-item-container {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.cyoa-item {
+    flex: 1;
+    background: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-subtle);
+    font-weight: 600;
+    text-align: center;
+    color: var(--text);
+}
+
+.cyoa-item:hover {
+    background: #eff6ff;
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+}
+
+.cyoa-item:active {
+    transform: translateY(0);
+}
+
+.delete-cyoa-btn {
+    background: var(--danger);
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    border-radius: 8px;
+}
+
+.delete-cyoa-btn:hover {
+    background: var(--danger-hover);
+}

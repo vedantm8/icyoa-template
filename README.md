@@ -1,238 +1,88 @@
 # ICYOA Template
 
-An open-source **Interactive Choose Your Own Adventure (ICYOA)** template designed to let creators build, visualize, and share fully interactive CYOA experiences. The system runs entirely in the browser using HTML, CSS, and JavaScript, loading all configuration data from a single `input.json` file.
+An open-source **Interactive Choose Your Own Adventure (ICYOA)** template. Build, visualize, and share interactive stories entirely in your browser.
 
-## Disclaimer
+---
 
-This project was created to explore how dynamic logic handles discount functionality within a Choose Your Own Adventure (CYOA) builder system. The implementation is experimental and intended for educational and demonstration purposes. Functionality, code structure, and features may change.
+## Quick Start
+
+1. **Install Node.js:** Download it from [nodejs.org](https://nodejs.org/) if you don't have it.
+2. **Download & Run:**
+   ```bash
+   node server.js
+   ```
+3. **Explore:**
+   - **Main App:** [http://localhost:3000](http://localhost:3000) (What your players see)
+   - **Visual Editor:** [http://localhost:3000/editor.html](http://localhost:3000/editor.html) (Where you build)
+
+---
+
+## How to Create Your Own CYOA
+
+Follow these simple steps to go from a template to your own unique adventure.
+
+### 1. Set Up Your Project
+* **Fork this repo:** Click the **Fork** button at the top right of this page to save a copy to your own GitHub account.
+* **Clone it:** Download your fork to your computer.
+* **Open in VS Code:** (Or your favorite code editor).
+
+### 2. Use the Visual Editor (Easiest Way)
+The Visual Editor lets you build and manage your CYOAs without touching code.
+
+1. Run `node server.js` in your terminal.
+2. Open **[localhost:3000/editor.html](http://localhost:3000/editor.html)**.
+3. **Manage your projects:**
+   - Click **Select CYOA** to switch between different adventures.
+   - **Create New:** Enter a title and click "Create New" to start a fresh adventure.
+   - **Delete:** Click the trash icon next to a CYOA to move it to the trash (found in `CYOAs/.trash/`).
+4. **Build your world:**
+   - Add **Categories** (like "Background", "Powers", or "Equipment").
+   - Add **Options** inside categories. Give them names, descriptions, and costs.
+   - Set **Starting Points** (e.g., "100 Gold").
+5. The file will automatically be saved to the `CYOAs` directory. You may modify or delete it directly if you prefer.
+
+### 3. Logic & Requirements
+Want one choice to depend on another?
+* **Prerequisites:** In the editor, you can set an "ID" for an option (e.g., `super_strength`). Another option can then require `super_strength` to be selected.
+* **Conflicts:** Stop players from picking two incompatible things (e.g., `Fire_Magic` and `Ice_Magic`).
+
+### 4. Publish Your Creation
+Sharing your CYOA is free and easy with GitHub Pages:
+
+1. **Commit & Push:** Save your changes (`git commit -am "My CYOA"`) and push them to GitHub (`git push`).
+2. **Enable Pages:**
+   - Go to your repo settings on GitHub.
+   - Click **Pages** in the left sidebar.
+   - Under "Build and deployment", select the **main** branch and click **Save**.
+3. **Done!** Your site will be live at `https://your-username.github.io/your-repo-name/`.
+
+---
 
 ## Project Structure
 
+For those curious about how it works under the hood:
+
 ```text
 icyoa-template/
-├── index.html       # Main UI template
-├── editor.html      # Visual editor entry point
-├── style.css        # Visual styling and layout
-├── editor.css       # Editor page styling
-├── script.js        # Core logic
-├── editor.js        # Visual editor logic
-├── logicExpr.js     # Logical expression parsing
-├── input.json       # Configuration
-├── LICENSE          # Open-source license
-└── README.md        # Documentation
+├── CYOAs/               # All CYOA configuration files (.json)
+├── index.html           # The main player interface
+├── editor.html          # The visual creator tool
+├── input.json           # Your CYOA's "brain" (where data lives)
+├── script.js            # Logic for the player interface
+├── editor.js            # Logic for the visual tool
+├── style.css            # Look and feel for the player interface
+└── server.js            # Simple server to help you edit locally
 ```
 
-## Getting Started
+---
 
-### Prerequisites
+## Advanced Customization
 
-*   Node.js (for the local development server)
+* **Colors & Fonts:** Open `style.css` to change the appearance of your CYOA.
+* **Point Systems:** You can have multiple types of points (e.g., Health, Mana, Gold) by editing the `points` section in the editor.
 
-### 1. Run the Template
-
-Start the bundled development server to serve the site and enable the editor's live features:
-
-```bash
-node server.js
-```
-
-Open the links printed in the terminal:
-*   `http://localhost:3000/` – Character Builder (`index.html`)
-*   `http://localhost:3000/editor.html` – Visual Editor with live preview
-
-The application features:
-*   Title and description loaded from `input.json`
-*   Collapsible list of categories and subcategories
-*   Selectable options with descriptions, costs, and prerequisites
-*   Live points tracker
-*   Import/Export/Reset functionality
-
-### 2. Visual Editor Workflow
-
-The visual editor (`editor.html`) allows you to modify the configuration in a GUI while seeing live updates.
-
-*   **Setup**: Run `node server.js` to enable saving to `temp-input.json`.
-*   **Workflow**:
-    *   Open `editor.html` alongside `index.html`.
-    *   Use the editor panel to add categories, change point formulas, or edit options.
-    *   Changes are saved to `temp-input.json`. The main implementation reads `input.json`, keeping your live environment stable until you are ready to publish.
-    *   **Note**: `temp-input.json` is a temporary working file. It is safe to delete and is automatically excluded from git if you use the provided `.gitignore`.
-    *   **Export**: When satisfied, export the JSON and overwrite your main `input.json`.
-
-## Tutorial: How to Build Your Own CYOA
-
-This guide walks you through creating a unique CYOA from this template.
-
-### Step 1: Setup
-1.  **Fork** this repository on GitHub to your own account.
-2.  **Clone** your forked repository to your local machine.
-3.  Open the folder in your code editor (e.g., VS Code).
-4.  Run `node server.js` in your terminal. This starts the local server at `http://localhost:3000/`.
-
-### Step 2: Use the Visual Editor (Recommended)
-You can edit `input.json` manually, but utilizing the built-in editor is easier.
-
-1.  Open **[http://localhost:3000/editor.html](http://localhost:3000/editor.html)** in your browser.
-2.  Use the interface to add categories, options, and points.
-3.  **Note**: Changes are saved locally to `temp-input.json`. When you are ready to save permanently, overwrite your `input.json` file.
-
-### Step 3: Manual Configuration (Optional)
-If you prefer editing the raw JSON, open `input.json`.
-Delete everything inside the array to start fresh, or keep the structure as a reference. Use this minimal starter template:
-
-```json
-[
-  { "type": "title", "text": "My New CYOA" },
-  { "type": "description", "text": "A brief introduction." },
-  {
-    "type": "points",
-    "values": { "Points": 100 },
-    "allowNegative": []
-  },
-  {
-    "name": "First Category",
-    "subcategories": []
-  }
-]
-```
-
-### Step 4: Define Your Points
-In the `points` block (see above), define the currencies for your game.
-*   **values**: The starting amount for each currency.
-*   **allowNegative**: List point types that can go below zero (useful for "Drawbacks" that give you points).
-
-### Step 5: Add Content
-Add objects to the `subcategories` array. A "Row" of options is a subcategory.
-
-```json
-{
-  "name": "General Perks",
-  "options": [
-    {
-      "id": "perkStrong",
-      "label": "Super Strength",
-      "description": "You are very strong.",
-      "cost": { "Points": 10 },
-      "image": "https://example.com/strength.jpg" // Optional
-    }
-  ]
-}
-```
-
-### Step 6: Advanced Logic (Optional)
-*   **Prerequisites**: Add `"prerequisites": "perkStrong"` to an option so it can only be selected if "Super Strength" is already active.
-*   **Conflicts**: Add `"conflictsWith": ["perkWeak"]` to prevent incompatible choices.
-
-### Step 7: Publish
-1.  Commit your changes: `git commit -am "My first CYOA"`
-2.  Push to GitHub: `git push`
-3.  Go to your GitHub repo settings -> **Pages** -> Deploy from `main` branch.
-4.  Your CYOA is now live!
-
-### 3. Configuration (input.json)
-
-The `input.json` file is the core of the application. It defines the entire structure of the CYOA.
-**Important**: The file must contain a **JSON Array** of objects, not a single object.
-
-#### Top-Level Structure
-The array contains configuration blocks (identified by `type`) and category blocks (identified by `name`).
-
-```json
-[
-  {
-    "type": "title",
-    "text": "My Adventure"
-  },
-  {
-    "type": "description",
-    "text": "Description of the adventure."
-  },
-  {
-    "type": "headerImage",
-    "url": "https://example.com/banner.jpg"
-  },
-  {
-    "type": "points",
-    "values": { "CP": 1000, "SP": 0 },
-    "allowNegative": ["SP"]
-  },
-  {
-    "name": "Perks",
-    "subcategories": []
-  }
-]
-```
-
-
-
-#### Categories and Subcategories
-Any object in the main array that has a `name` property (and no special `type`) is treated as a Category.
-
-```json
-{
-  "name": "Perks",
-  "subcategories": [
-    {
-      "name": "General Perks",
-      "options": []
-    },
-    {
-      "type": "storyBlock",
-      "name": "Prologue",
-      "text": "Narrative text here..."
-    }
-  ]
-}
-```
-
-#### Options
-Each option represents a user choice within a subcategory.
-
-```json
-{
-  "id": "uniqueId",
-  "label": "Option Name",
-  "description": "Description text.",
-  "cost": { "CP": 100 },
-  "maxSelections": 1,
-  "prerequisites": "anotherId",
-  "conflictsWith": ["conflictingId"],
-  "discounts": []
-}
-```
-
-| Field | Description |
-|---|---|
-| `id` | Unique internal identifier used for logic. |
-| `label` | Display name. |
-| `description` | Text displayed to the user. |
-| `cost` | Points deducted (or added if negative). |
-| `maxSelections` | Maximum number of times the option can be selected. |
-| `prerequisites` | Logical expression required to unlock the option. |
-| `conflictsWith` | Array of IDs that are mutually exclusive with this option. |
-| `discounts` | Array of discount objects conditioning other options. |
-
-### Logic System
-
-The system (`logicExpr.js`) supports boolean logic for prerequisites.
-
-*   `&&` (AND): `idA && idB`
-*   `||` (OR): `idA || idB`
-*   `!` (NOT): `!idA`
-*   grouping: `(idA || idB) && !idC`
-
-### Customization
-
-*   **Styling**: Modify `style.css` to change the visual theme (colors, fonts, layout).
-
-## Deployment
-
-The project is a static site and can be hosted on any static file server (GitHub Pages, Netlify, etc.).
-
-1.  Upload the `icyoa-template` directory.
-2.  Ensure `index.html` is the entry point.
-3.  Access the URL.
+---
 
 ## License
 
-This project is licensed under the terms specified in the included `LICENSE` file.
+This project is open-source and available under the MIT License. Feel free to use, modify, and share!

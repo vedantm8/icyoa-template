@@ -28,7 +28,13 @@
             <!-- CYOA Selection Modal -->
             <div id="cyoaSelectionModal" class="modal">
                 <div class="modal-content">
-                    <h3>Choose a CYOA to Edit</h3>
+                    <h3>Choose or Create a CYOA</h3>
+                    
+                    <div class="create-cyoa-form">
+                        <input id="newCyoaTitle" type="text" placeholder="New Adventure Title">
+                        <button id="confirmCreateCyoaBtn" type="button">Create New</button>
+                    </div>
+
                     <div id="cyoaList" class="cyoa-list">
                         <!-- CYOAs will be listed here -->
                         <p>Loading CYOAs...</p>
