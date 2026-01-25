@@ -229,21 +229,41 @@
         return normalized;
     }
 
-    function shouldAutoManageId(option) {
+    function shouldAutoManageId(option, path = []) {
         if (!option) return false;
         if (!option.id) return true;
         if (/^option/i.test(option.id)) return true;
-        const slug = slugifyLabel(option.label || "");
-        return Boolean(slug && option.id === slug);
+
+        // Check if current ID matches what generateOptionId would produce (without uniqueness attempt)
+        const fullParts = [...path, option.label || ""].filter(Boolean);
+        const expectedBase = fullParts.map((p, i) => {
+            const s = slugifyLabel(p);
+            return i === 0 ? s : s.charAt(0).toUpperCase() + s.slice(1);
+        }).join("");
+
+        const normalized = normalizeIdBase(expectedBase);
+        // It's auto-managed if it matches the pattern or any number-suffixed version of the pattern
+        const regex = new RegExp(`^${normalized}\\d*$`);
+        return regex.test(option.id);
     }
 
-    function generateOptionId(base = "option", {
+    function generateOptionId(label = "option", {
+        path = [],
         skipOption = null
     } = {}) {
         const used = collectOptionIds();
         if (skipOption && skipOption.id) {
             used.delete(skipOption.id);
         }
+
+        // Combine path parts and label
+        const fullParts = [...path, label].filter(Boolean);
+        const base = fullParts.map((p, i) => {
+            const s = slugifyLabel(p);
+            // Capitalize first letter of subsequent parts for camelCase
+            return i === 0 ? s : s.charAt(0).toUpperCase() + s.slice(1);
+        }).join("");
+
         const normalized = normalizeIdBase(base);
         let candidate = normalized;
         let attempt = 1;
@@ -252,6 +272,16 @@
             attempt += 1;
         }
         return candidate;
+    }
+
+    function syncOptionIds(path, options = []) {
+        if (!Array.isArray(options)) return;
+        options.forEach(opt => {
+            if (optionIdAutoMap.get(opt) || shouldAutoManageId(opt, path)) {
+                optionIdAutoMap.set(opt, true);
+                opt.id = generateOptionId(opt.label, { path, skipOption: opt });
+            }
+        });
     }
 
     function schedulePreviewUpdate() {
@@ -341,14 +371,17 @@
         };
     }
 
-    function createDefaultOption() {
+    function createDefaultOption(categoryName = "", subcategoryName = "") {
         const option = {
             label: "New Option",
             description: "",
             cost: {}
         };
-        const base = slugifyLabel(option.label) || "option";
-        option.id = generateOptionId(base);
+        const path = [];
+        if (categoryName) path.push(categoryName);
+        if (subcategoryName) path.push(subcategoryName);
+
+        option.id = generateOptionId(option.label, { path });
         optionIdAutoMap.set(option, true);
         return option;
     }
@@ -867,6 +900,12 @@
             nameInput.addEventListener("input", () => {
                 category.name = nameInput.value;
                 summaryLabel.textContent = nameInput.value.trim() ? nameInput.value : `Category ${position + 1}`;
+
+                // Sync all options in this category
+                (category.subcategories || []).forEach(sub => {
+                    syncOptionIds([category.name, sub.name], sub.options);
+                });
+
                 schedulePreviewUpdate();
             });
             nameField.appendChild(nameLabel);
@@ -925,6 +964,10 @@
                 subNameInput.addEventListener("input", () => {
                     subcat.name = subNameInput.value;
                     subSummaryLabel.textContent = subcat.name || `Subcategory ${subIndex + 1}`;
+
+                    // Sync all options in this subcategory
+                    syncOptionIds([category.name, subcat.name], subcat.options);
+
                     schedulePreviewUpdate();
                 });
                 subNameField.appendChild(subNameLabel);
@@ -1073,7 +1116,7 @@
                 addOptionBtn.textContent = "Add option";
                 addOptionBtn.addEventListener("click", () => {
                     subcat.options = subcat.options || [];
-                    subcat.options.push(createDefaultOption());
+                    subcat.options.push(createDefaultOption(category.name, subcat.name));
                     keepPanelOpen(category, subcat);
                     renderCategories();
                     schedulePreviewUpdate();
@@ -1166,8 +1209,10 @@
             cloneBtn.textContent = "⧉";
             cloneBtn.addEventListener("click", () => {
                 const copy = cloneData(option);
-                const baseId = option.id ? `${option.id}_copy` : (slugifyLabel(option.label || "") || "option");
-                copy.id = generateOptionId(baseId);
+                const baseId = option.id ? `${option.id}_copy` : (option.label || "option");
+                copy.id = generateOptionId(baseId, {
+                    path: [category.name, subcategory.name]
+                });
                 optionIdAutoMap.set(copy, true);
                 subcategory.options.splice(optionIndex + 1, 0, copy);
                 keepPanelOpen(category, subcategory);
@@ -1215,11 +1260,11 @@
             });
             idInput.addEventListener("blur", () => {
                 const trimmed = idInput.value.trim();
+                const path = [category.name, subcategory.name];
                 if (!trimmed) {
                     optionIdAutoMap.set(option, true);
-                    const slug = slugifyLabel(option.label);
-                    const autoBase = slug || "option";
-                    const autoId = generateOptionId(autoBase, {
+                    const autoId = generateOptionId(option.label || "option", {
+                        path,
                         skipOption: option
                     });
                     option.id = autoId;
@@ -1252,9 +1297,8 @@
             labelInput.addEventListener("input", () => {
                 option.label = labelInput.value;
                 if (optionIdAutoMap.get(option)) {
-                    const slug = slugifyLabel(option.label);
-                    const base = slug || "option";
-                    const newId = generateOptionId(base, {
+                    const newId = generateOptionId(option.label, {
+                        path: [category.name, subcategory.name],
                         skipOption: option
                     });
                     option.id = newId;
