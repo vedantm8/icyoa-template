@@ -1,6 +1,22 @@
+:root {
+    --bg-color: #f9f9f9;
+    --container-bg: #ffffff;
+    --text-color: #333333;
+    --text-muted: #555555;
+    --accent-color: #007acc;
+    --accent-text: #ffffff;
+    --border-color: #dddddd;
+    --item-bg: #f4f4f4;
+    --item-header-bg: #e0e0e0;
+    --points-bg: #f0f0f0;
+    --points-border: #cccccc;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
 body {
     font-family: sans-serif;
-    background-color: #f9f9f9;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     padding: 0;
     margin: 0;
     min-height: 100vh;
@@ -9,11 +25,11 @@ body {
 .container {
     max-width: 700px;
     margin: auto;
-    background: #ffffff;
+    background: var(--container-bg);
     padding: 20px;
     padding-bottom: 80px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 10px var(--shadow-color);
 }
 
 button {
@@ -21,8 +37,8 @@ button {
     cursor: pointer;
     border: none;
     border-radius: 6px;
-    background-color: #007acc;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--accent-text);
     margin-top: 10px;
 }
 
@@ -33,15 +49,15 @@ button:disabled {
 
 .accordion-item {
     margin-top: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 5px;
-    background-color: #f4f4f4;
+    background-color: var(--item-bg);
 }
 
 .accordion-header {
     padding: 10px;
     font-weight: bold;
-    background-color: #e0e0e0;
+    background-color: var(--item-header-bg);
     cursor: pointer;
 }
 
@@ -56,9 +72,9 @@ button:disabled {
     align-items: flex-start;
     gap: 12px;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: #fff;
+    background-color: var(--container-bg);
     margin: 8px 0;
 }
 
@@ -67,7 +83,7 @@ button:disabled {
     height: 100px;
     object-fit: cover;
     border-radius: 6px;
-    border: 1px solid #aaa;
+    border: 1px solid var(--border-color);
     flex-shrink: 0;
 }
 
@@ -80,8 +96,8 @@ button:disabled {
 .option-wrapper button {
     align-self: flex-start;
     padding: 6px 12px;
-    background-color: #007acc;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--accent-text);
     border: none;
     border-radius: 4px;
     margin-top: 8px;
@@ -97,14 +113,14 @@ button:disabled {
 
 .option-requirements {
     font-size: 13px;
-    color: #555;
+    color: var(--text-muted);
     white-space: pre-wrap;
     margin-top: 4px;
 }
 
 .option-description {
     font-size: 13px;
-    color: #333;
+    color: var(--text-color);
     line-height: 1.5;
     margin-top: 4px;
 }
@@ -114,15 +130,15 @@ button:disabled {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #f0f0f0;
-    border-top: 1px solid #ccc;
+    background: var(--points-bg);
+    border-top: 1px solid var(--points-border);
     padding: 10px 20px;
     font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 -2px 6px var(--shadow-color);
 }
 
 .modal {
@@ -138,15 +154,16 @@ button:disabled {
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: var(--container-bg);
     margin: 10% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid var(--border-color);
     width: 90%;
     max-width: 500px;
     border-radius: 8px;
     max-height: 80vh;
     overflow-y: auto;
+    color: var(--text-color);
 }
 
 #modalTextarea {
@@ -157,7 +174,7 @@ button:disabled {
     font-family: monospace;
     font-size: 13px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-color);
     resize: vertical;
 }
 
@@ -182,10 +199,12 @@ button:disabled {
 
 .conflict {
     background-color: #e57373 !important;
+    color: white !important;
 }
 
 .prereq {
     background-color: #fbc02d !important;
+    color: black !important;
 }
 
 .prereq-help {
@@ -201,7 +220,7 @@ button:disabled {
     font-size: 12px;
     margin-left: 6px;
     cursor: help;
-    border: 1px solid rgba(3,102,214,0.12);
+    border: 1px solid rgba(3, 102, 214, 0.12);
 }
 
 .header-image-container {
@@ -226,13 +245,13 @@ button:disabled {
 
 .story-block {
     white-space: pre-wrap;
-    background: #f9f9f9;
-    border-left: 4px solid #ccc;
+    background: var(--bg-color);
+    border-left: 4px solid var(--border-color);
     padding: 1em;
     margin-bottom: 1em;
     font-family: serif;
     font-size: 15px;
-    color: #333;
+    color: var(--text-color);
 }
 
 .story-input-wrapper {
@@ -250,6 +269,9 @@ button:disabled {
     width: 100%;
     max-width: 400px;
     font-size: 14px;
+    background: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
 }
 
 .subcategory-header {
@@ -301,21 +323,21 @@ div {
 }
 
 .cyoa-item {
-    background: #f4f4f4;
+    background: var(--item-bg);
     padding: 15px;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s, transform 0.1s;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     font-weight: bold;
-    color: #333;
+    color: var(--text-color);
     text-align: center;
 }
 
 .cyoa-item:hover {
-    background: #e9e9e9;
+    background: var(--item-header-bg);
     transform: translateY(-2px);
-    border-color: #007acc;
+    border-color: var(--accent-color);
 }
 
 .cyoa-item:active {

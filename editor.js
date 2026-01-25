@@ -442,7 +442,22 @@
         if (!pointsEntry.attributeRanges) pointsEntry.attributeRanges = {};
         fragment.appendChild(renderPointsSection(pointsEntry));
 
-
+        const themeEntry = ensureEntry("theme", () => ({
+            type: "theme",
+            "bg-color": "#f9f9f9",
+            "container-bg": "#ffffff",
+            "text-color": "#333333",
+            "text-muted": "#555555",
+            "accent-color": "#007acc",
+            "accent-text": "#ffffff",
+            "border-color": "#dddddd",
+            "item-bg": "#f4f4f4",
+            "item-header-bg": "#e0e0e0",
+            "points-bg": "#f0f0f0",
+            "points-border": "#cccccc",
+            "shadow-color": "rgba(0,0,0,0.1)"
+        })).entry;
+        fragment.appendChild(renderThemeSection(themeEntry));
 
         globalSettingsEl.innerHTML = "";
         globalSettingsEl.appendChild(fragment);
@@ -662,6 +677,86 @@
         body.appendChild(rangesContainer);
         body.appendChild(addAttrBtn);
 
+        return container;
+    }
+
+    function renderThemeSection(themeEntry) {
+        const {
+            container,
+            body
+        } = createSectionContainer("Theme Settings", {
+            defaultOpen: false
+        });
+
+        const themes = {
+            "bg-color": "Page Background",
+            "container-bg": "Content Background",
+            "text-color": "Main Text",
+            "text-muted": "Muted Text",
+            "accent-color": "Primary Accent",
+            "accent-text": "Accent Text Color",
+            "border-color": "Border Color",
+            "item-bg": "Category Background",
+            "item-header-bg": "Category Header",
+            "points-bg": "Points Tracker Background",
+            "points-border": "Points Tracker Border",
+            "shadow-color": "Shadow Color"
+        };
+
+        const grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "1fr 1fr";
+        grid.style.gap = "12px";
+
+        Object.entries(themes).forEach(([key, labelText]) => {
+            const field = document.createElement("div");
+            field.className = "field";
+
+            const label = document.createElement("label");
+            label.textContent = labelText;
+
+            const inputContainer = document.createElement("div");
+            inputContainer.style.display = "flex";
+            inputContainer.style.gap = "8px";
+
+            const colorInput = document.createElement("input");
+            colorInput.type = "color";
+            colorInput.style.padding = "0";
+            colorInput.style.width = "32px";
+            colorInput.style.height = "32px";
+            colorInput.style.border = "none";
+            colorInput.style.cursor = "pointer";
+
+            const textInput = document.createElement("input");
+            textInput.type = "text";
+            textInput.style.flex = "1";
+            textInput.placeholder = "#RRGGBB";
+
+            // Initialize values
+            const val = themeEntry[key] || "";
+            textInput.value = val;
+            if (val.startsWith("#")) {
+                colorInput.value = val.length === 4 ? `#${val[1]}${val[1]}${val[2]}${val[2]}${val[3]}${val[3]}` : val;
+            }
+
+            const update = (newVal) => {
+                themeEntry[key] = newVal;
+                textInput.value = newVal;
+                if (newVal.startsWith("#")) {
+                    colorInput.value = newVal.length === 4 ? `#${newVal[1]}${newVal[1]}${newVal[2]}${newVal[2]}${newVal[3]}${newVal[3]}` : newVal;
+                }
+                schedulePreviewUpdate();
+            };
+
+            colorInput.addEventListener("input", () => update(colorInput.value));
+            textInput.addEventListener("input", () => update(textInput.value));
+
+            inputContainer.append(colorInput, textInput);
+            field.append(label, inputContainer);
+            grid.appendChild(field);
+        });
+
+        body.appendChild(grid);
         return container;
     }
 

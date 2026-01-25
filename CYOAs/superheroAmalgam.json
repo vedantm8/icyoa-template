@@ -2479,5 +2479,20 @@
         "maxSelections": 1
       }
     ]
+  },
+  {
+    "type": "theme",
+    "bg-color": "#e3e5d9",
+    "container-bg": "#ffffff",
+    "text-color": "#333333",
+    "text-muted": "#555555",
+    "accent-color": "#007acc",
+    "accent-text": "#ffffff",
+    "border-color": "#dddddd",
+    "item-bg": "#f4f4f4",
+    "item-header-bg": "#e0e0e0",
+    "points-bg": "#83f0e7",
+    "points-border": "#cccccc",
+    "shadow-color": "rgba(0,0,0,0.1)"
   }
 ]

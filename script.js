@@ -578,6 +578,36 @@ function applyCyoaData(rawData, {
         const pointsEntry = data.find(entry => entry.type === "points");
         validateInputJson(data, pointsEntry);
 
+        // Apply theme if present
+        const themeEntry = data.find(entry => entry.type === "theme");
+        const root = document.documentElement;
+        if (themeEntry) {
+            Object.entries(themeEntry).forEach(([key, value]) => {
+                if (key !== "type") {
+                    root.style.setProperty(`--${key}`, value);
+                }
+            });
+        } else {
+            // Reset to default theme variables
+            const defaults = {
+                "bg-color": "#f9f9f9",
+                "container-bg": "#ffffff",
+                "text-color": "#333333",
+                "text-muted": "#555555",
+                "accent-color": "#007acc",
+                "accent-text": "#ffffff",
+                "border-color": "#dddddd",
+                "item-bg": "#f4f4f4",
+                "item-header-bg": "#e0e0e0",
+                "points-bg": "#f0f0f0",
+                "points-border": "#cccccc",
+                "shadow-color": "rgba(0, 0, 0, 0.1)"
+            };
+            Object.entries(defaults).forEach(([key, value]) => {
+                root.style.setProperty(`--${key}`, value);
+            });
+        }
+
         const preservedCategoryOpen = new Set(openCategories);
         const preservedSubcategoryOpen = new Set(openSubcategories);
 
