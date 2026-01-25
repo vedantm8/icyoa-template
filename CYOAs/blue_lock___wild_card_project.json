@@ -1,0 +1,469 @@
+[
+  {
+    "type": "title",
+    "text": "Blue Lock - Wild Card Project"
+  },
+  {
+    "type": "description",
+    "text": "Following the massive success of the blue lock program, you have been selected as the first test subject of the wildcard project. Genetic treatment, neural recalibration, you name it. All of the best technology in the world is available so that you can become the best tracker in the world."
+  },
+  {
+    "type": "headerImage",
+    "url": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp12045083.png&f=1&nofb=1&ipt=2fce8ec48739ea72dd67c5367bf7a3c25181c600a5f12d33cb8699ca488a857e"
+  },
+  {
+    "type": "points",
+    "values": {
+      "Weapons": 4
+    },
+    "allowNegative": [],
+    "attributeRanges": {}
+  },
+  {
+    "type": "theme",
+    "bg-color": "#0B1622",
+    "container-bg": "#152233",
+    "text-color": "#FFFFFF",
+    "text-muted": "#94A3B8",
+    "accent-color": "#00A3FF",
+    "accent-text": "#FFFFFF",
+    "border-color": "#1E293B",
+    "item-bg": "#1E293B",
+    "item-header-bg": "#2D3748",
+    "points-bg": "#00A3FF",
+    "points-border": "#0082CC",
+    "shadow-color": "rgba(0, 163, 255, 0.2)"
+  },
+  {
+    "name": "Ego",
+    "subcategories": [
+      {
+        "name": "Type",
+        "type": "storyBlock",
+        "text": "\"To become the world's best striker, you must choose your foundation. What motivates you when everything is on the line? How do you thrive under pressure?\" - Ego",
+        "options": [
+          {
+            "label": "Freedom",
+            "description": "You thrive in chaos - Creating, improvising, disrupting: You play best in broken formations and unplanned moments. Where your instincts rule. ",
+            "cost": {},
+            "id": "egoTypeFreedom",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Ffd%2F68%2Ff1%2Ffd68f14b83e9fbdfc58e18ee17f5c811.jpg&f=1&nofb=1&ipt=50fe139c6e0e23a65f37ff281f7e351dd4219214251ddbdf80487d87db0b06db"
+          },
+          {
+            "label": "Restriction",
+            "description": "You sharpen under pressure. Tight systems, roles, and directives force you to evolve. You take constraints and weaponize them.",
+            "cost": {},
+            "id": "egoTypeRestriction",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F81%2Ff1%2F63%2F81f16319f8c84330524e92d9caaf6f3a.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=878bde9c05d3b56d5b94c09c2706ac46c2c9d37ea359ffa8639b12cbcf685636"
+          }
+        ],
+        "maxSelections": 1
+      },
+      {
+        "name": "Category",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Wholistic",
+            "description": "You factor in every moving piece of the game. You adapt to every single player on the field and bend them to your will. ",
+            "cost": {},
+            "id": "egoCategoryWholistic",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F474x%2F7d%2Fb9%2Fa4%2F7db9a4aa2cc5043a0d84d39405a6461c.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=f9903ead1f5e337eaea5f55abc20386c06a5397e363e992324f013b238288d04"
+          },
+          {
+            "label": "Individualistic",
+            "description": "You are trained and honed through determination and obsession. You focus on yourself - Your body, your instincts, and your hunger. ",
+            "cost": {},
+            "id": "egoCategoryIndividualistic",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F4a%2F21%2F5e%2F4a215e98ee7d02804e5be417f97a1fd0.jpg&f=1&nofb=1&ipt=4884ff38050762f8c721b4b4625d4c3fb25128a6ace704c3d9e8f360dce75fb8"
+          }
+        ],
+        "maxSelections": 1
+      },
+      {
+        "name": "Archetype",
+        "type": "storyBlock",
+        "text": "According to our data, you fall under this archetype. ",
+        "options": [
+          {
+            "label": "Maverick",
+            "description": "You reinvent football every time you touch the ball. You are pure unpredictability. A wild genius. ",
+            "cost": {},
+            "id": "egoArchetypeMaverick",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fa0%2F8b%2F32%2Fa08b32cb003b37db13c46296c430daf1.jpg&f=1&nofb=1&ipt=1ee2c041b8da57c62df3723a374386fc19ca457eb5327d1e9eb3f276a885436c",
+            "prerequisites": "egoCategoryIndividualistic && egoTypeFreedom"
+          },
+          {
+            "label": "Rebel",
+            "description": "Rules and resistance only feed your hunger. You are an unstoppable monster who never stops evolving. ",
+            "cost": {},
+            "id": "egoArchetypeRebel",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F4b%2F5b%2F03%2F4b5b03788796306084a548400c384b12.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=beae9f6d63f13d880f3065d37a1002e5e32a7a69994622a766678db249aad092",
+            "prerequisites": "egoCategoryIndividualistic && egoTypeRestriction"
+          },
+          {
+            "label": "Monarch",
+            "description": "Every move is calculated. Nothing is wasted. You spin the odds to your favor. ",
+            "cost": {},
+            "id": "egoArchetypeMonarch",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F22%2F64%2F2e%2F22642ed2e321219e45f6793d18e28a62.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=c05414a4bf11e35df6430a31fb86e0b8b4720883cf1c2e7da8a70b0866d00d99",
+            "prerequisites": "egoCategoryWholistic && egoTypeRestriction"
+          },
+          {
+            "label": "Explorer",
+            "description": "You roam and venture into unknown territories. You plot and strategize faster than anyone else. ",
+            "cost": {},
+            "id": "egoArchetypeExplorer",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fc2%2Fb8%2F12%2Fc2b81257f9c4594d6b9f94bd64fa9861.jpg&f=1&nofb=1&ipt=8e6bc02aaf0dabcf1be1b3aa799238aa56cfe96a7b1dac93fd41e8ce628cc537",
+            "prerequisites": "egoCategoryWholistic && egoTypeFreedom"
+          }
+        ],
+        "maxSelections": 1
+      }
+    ]
+  },
+  {
+    "name": "Physique",
+    "subcategories": [
+      {
+        "name": "Height",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Short",
+            "description": "",
+            "cost": {},
+            "id": "physiqueHeightShort",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F474x%2Ff5%2F30%2F1a%2Ff5301a64c6c5ee44d202847b038eaedc.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=7f1875f2ca471c011c1c0ccbf5fcb3819e5e722b7331910351b967f4f084e1bb"
+          },
+          {
+            "label": "Medium",
+            "description": "",
+            "cost": {},
+            "id": "physiqueHeightMedium",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F16%2F2d%2F9a%2F162d9a3268686a3b910920c7239934f4.jpg&f=1&nofb=1&ipt=b063e1a90ad542428d16da978eca10b8d65b98edb0d804ab25b573ab5137bc4c"
+          },
+          {
+            "label": "Tall",
+            "description": "",
+            "cost": {},
+            "id": "physiqueHeightTall",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Faryu-colored-panel-v0-3y6tyd772ysc1.png%3Fauto%3Dwebp%26s%3D6f38dac79c42befa3532b92ec0e810e2a4263dc9&f=1&nofb=1&ipt=a4e62abc2f59dc33f93ff58fbbc1058993d373d48c2f866a54cc94d4cf3a2cfb"
+          }
+        ],
+        "maxSelections": 1
+      },
+      {
+        "name": "Build",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Lean",
+            "description": "",
+            "cost": {},
+            "id": "physiqueBuildLean",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fqzn509c92t571.jpg%3Fauto%3Dwebp%26s%3Dada1d374ac9e9e79aae69854fc8b24e8b38f01fe&f=1&nofb=1&ipt=9df1943888cea518e39a986003c51b67f48023a005e83252c1106e98b07540a2"
+          },
+          {
+            "label": "Balanced",
+            "description": "",
+            "cost": {},
+            "id": "physiqueBuildBalanced",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F92%2Ff4%2Ffa%2F92f4fa3a76a9fe406a616f7f662e8ba1.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=e6989392a7472f0c36f38231d21102e96ffe458a288a5d6da9a9e5b2a44722fe"
+          },
+          {
+            "label": "Bulky",
+            "description": "",
+            "cost": {},
+            "id": "physiqueBuildBulky",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fotakukart.com%2Fwp-content%2Fuploads%2F2023%2F07%2FBarou-1-2048x1152.jpeg&f=1&nofb=1&ipt=b909a84ef0e4741d64bda437ef929490f7a305922d4521301605e5b7912c733e"
+          }
+        ],
+        "maxSelections": 1
+      },
+      {
+        "name": "Strong Foot",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Right",
+            "description": "",
+            "cost": {},
+            "id": "physiqueStrongFootRight",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F474x%2Fef%2F9d%2F37%2Fef9d37a129b23ee6d3ba442ea7cc33f8.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=657319d1fcb1e477caba64cd5a8c8447f143aad96cef008394400c85ab426eb4"
+          },
+          {
+            "label": "Left",
+            "description": "",
+            "cost": {},
+            "id": "physiqueStrongFootLeft",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fb1%2Fd8%2F98%2Fb1d898c6a4b1c3c5a9fa01634fe2e669.jpg&f=1&nofb=1&ipt=6e3beed621a733a4359f1911f06575f3a3f3f9f18202d9061217c5ddd76b1c3c"
+          }
+        ],
+        "maxSelections": 1
+      }
+    ]
+  },
+  {
+    "name": "Weapons",
+    "subcategories": [
+      {
+        "name": "Physical",
+        "type": "storyBlock",
+        "text": "All world-class players have a consistent formula for producing goals. This formula is based on your natural talents and honed skills: Your weapons. What are the tools you have to score goals? ",
+        "options": [
+          {
+            "label": "Acceleration",
+            "description": "Your first step is nuclear. You hit top speed instantly, leaving defenders in the dust. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsPhysicalAcceleration",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fzantetsu-manga-color-pfp-v0-fm4ycrvktj6d1.jpg%3Fwidth%3D1080%26crop%3Dsmart%26auto%3Dwebp%26s%3D4b95a27483c27bdbc63a7531751db328ebeb0514&f=1&nofb=1&ipt=cf2b321a0b0dc7d559019408eff80c68a5cbc13884912d7f2d88171dd357dbb9"
+          },
+          {
+            "label": "Acrobatics",
+            "description": "You dominate by flipping, contorting, and scoring from impossible angles mid-air.",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsPhysicalAcrobatics",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F0b%2F4b%2F21%2F0b4b2178454cf835178f62e939a945cc.jpg&f=1&nofb=1&ipt=ecca28f21e4d5a6818069686114f578758676e848c42773d3438b13d4f81a584"
+          },
+          {
+            "label": "Reach",
+            "description": "You stretch further than others thank to your long limbs and springlike flexibility. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsPhysicalReach",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F474x%2Fe4%2Fc8%2F33%2Fe4c8337e0c0b52a8f4004d1d9d7c9b9e.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=652e2e4ef5bdfadf692a60c457bef4913327cb40108c67622e0b3e56b014c674"
+          },
+          {
+            "label": "Speed",
+            "description": "You are a straight-line terror with a blistering top speed on the open field. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsPhysicalSpeed",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FD4lIGP2jl_k%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=c66bd2e1583843d7bdec95c2aacb48059b952ea4d92abac0c8591233d3d9149f"
+          },
+          {
+            "label": "Stamina",
+            "description": "You are a machine who sustains 100% performance deep into extra time. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsPhysicalStamina",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fb0%2Fdb%2F73%2Fb0db7306778121c14315aa60f92ac12f.jpg&f=1&nofb=1&ipt=355029ea03318d8ea5cd707ff0fd65a0b8fe186dabbcb91dabb3bd137853cbaf"
+          },
+          {
+            "label": "Strength",
+            "description": "You bulldoze defenders in every physical duel and press. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsPhysicalStrength",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fea%2Fc1%2F58%2Feac158e5778be1b05f1d51473bce86f4.jpg&f=1&nofb=1&ipt=ac0d73517854e945d4ef05cf459daa460677eb4ed0df3933ea4bd6f00bd881fc"
+          }
+        ]
+      },
+      {
+        "name": "Technical",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Ambidexterity",
+            "description": "Right or left doesn't matter. You shoot, dribble, and pass with both like a natural. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsTechnicalAmbidexterity",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fus.oricon-group.com%2Fupimg%2Fdetail%2F1000%2F1997%2Fimg660%2Fe844e145b6296e5c46b82ca8febdd95f.jpg&f=1&nofb=1&ipt=44ceddb0a954094b44bb45d0fd361dd35d68235273572928190dad3878d22dbe"
+          },
+          {
+            "label": "Balance",
+            "description": "You never go down no matter what. Shoulder checks, fouls, and uneven ground cannot stop you.",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsTechnicalBalance",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2FKy9HOD5RX7g%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=18e07c25bcac1087ed9ab05c96d266f9675476e9829cfb5898216a8af305956a"
+          },
+          {
+            "label": "Ball Possession",
+            "description": "You can shield, protect, and keep possession of the ball under any pressure. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsTechnicalBallPossession",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fbb%2Fe7%2Fa1%2Fbbe7a1ef70dd9c742add4c36af89cf3a.jpg&f=1&nofb=1&ipt=36a04b1bcde9db3bdf6207d3530f888e402d01c9e70822fb98ceb5a56f94b84f"
+          },
+          {
+            "label": "Dribbling",
+            "description": "You can break ankles and finesse defenders with surgical footwork.",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsTechnicalDribbling",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fbachira-colored-panel-v0-wr90dpjjan8a1.png%3Fwidth%3D640%26crop%3Dsmart%26auto%3Dwebp%26s%3D581ef908127a04dd906011ab9522ed103dd5e35d&f=1&nofb=1&ipt=c13c2712fe098c65b85089fa06423862479a3127046fd41328dee57bf4ab454a"
+          },
+          {
+            "label": "Off the ball movement",
+            "description": "You can shake off your marks and always appear in the most optimal spaces. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsTechnicalOffTheBallMovement",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F474x%2Fb4%2F1c%2F84%2Fb41c84a4dd44d68b371e2cf44882ed7b.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=f1b42eb6cc3f26a503e11276dd3dff00865c176a33a3a769b14b88760b11ae3e"
+          },
+          {
+            "label": "Trapping",
+            "description": "You can control the ball instantly with a perfect first touch every time. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsTechnicalTrapping",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fd6%2Fd9%2F01%2Fd6d9014238021d7cd728c9579d112a99.jpg&f=1&nofb=1&ipt=aabe0f2f1f04463a925752074bc6d94c9337a0363c46d1a91adc84d8a42ae4ad"
+          }
+        ]
+      },
+      {
+        "name": "Shooting",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Curling Shot",
+            "description": "Your shots arc around walls and past keepers at absurd angles. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsShootingCurlingShot",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.ytimg.com%2Fvi%2F-w9UwBIf1QE%2Fmaxresdefault.jpg&f=1&nofb=1&ipt=a62edd164ff1f1f60617655a5af96ab6789693d50b19fadd9997a672de172af4"
+          },
+          {
+            "label": "Direct Shot",
+            "description": "You shoot without delay, possessing a one-touch killer that strikes without warning. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsShootingDirectShot",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fqlvibw0b0xo71.jpg%3Fauto%3Dwebp%26s%3D231816290a9bbe3c6ffe247284452e3b74f45fbf&f=1&nofb=1&ipt=3fc0e01b51bdcb5a27c8a0252ee24cc162efc62257722dd7ee206eb86abdb447"
+          },
+          {
+            "label": "Finesse Shot",
+            "description": "You can instantly thread shots from range with the perfect blend of power and precision. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsShootingFinesseShot",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F7f%2F76%2F33%2F7f7633e87d8b36fb8a4c425fb6a3bae3.png&f=1&nofb=1&ipt=b4b3e118a5a34ca13db89a21bba1efb6db3f187406f7515495ace176146763d9"
+          }
+        ]
+      },
+      {
+        "name": "Mental",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "FIQ",
+            "description": "You read plays before they happen. You see the flow, angles, and shifts of the game like a master tactician. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsMentalFiq",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F11%2F83%2F83%2F11838309a8e1b2198e5697a089451ffa.jpg%3Fnii%3Dt&f=1&nofb=1&ipt=e5a7ea51e9bdb045beb72ce082af4c7b713ffe83c22961d0836bf62a7a6cb315"
+          },
+          {
+            "label": "EIQ",
+            "description": "You understand people and can manipulate them to your advantage. You stay in control while others might be provoked. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsMentalEiq",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F5c%2F43%2Fa7%2F5c43a7871e4b2c7da8ef7d580c53c382.jpg&f=1&nofb=1&ipt=edd1800615896734951872ef1b611038ff1b8aee5c5366d5f890ae05d68e5f0f"
+          },
+          {
+            "label": "Spatial Awareness",
+            "description": "You can track where everyone is and their movements so long as they are in your field of view. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsMentalSpatialAwareness",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fe2%2Ffd%2Fc7%2Fe2fdc742da17e142c146e5e6c3501fdc.jpg&f=1&nofb=1&ipt=f04cce7cbe4dc42739d81456b8a8268b8c46b5c6a996f5868d9f177e55dd7294"
+          }
+        ]
+      },
+      {
+        "name": "Special",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Reflex",
+            "description": "You understand the mechanism behind \"Reflex\" and better apply it during matches. This allows you to process threats instantly, giving you the best reaction time when it counts. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsSpecialReflex",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fff%2F61%2Fc7%2Fff61c7aa1bee728256905b2a2d1bf6bf.jpg&f=1&nofb=1&ipt=f6c60c4627a605303b252d72968f3483f09547b79e9d45962613e5379f892e21"
+          },
+          {
+            "label": "Flow",
+            "description": "You understand the mechanism behind \"flow\" and better achieve it during matches. This allows you to tap into peak performance states with ease, reaching your best self at will. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsSpecialFlow",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2F4a%2F4d%2F66%2F4a4d6620764ccac7be8c24ac42927196.jpg&f=1&nofb=1&ipt=8dae9b63e6bce24ae23f97cff8068d097b39087d34397f115ad19cd1a5a39522"
+          },
+          {
+            "label": "Luck",
+            "description": "You understand the mechanism behind \"luck\" and better prepare for it during matches. This allows you to defy probability and chance. The ball will come to you when it truly matters. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsSpecialLuck",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fqlvibw0b0xo71.jpg%3Fauto%3Dwebp%26s%3D231816290a9bbe3c6ffe247284452e3b74f45fbf&f=1&nofb=1&ipt=3fc0e01b51bdcb5a27c8a0252ee24cc162efc62257722dd7ee206eb86abdb447"
+          },
+          {
+            "label": "Golden Zone",
+            "description": "You find your perfect kill spot on the field. Every spot from this golden zone is statistically lethal. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsSpecialGoldenZone",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fr7ii834nnaha1.jpg&f=1&nofb=1&ipt=add8f355fa61f53d866340b95394dd586e7466faaae78a4fdbae89731298e63d"
+          },
+          {
+            "label": "Predator Eye",
+            "description": "Prerequisite: Any shooting weapon\n\nYou only see the goal, and your focus narrows. Locking in on the keeper's movements. You strike at their weakest moment. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsSpecialPredatorEye",
+            "prerequisites": "weaponsShootingCurlingShot || weaponsShootingDirectShot || weaponsShootingFinesseShot",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Ffb%2Fa9%2F1e%2Ffba91ed82d0929be0f1f00ca6acaf68d.jpg&f=1&nofb=1&ipt=578158a6b8c74c2df0077413ab7a6bc22b14f8496da3a84e5ffcf99161d12755"
+          },
+          {
+            "label": "Metavision",
+            "description": "Prerequisite: Any mental weapon\n\nYou see everything. Constant scanning gives you a 360 godlike understanding of space and flow. ",
+            "cost": {
+              "Weapons": 1
+            },
+            "id": "weaponsSpecialMetavision",
+            "prerequisites": "weaponsMentalFiq || weaponsMentalEiq || weaponsMentalSpatialAwareness",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2F736x%2Fb8%2Fb5%2F0f%2Fb8b50fef9441ca590405794ece9e3ac9.jpg&f=1&nofb=1&ipt=66980dbf3b1ec6685ee24d47004a4ba4105bde867cb326d737b46f68932f5aef"
+          }
+        ]
+      }
+    ]
+  }
+]

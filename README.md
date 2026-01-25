@@ -50,11 +50,12 @@ Want one choice to depend on another?
 Sharing your CYOA is free and easy with GitHub Pages:
 
 1. **Commit & Push:** Save your changes (`git commit -am "My CYOA"`) and push them to GitHub (`git push`).
-2. **Enable Pages:**
+2. **Update Manifest:** Run `node generate-manifest.js` to refresh the list of available adventures. This ensures your new CYOA is correctly indexed and visible on the live site.
+3. **Enable Pages:**
    - Go to your repo settings on GitHub.
    - Click **Pages** in the left sidebar.
    - Under "Build and deployment", select the **main** branch and click **Save**.
-3. **Done!** Your site will be live at `https://your-username.github.io/your-repo-name/`.
+4. **Done!** Your site will be live at `https://your-username.github.io/your-repo-name/`.
 
 ---
 

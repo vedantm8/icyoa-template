@@ -20,6 +20,7 @@
     const subcategoryOpenState = new WeakMap();
     const sectionOpenState = new Map();
     const optionIdAutoMap = new WeakMap();
+    const optionOpenState = new WeakMap();
 
     function snapshotOpenStates(categorySnapshots) {
         const existingCategoryEls = categoryListEl?.querySelectorAll?.(".category-card");
@@ -33,6 +34,13 @@
                 const subEl = subEls[subIdx];
                 if (!subEl) return;
                 subcategoryOpenState.set(subcat, subEl.open);
+
+                const optEls = subEl.querySelectorAll(".option-item");
+                (subcat.options || []).forEach((opt, optIdx) => {
+                    const optEl = optEls[optIdx];
+                    if (!optEl) return;
+                    optionOpenState.set(opt, optEl.open);
+                });
             });
         });
     }
@@ -210,7 +218,8 @@
 
     function slugifyLabel(label) {
         if (typeof label !== "string") return "";
-        const words = label.match(/[A-Za-z0-9]+/g);
+        // Split by transitions between lowercase and uppercase, and match all alphanumeric groups
+        const words = label.replace(/([a-z])([A-Z])/g, "$1 $2").match(/[A-Za-z0-9]+/g);
         if (!words || !words.length) return "";
         const [first, ...rest] = words;
         const firstPart = first.toLowerCase();
@@ -242,8 +251,8 @@
         }).join("");
 
         const normalized = normalizeIdBase(expectedBase);
-        // It's auto-managed if it matches the pattern or any number-suffixed version of the pattern
-        const regex = new RegExp(`^${normalized}\\d*$`);
+        // It's auto-managed if it matches the pattern or any number-suffixed version of the pattern (case-insensitive)
+        const regex = new RegExp(`^${normalized}\\d*$`, "i");
         return regex.test(option.id);
     }
 
@@ -1159,7 +1168,14 @@
         subcategory.options.forEach((option, optionIndex) => {
             const details = document.createElement("details");
             details.className = "option-item";
-            if (optionIndex < 2) details.open = true;
+
+            const storedOpen = optionOpenState.has(option) ? optionOpenState.get(option) : optionIndex < 2;
+            if (storedOpen) {
+                details.open = true;
+            }
+            details.addEventListener("toggle", () => {
+                optionOpenState.set(option, details.open);
+            });
 
             const summary = document.createElement("summary");
             const summaryLabel = document.createElement("span");
