@@ -1403,10 +1403,13 @@ function renderAccordion() {
         header.onclick = () => {
             if (openCategories.has(cat.name)) {
                 openCategories.delete(cat.name);
-                content.style.display = "none";
+                renderAccordion(); // Full re-render to update all states
             } else {
+                openCategories.clear(); // Exclusive accordion logic
                 openCategories.add(cat.name);
-                content.style.display = "block";
+                renderAccordion();
+                // Scroll to top of this category for comfort
+                header.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         };
 
@@ -1520,11 +1523,13 @@ function renderAccordion() {
                     });
                 }
 
+                const subcatItem = document.createElement("div");
+                subcatItem.className = "subcategory-item";
+
                 const subcatHeader = document.createElement("div");
                 subcatHeader.className = "subcategory-header";
                 subcatHeader.style.cursor = "pointer";
                 subcatHeader.style.fontWeight = "bold";
-                subcatHeader.style.marginTop = "1em";
                 subcatHeader.textContent = subcat.name || `Options ${subIndex + 1}`; // Fallback name
 
                 const subcatContent = document.createElement("div");
@@ -1532,22 +1537,27 @@ function renderAccordion() {
 
                 if (openSubcategories.has(subcatKey)) {
                     subcatContent.style.display = "block";
+                    subcatHeader.classList.add("is-open");
                 } else {
                     subcatContent.style.display = "none";
+                    subcatHeader.classList.remove("is-open");
                 }
 
                 subcatHeader.onclick = () => {
                     if (openSubcategories.has(subcatKey)) {
                         openSubcategories.delete(subcatKey);
                         subcatContent.style.display = "none";
+                        subcatHeader.classList.remove("is-open");
                     } else {
                         openSubcategories.add(subcatKey);
                         subcatContent.style.display = "block";
+                        subcatHeader.classList.add("is-open");
                     }
                 };
 
-                content.appendChild(subcatHeader);
-                content.appendChild(subcatContent);
+                subcatItem.appendChild(subcatHeader);
+                subcatItem.appendChild(subcatContent);
+                content.appendChild(subcatItem);
 
                 if (!subcatUnlocked) {
                     const lockMsg = document.createElement("div");
@@ -1649,6 +1659,10 @@ function renderAccordion() {
                 const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
                 const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
                 const isDiscountableSubcat = subcatDiscountUnlocked && !subcatAutoApplyAll;
+
+                const grid = document.createElement("div");
+                grid.className = "options-grid";
+                subcatContent.appendChild(grid);
 
                 (subcat.options || []).forEach(opt => {
                     const wrapper = document.createElement("div");
@@ -2150,9 +2164,27 @@ function renderAccordion() {
                         }
                     }
                     wrapper.appendChild(contentWrapper);
-                    subcatContent.appendChild(wrapper);
+                    grid.appendChild(wrapper);
                 });
             });
+
+            // Add "Close Section" button at the bottom of the category
+            const footer = document.createElement("div");
+            footer.style.textAlign = "center";
+            footer.style.padding = "20px 0";
+            const closeBtn = document.createElement("button");
+            closeBtn.className = "button-subtle";
+            closeBtn.style.backgroundColor = "transparent";
+            closeBtn.style.border = "1px solid var(--border-color)";
+            closeBtn.style.color = "var(--text-color)";
+            closeBtn.textContent = "↑ Close Section";
+            closeBtn.onclick = () => {
+                openCategories.delete(cat.name);
+                renderAccordion();
+                header.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            };
+            footer.appendChild(closeBtn);
+            content.appendChild(footer);
         }
         container.appendChild(item);
     });
