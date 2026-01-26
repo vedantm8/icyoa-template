@@ -1662,6 +1662,9 @@ function renderAccordion() {
 
                 const grid = document.createElement("div");
                 grid.className = "options-grid";
+                // Apply columnsPerRow from subcategory config, default to 2
+                const columnsPerRow = subcat.columnsPerRow || 2;
+                grid.style.setProperty('--columns-per-row', columnsPerRow);
                 subcatContent.appendChild(grid);
 
                 (subcat.options || []).forEach(opt => {

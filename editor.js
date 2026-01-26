@@ -1044,6 +1044,32 @@
                 maxRow.appendChild(minInput);
                 subBody.appendChild(maxRow);
 
+                const columnsRow = document.createElement("div");
+                columnsRow.className = "field-inline";
+
+                const columnsLabel = document.createElement("label");
+                columnsLabel.textContent = "Columns per row";
+                const columnsInput = document.createElement("input");
+                columnsInput.type = "number";
+                columnsInput.min = "1";
+                columnsInput.value = subcat.columnsPerRow ?? 2;
+                columnsInput.placeholder = "2";
+                columnsInput.addEventListener("input", () => {
+                    const value = columnsInput.value.trim();
+                    const num = Number(value);
+                    if (value === "" || num < 1) {
+                        subcat.columnsPerRow = 2;
+                        columnsInput.value = 2;
+                    } else {
+                        subcat.columnsPerRow = num;
+                    }
+                    schedulePreviewUpdate();
+                });
+
+                columnsRow.appendChild(columnsLabel);
+                columnsRow.appendChild(columnsInput);
+                subBody.appendChild(columnsRow);
+
                 const textField = document.createElement("div");
                 textField.className = "field";
                 const textLabel = document.createElement("label");
