@@ -4,6 +4,7 @@ const selectedOptions = {};
 const discountedSelections = {};
 const openCategories = new Set();
 const storyInputs = {};
+let currentTab = null; // Track current active tab
 
 const openSubcategories = new Set();
 const attributeSliderValues = {};
@@ -1380,818 +1381,770 @@ function shouldAutoApplyDiscount(entity) {
  * and displays options within them.
  */
 function renderAccordion() {
-    const container = document.getElementById("accordionContainer");
-    container.innerHTML = ""; // Clear previous content
+    const tabNav = document.getElementById("tabNavigation");
+    const tabContentContainer = document.getElementById("tabContent");
+    tabNav.innerHTML = "";
+    tabContentContainer.innerHTML = "";
 
-    categories.forEach((cat, catIndex) => {
-        // Skip special types (points, headerImage, title, description, formulas) as they are handled separately
-        if (["points", "headerImage", "title", "description", "formulas"].includes(cat.type)) {
-            return;
+    // Get all non-special categories
+    const visibleCategories = categories.filter(cat => !["points", "headerImage", "title", "description", "formulas"].includes(cat.type));
+
+    // Initialize currentTab to first category if not set
+    if (!currentTab && visibleCategories.length > 0) {
+        currentTab = visibleCategories[0].name;
+    }
+
+    // Create tabs
+    visibleCategories.forEach((cat) => {
+        const tab = document.createElement("button");
+        tab.className = "tab-button";
+        if (currentTab === cat.name) {
+            tab.classList.add("active");
         }
-
-        const item = document.createElement("div");
-        item.className = "accordion-item";
-
-        const header = document.createElement("div");
-        header.className = "accordion-header";
-        header.textContent = cat.name;
-
-        const content = document.createElement("div");
-        content.className = "accordion-content";
-        content.style.display = openCategories.has(cat.name) ? "block" : "none"; // Maintain open state
-
-        header.onclick = () => {
-            if (openCategories.has(cat.name)) {
-                openCategories.delete(cat.name);
-                renderAccordion(); // Full re-render to update all states
-            } else {
-                openCategories.clear(); // Exclusive accordion logic
-                openCategories.add(cat.name);
-                renderAccordion();
-                // Scroll to top of this category for comfort
-                header.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+        tab.textContent = cat.name;
+        tab.onclick = () => {
+            currentTab = cat.name;
+            renderAccordion();
         };
+        tabNav.appendChild(tab);
+    });
 
-        item.appendChild(header);
-        item.appendChild(content);
+    // Render content for the active tab
+    const activeCategory = categories.find(cat => cat.name === currentTab);
+    if (activeCategory && !["points", "headerImage", "title", "description", "formulas"].includes(activeCategory.type)) {
+        renderCategoryContent(activeCategory);
+    }
+}
 
-        // Check category-level requirements
-        const requires = cat.requiresOption;
-        const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];
-        // Determine if the category is unlocked. Support logical expressions as strings.
-        let categoryUnlocked = true;
-        if (requiredItems.length) {
-            categoryUnlocked = requiredItems.every(req => {
-                if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                    try {
-                        return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
-                    } catch (e) {
-                        return false;
-                    }
+function renderCategoryContent(cat) {
+    const tabContentContainer = document.getElementById("tabContent");
+    const catIndex = categories.indexOf(cat);
+
+    const content = document.createElement("div");
+    content.className = "category-content";
+
+    // Check category-level requirements
+    const requires = cat.requiresOption;
+    const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];
+    let categoryUnlocked = true;
+    if (requiredItems.length) {
+        categoryUnlocked = requiredItems.every(req => {
+            if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                try {
+                    return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+                } catch (e) {
+                    return false;
                 }
-                return !!selectedOptions[req];
-            });
+            }
+            return !!selectedOptions[req];
+        });
+    }
+
+    if (!categoryUnlocked) {
+        const lockMsg = document.createElement("div");
+        lockMsg.style.padding = "8px";
+        lockMsg.style.color = "#666";
+        const lines = [];
+        requiredItems.forEach(req => {
+            if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                const rawExpr = req;
+                const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+                let human = rawExpr;
+                const seen = new Set();
+                tokens.forEach(tok => {
+                    if (seen.has(tok)) return;
+                    seen.add(tok);
+                    const [id] = tok.split('__');
+                    const label = getOptionLabel(id) || id;
+                    const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                    human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+                });
+                human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+                const satisfied = (() => {
+                    try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; }
+                })();
+                const symbol = satisfied ? '✅' : '❌';
+                lines.push(`${symbol} ${human}`);
+            } else {
+                const id = req;
+                const label = getOptionLabel(id);
+                const isSelected = selectedOptions[id];
+                const symbol = isSelected ? "✅" : "❌";
+                lines.push(`${symbol} ${label}`);
+            }
+        });
+        lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
+        content.appendChild(lockMsg);
+    } else {
+        const subcats = cat.subcategories || [{
+            options: cat.options || [],
+            name: ""
+        }];
+
+        const catKey = buildCategoryKey(catIndex, cat.name);
+        const catHasDiscounts = hasDiscountConfig(cat);
+        const catDiscountUnlocked = catHasDiscounts && isDiscountUnlocked(cat);
+        const catAutoApplyAll = catDiscountUnlocked && shouldAutoApplyDiscount(cat);
+
+        if (catHasDiscounts && cat.discountRequiresMessage) {
+            const note = document.createElement("div");
+            note.className = "category-discount-requirement";
+            note.textContent = `${catDiscountUnlocked ? '✅' : '🔒'} ${cat.discountRequiresMessage}`;
+            content.appendChild(note);
         }
 
-        if (!categoryUnlocked) {
-            const lockMsg = document.createElement("div");
-            lockMsg.style.padding = "8px";
-            lockMsg.style.color = "#666";
-            const lines = [];
-            requiredItems.forEach(req => {
-                if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                    // Build human-readable expression using labels
-                    const rawExpr = req;
-                    const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
-                    let human = rawExpr;
-                    const seen = new Set();
-                    tokens.forEach(tok => {
-                        if (seen.has(tok)) return;
-                        seen.add(tok);
-                        const [id] = tok.split('__');
-                        const label = getOptionLabel(id) || id;
-                        const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                        human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
-                    });
-                    human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                    const satisfied = (() => {
-                        try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; }
-                    })();
-                    const symbol = satisfied ? '✅' : '❌';
-                    lines.push(`${symbol} ${human}`);
-                } else {
-                    const id = req;
-                    const label = getOptionLabel(id);
-                    const isSelected = selectedOptions[id];
-                    const symbol = isSelected ? "✅" : "❌";
-                    lines.push(`${symbol} ${label}`);
-                }
-            });
-            lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
-            content.appendChild(lockMsg);
-        } else {
-            // Handle subcategories or direct options if no subcategories defined
-            const subcats = cat.subcategories || [{
-                options: cat.options || [],
-                name: ""
-            }]; // Treat options directly in category as a single subcategory
-
-            const catKey = buildCategoryKey(catIndex, cat.name);
-            const catHasDiscounts = hasDiscountConfig(cat);
-            const catDiscountUnlocked = catHasDiscounts && isDiscountUnlocked(cat);
-            const catAutoApplyAll = catDiscountUnlocked && shouldAutoApplyDiscount(cat);
-
-            if (catHasDiscounts && cat.discountRequiresMessage) {
-                const note = document.createElement("div");
-                note.className = "category-discount-requirement";
-                note.textContent = `${catDiscountUnlocked ? '✅' : '🔒'} ${cat.discountRequiresMessage}`;
-                content.appendChild(note);
+        if (catDiscountUnlocked) {
+            const catInfo = document.createElement("div");
+            catInfo.className = "category-discount-info";
+            if (catAutoApplyAll) {
+                const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+                catInfo.textContent = `Category discount auto-applies to eligible items (${catModeLabel}).`;
+            } else {
+                const catMap = getCategoryDiscountMap(catKey);
+                const used = getDiscountTotalCount(catMap);
+                const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+                catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} IP, ${catModeLabel})`;
             }
+            content.appendChild(catInfo);
+        }
 
-            if (catDiscountUnlocked) {
-                const catInfo = document.createElement("div");
-                catInfo.className = "category-discount-info";
-                if (catAutoApplyAll) {
-                    const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
-                    catInfo.textContent = `Category discount auto-applies to eligible items (${catModeLabel}).`;
-                } else {
-                    const catMap = getCategoryDiscountMap(catKey);
-                    const used = getDiscountTotalCount(catMap);
-                    const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
-                    catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} IP, ${catModeLabel})`;
-                }
-                content.appendChild(catInfo);
-            }
-
-            subcats.forEach((subcat, subIndex) => {
-                const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
-                // Check subcategory-level requirements
-                const subcatRequires = subcat.requiresOption;
-                const subcatReqItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
-                let subcatUnlocked = true;
-                if (subcatReqItems.length) {
-                    subcatUnlocked = subcatReqItems.every(req => {
-                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                            try {
-                                return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
-                            } catch (e) {
-                                return false;
-                            }
+        subcats.forEach((subcat, subIndex) => {
+            const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
+            const subcatRequires = subcat.requiresOption;
+            const subcatReqItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+            let subcatUnlocked = true;
+            if (subcatReqItems.length) {
+                subcatUnlocked = subcatReqItems.every(req => {
+                    if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                        try {
+                            return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+                        } catch (e) {
+                            return false;
                         }
-                        return !!selectedOptions[req];
-                    });
-                }
+                    }
+                    return !!selectedOptions[req];
+                });
+            }
 
-                const subcatItem = document.createElement("div");
-                subcatItem.className = "subcategory-item";
+            const subcatItem = document.createElement("div");
+            subcatItem.className = "subcategory-item";
 
-                const subcatHeader = document.createElement("div");
-                subcatHeader.className = "subcategory-header";
-                subcatHeader.style.cursor = "pointer";
-                subcatHeader.style.fontWeight = "bold";
-                subcatHeader.textContent = subcat.name || `Options ${subIndex + 1}`; // Fallback name
+            const subcatHeader = document.createElement("div");
+            subcatHeader.className = "subcategory-header";
+            subcatHeader.style.cursor = "pointer";
+            subcatHeader.style.fontWeight = "bold";
+            subcatHeader.textContent = subcat.name || `Options ${subIndex + 1}`;
 
-                const subcatContent = document.createElement("div");
-                subcatContent.className = "subcategory-content";
+            const subcatContent = document.createElement("div");
+            subcatContent.className = "subcategory-content";
 
+            if (openSubcategories.has(subcatKey)) {
+                subcatContent.style.display = "block";
+                subcatHeader.classList.add("is-open");
+            } else {
+                subcatContent.style.display = "none";
+                subcatHeader.classList.remove("is-open");
+            }
+
+            subcatHeader.onclick = () => {
                 if (openSubcategories.has(subcatKey)) {
-                    subcatContent.style.display = "block";
-                    subcatHeader.classList.add("is-open");
-                } else {
+                    openSubcategories.delete(subcatKey);
                     subcatContent.style.display = "none";
                     subcatHeader.classList.remove("is-open");
+                } else {
+                    openSubcategories.add(subcatKey);
+                    subcatContent.style.display = "block";
+                    subcatHeader.classList.add("is-open");
                 }
+            };
 
-                subcatHeader.onclick = () => {
-                    if (openSubcategories.has(subcatKey)) {
-                        openSubcategories.delete(subcatKey);
-                        subcatContent.style.display = "none";
-                        subcatHeader.classList.remove("is-open");
-                    } else {
-                        openSubcategories.add(subcatKey);
-                        subcatContent.style.display = "block";
-                        subcatHeader.classList.add("is-open");
-                    }
-                };
+            subcatItem.appendChild(subcatHeader);
+            subcatItem.appendChild(subcatContent);
+            content.appendChild(subcatItem);
 
-                subcatItem.appendChild(subcatHeader);
-                subcatItem.appendChild(subcatContent);
-                content.appendChild(subcatItem);
-
-                if (!subcatUnlocked) {
-                    const lockMsg = document.createElement("div");
-                    lockMsg.style.padding = "8px";
-                    lockMsg.style.color = "#666";
-                    const lines = [];
-                    subcatReqItems.forEach(req => {
-                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                            const rawExpr = req;
-                            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
-                            let human = rawExpr;
-                            const seen = new Set();
-                            tokens.forEach(tok => {
-                                if (seen.has(tok)) return;
-                                seen.add(tok);
-                                const [id] = tok.split('__');
-                                const label = getSubcategoryOptionLabel(id) || id;
-                                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
-                            });
-                            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; } })();
-                            const symbol = satisfied ? '✅' : '❌';
-                            lines.push(`${symbol} ${human}`);
-                        } else {
-                            const id = req;
-                            const label = getSubcategoryOptionLabel(id);
-                            const isSelected = selectedOptions[id];
-                            const symbol = isSelected ? "✅" : "❌";
-                            lines.push(`${symbol} ${label}`);
-                        }
-                    });
-                    lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
-                    subcatContent.appendChild(lockMsg);
-                    return; // Skip rendering options if subcategory is locked
-                }
-
-                // Handle storyBlock type
-                if (subcat.type === "storyBlock") {
-                    if (subcat.text && subcat.text.trim() !== "") {
-                        const storyText = document.createElement("div");
-                        storyText.className = "story-block";
-                        setMultilineText(storyText, subcat.text);
-                        subcatContent.appendChild(storyText);
-                    }
-                    const subcatHasDiscounts = hasDiscountConfig(subcat);
-                    const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
-                    const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
-
-                    if (subcatHasDiscounts && subcat.discountRequiresMessage) {
-                        const note = document.createElement("div");
-                        note.className = "subcategory-discount-requirement";
-                        note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
-                        subcatContent.appendChild(note);
-                    }
-
-                    if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
-                        const discountInfo = document.createElement("div");
-                        discountInfo.className = "subcategory-discount-info";
-                        const subMap = getSubcategoryDiscountMap(subcatKey);
-                        const usedSlots = getDiscountTotalCount(subMap);
-                        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
-                        discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
-                        subcatContent.appendChild(discountInfo);
-                    } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
-                        const discountInfo = document.createElement("div");
-                        discountInfo.className = "subcategory-discount-info";
-                        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
-                        discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
-                        subcatContent.appendChild(discountInfo);
-                    }
-                    if (subcat.input) {
-                        const inputWrapper = document.createElement("div");
-                        inputWrapper.className = "story-input-wrapper";
-
-                        if (subcat.input.label) {
-                            const label = document.createElement("label");
-                            label.textContent = subcat.input.label;
-                            label.setAttribute("for", subcat.input.id);
-                            inputWrapper.appendChild(label);
-                        }
-
-                        const input = document.createElement("input");
-                        input.type = "text";
-                        input.id = subcat.input.id;
-                        input.placeholder = subcat.input.placeholder || "";
-                        input.maxLength = subcat.input.maxLength || 20; // Default max length
-                        input.value = storyInputs[subcat.input.id] || ""; // Load saved input
-                        input.addEventListener("input", (e) => {
-                            storyInputs[subcat.input.id] = e.target.value;
+            if (!subcatUnlocked) {
+                const lockMsg = document.createElement("div");
+                lockMsg.style.padding = "8px";
+                lockMsg.style.color = "#666";
+                const lines = [];
+                subcatReqItems.forEach(req => {
+                    if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                        const rawExpr = req;
+                        const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+                        let human = rawExpr;
+                        const seen = new Set();
+                        tokens.forEach(tok => {
+                            if (seen.has(tok)) return;
+                            seen.add(tok);
+                            const [id] = tok.split('__');
+                            const label = getSubcategoryOptionLabel(id) || id;
+                            const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                            human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
                         });
-                        inputWrapper.appendChild(input);
-                        subcatContent.appendChild(inputWrapper);
+                        human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+                        const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; } })();
+                        const symbol = satisfied ? '✅' : '❌';
+                        lines.push(`${symbol} ${human}`);
+                    } else {
+                        const id = req;
+                        const label = getSubcategoryOptionLabel(id);
+                        const isSelected = selectedOptions[id];
+                        const symbol = isSelected ? "✅" : "❌";
+                        lines.push(`${symbol} ${label}`);
                     }
-                }
+                });
+                lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
+                subcatContent.appendChild(lockMsg);
+                return;
+            }
 
-                // Render options within the subcategory
+            // Render story block content...renderStoryBlockContent(subcat, subcatContent, subcatKey);
+            if (subcat.type === "storyBlock") {
+                if (subcat.text && subcat.text.trim() !== "") {
+                    const storyText = document.createElement("div");
+                    storyText.className = "story-block";
+                    setMultilineText(storyText, subcat.text);
+                    subcatContent.appendChild(storyText);
+                }
                 const subcatHasDiscounts = hasDiscountConfig(subcat);
                 const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
                 const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
-                const isDiscountableSubcat = subcatDiscountUnlocked && !subcatAutoApplyAll;
 
-                const grid = document.createElement("div");
-                grid.className = "options-grid";
-                // Apply columnsPerRow from subcategory config, default to 2
-                const columnsPerRow = subcat.columnsPerRow || 2;
-                grid.style.setProperty('--columns-per-row', columnsPerRow);
-                subcatContent.appendChild(grid);
+                if (subcatHasDiscounts && subcat.discountRequiresMessage) {
+                    const note = document.createElement("div");
+                    note.className = "subcategory-discount-requirement";
+                    note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
+                    subcatContent.appendChild(note);
+                }
 
-                (subcat.options || []).forEach(opt => {
-                    const wrapper = document.createElement("div");
-                    wrapper.className = "option-wrapper";
+                if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
+                    const discountInfo = document.createElement("div");
+                    discountInfo.className = "subcategory-discount-info";
+                    const subMap = getSubcategoryDiscountMap(subcatKey);
+                    const usedSlots = getDiscountTotalCount(subMap);
+                    const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                    discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
+                    subcatContent.appendChild(discountInfo);
+                } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
+                    const discountInfo = document.createElement("div");
+                    discountInfo.className = "subcategory-discount-info";
+                    const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                    discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
+                    subcatContent.appendChild(discountInfo);
+                }
+                if (subcat.input) {
+                    const inputWrapper = document.createElement("div");
+                    inputWrapper.className = "story-input-wrapper";
 
-                    // Only add image if image URL is provided (support both image/img keys)
-                    const imageUrl = opt.image || opt.img;
-                    if (imageUrl) {
-                        const img = document.createElement("img");
-                        img.src = imageUrl;
-                        img.alt = opt.label;
-                        wrapper.appendChild(img);
+                    if (subcat.input.label) {
+                        const label = document.createElement("label");
+                        label.textContent = subcat.input.label;
+                        label.setAttribute("for", subcat.input.id);
+                        inputWrapper.appendChild(label);
                     }
 
-
-                    const contentWrapper = document.createElement("div");
-                    contentWrapper.className = "option-content";
-
-                    const label = document.createElement("strong");
-                    label.textContent = opt.label;
-
-                    const requirements = document.createElement("div");
-                    requirements.className = "option-requirements";
-                    const gain = [],
-                        spend = [];
-                    const displayCost = getOptionEffectiveCost(opt);
-                    Object.entries(displayCost || {}).forEach(([type, val]) => {
-                        if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
-                        else spend.push(`${type} ${val}`);
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.id = subcat.input.id;
+                    input.placeholder = subcat.input.placeholder || "";
+                    input.maxLength = subcat.input.maxLength || 20;
+                    input.value = storyInputs[subcat.input.id] || "";
+                    input.addEventListener("input", (e) => {
+                        storyInputs[subcat.input.id] = e.target.value;
                     });
-                    if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
-                    if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
-                    const originalCost = opt.cost || {};
-                    const discountApplied = Object.entries(displayCost || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
-                    if (discountApplied) {
-                        const freeApplied = Object.entries(displayCost || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
-                        requirements.innerHTML += freeApplied ? `🔻 Discount Applied (Free)<br>` : `🔻 Discount Applied<br>`;
-                    }
+                    inputWrapper.appendChild(input);
+                    subcatContent.appendChild(inputWrapper);
+                }
+            }
 
-                    // Show prerequisites for options (like Archangel)
-                    if (opt.prerequisites && opt.prerequisites.length > 0) {
-                        let prereqLines = [];
-                        if (typeof opt.prerequisites === 'string') {
-                            const tokens = opt.prerequisites.match(/!?[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?/g) || [];
-                            const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
-                            const seen = new Set();
-                            let exprTrue = false;
-                            try {
-                                exprTrue = !!window.evaluatePrereqExpr(opt.prerequisites, id => selectedOptions[id] || 0);
-                            } catch (e) {
-                                exprTrue = false;
-                            }
-                            tokens.forEach(token => {
-                                const negated = token.startsWith('!');
-                                const core = negated ? token.slice(1) : token;
-                                const [id, minSuffix] = core.split('__');
-                                if (reserved.has(id) || seen.has(core)) return;
-                                seen.add(core);
-                                const requiredCount = minSuffix ? Number(minSuffix) : 1;
-                                let satisfied;
-                                if (exprTrue) {
-                                    satisfied = true; // mark all prereq tokens satisfied when overall expression is true
-                                } else {
-                                    const actual = selectedOptions[id] || 0;
-                                    satisfied = negated ? actual < requiredCount : actual >= requiredCount;
-                                }
-                                const label = getOptionLabel(id) + (requiredCount > 1 ? ` (x${requiredCount})` : "");
-                                prereqLines.push(`${satisfied ? "✅" : "❌"} ${label}`);
-                            });
-                        } else if (Array.isArray(opt.prerequisites)) {
-                            prereqLines = opt.prerequisites.map(id => {
-                                const label = getOptionLabel(id);
-                                const isSelected = selectedOptions[id];
-                                const symbol = isSelected ? "✅" : "❌";
-                                return `${symbol} ${label}`;
-                            });
-                        } else if (typeof opt.prerequisites === 'object' && opt.prerequisites !== null) {
-                            // For legacy AND/OR object
-                            const andList = opt.prerequisites.and || [];
-                            const orList = opt.prerequisites.or || [];
-                            let orAccepted = orList.some(id => selectedOptions[id]);
-                            if (andList.length)
-                                prereqLines.push(...andList.map(id => {
-                                    const label = getOptionLabel(id);
-                                    const isSelected = selectedOptions[id];
-                                    const symbol = isSelected ? "✅" : "❌";
-                                    return `${symbol} ${label}`;
-                                }));
-                            if (orList.length)
-                                prereqLines.push(...orList.map(id => {
-                                    const label = getOptionLabel(id);
-                                    const symbol = orAccepted ? "✅" : (selectedOptions[id] ? "✅" : "❌");
-                                    return `${symbol} ${label}`;
-                                }));
-                        }
-                        // Build a human-readable version of the prerequisite expression
-                        let prereqHelpTitle = "Prerequisites are checked against selected options. String expressions support &&, ||, and !. When the overall expression evaluates true the UI marks referenced prerequisites as satisfied for clarity.";
-                        if (typeof opt.prerequisites === 'string') {
-                            const rawExpr = opt.prerequisites;
-                            // extract identifier tokens
-                            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
-                            // replace ids with labels for readability
-                            let human = rawExpr;
-                            const seenIds = new Set();
-                            tokens.forEach(tok => {
-                                const [id] = tok.split('__');
-                                if (seenIds.has(tok)) return;
-                                seenIds.add(tok);
-                                const label = getOptionLabel(id) || id;
-                                // escape token for regex
-                                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
-                            });
-                            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                            prereqHelpTitle = `${human}\n\nExpression: ${rawExpr}`;
-                        }
-                        const helpHtml = `<span class=\"prereq-help\" title=\"${prereqHelpTitle.replace(/\"/g, '&quot;')}\">?</span>`;
-                        requirements.innerHTML += `🔒 Requires: ${helpHtml}<br>${prereqLines.join("<br>")}`;
+            // Render options...
+            renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll);
+        });
+    }
 
-                        // Show incompatibilities (conflictsWith) similar to prerequisites
-                        if (opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
-                            const conflictLines = opt.conflictsWith.map(id => {
-                                const label = getOptionLabel(id) || id;
-                                const selected = !!selectedOptions[id];
-                                const symbol = selected ? '❌' : '✅';
-                                return `${symbol} ${label}`;
-                            });
-                            requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
-                        }
-                    }
+    tabContentContainer.appendChild(content);
+}
 
-                    // If conflicts weren't rendered earlier (e.g., no prerequisites block), render them here
-                    if ((!requirements.innerHTML || !requirements.innerHTML.includes('Incompatible With')) && opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
-                        const conflictLines = opt.conflictsWith.map(id => {
-                            const label = getOptionLabel(id) || id;
-                            const selected = !!selectedOptions[id];
-                            const symbol = selected ? '❌' : '✅';
-                            return `${symbol} ${label}`;
-                        });
-                        requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
-                    }
+function renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll) {
+    const subcatHasDiscounts = hasDiscountConfig(subcat);
+    const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+    const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+    const isDiscountableSubcat = subcatDiscountUnlocked && !subcatAutoApplyAll;
 
-                    const desc = document.createElement("div");
-                    desc.className = "option-description";
-                    setMultilineText(desc, opt.description || "");
+    const grid = document.createElement("div");
+    grid.className = "options-grid";
+    const columnsPerRow = subcat.columnsPerRow || 2;
+    grid.style.setProperty('--columns-per-row', columnsPerRow);
+    subcatContent.appendChild(grid);
 
-                    const baseIpCost = (opt.cost && typeof opt.cost.IP === 'number') ? opt.cost.IP : null;
-                    const discountContexts = [];
-                    if (isDiscountableSubcat && opt.disableSubcategoryDiscount !== true) {
-                        discountContexts.push({
-                            level: 'subcategory',
-                            limit: subcat.discountSelectionLimit,
-                            eligible: subcat.discountEligibleUnder,
-                            map: getSubcategoryDiscountMap(subcatKey),
-                            mode: subcat.discountMode || 'half'
-                        });
-                    }
-                    if (catDiscountUnlocked && opt.disableCategoryDiscount !== true && !catAutoApplyAll) {
-                        discountContexts.push({
-                            level: 'category',
-                            limit: cat.discountSelectionLimit,
-                            eligible: cat.discountEligibleUnder,
-                            map: getCategoryDiscountMap(catKey),
-                            mode: cat.discountMode || 'half'
-                        });
-                    }
-
-                    discountContexts.forEach(discountContext => {
-                        if (baseIpCost === null || baseIpCost <= 0 || baseIpCost > discountContext.eligible) {
-                            return;
-                        }
-
-                        const discountMap = discountContext.map;
-                        const assignedCount = discountMap[opt.id] || 0;
-                        const totalAssigned = getDiscountTotalCount(discountMap);
-                        const discountLimit = discountContext.limit || 0;
-                        const alreadySelected = selectedOptions[opt.id] > 0;
-                        const totalOthers = totalAssigned - assignedCount;
-                        const availableSlots = Math.max(0, discountLimit - totalOthers);
-                        const contextLabel = discountContext.level === 'subcategory' ? 'subcategory' : 'category';
-                        const discountLabel = discountContext.mode === 'free' ? 'Free slots' : 'Discount slots';
-
-                        if (assignedCount > 0) {
-                            const remaining = Math.max(0, assignedCount - (selectedOptions[opt.id] || 0));
-                            const remainingText = remaining > 0 ? ` (remaining ${remaining})` : '';
-                            requirements.innerHTML += `${discountLabel} assigned (${contextLabel}): ${assignedCount}${remainingText}<br>`;
-                        }
-
-                        const discountBtn = document.createElement("button");
-                        discountBtn.className = "discount-toggle";
-                        if (assignedCount > 0) {
-                            discountBtn.textContent = discountContext.mode === 'free'
-                                ? `Discount Applied (${assignedCount}) – Free (${contextLabel})`
-                                : `Discount Applied (${assignedCount}) (${contextLabel})`;
-                        } else {
-                            discountBtn.textContent = discountContext.mode === 'free'
-                                ? `Apply Free Slot (${contextLabel})`
-                                : `Apply Discount (${contextLabel})`;
-                        }
-
-                        const canIncrease = availableSlots > assignedCount;
-
-                        discountBtn.disabled = alreadySelected || (assignedCount === 0 && !canIncrease);
-                        if (alreadySelected) {
-                            discountBtn.title = `Remove and re-select this item to change ${contextLabel} discount status.`;
-                        } else if (assignedCount === 0 && !canIncrease) {
-                            const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
-                            discountBtn.title = `${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`;
-                        } else {
-                            discountBtn.title = discountContext.mode === 'free'
-                                ? `Assign or remove a free ${contextLabel} slot for this item.`
-                                : `Cycle the number of ${contextLabel} discount slots applied to this item.`;
-                        }
-
-                        discountBtn.onclick = () => {
-                            if (selectedOptions[opt.id] > 0) return;
-
-                            const current = discountMap[opt.id] || 0;
-                            const freshTotal = getDiscountTotalCount(discountMap) - current;
-                            const maxAllowed = Math.max(0, discountLimit - freshTotal);
-
-                            if (maxAllowed === 0 && current === 0) {
-                                const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
-                                alert(`${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`);
-                                return;
-                            }
-
-                            let next = current + 1;
-                            if (next > maxAllowed) {
-                                next = 0;
-                            }
-
-                            if (next > 0) {
-                                discountMap[opt.id] = next;
-                                discountContexts.forEach(otherContext => {
-                                    if (otherContext !== discountContext && otherContext.map[opt.id]) {
-                                        delete otherContext.map[opt.id];
-                                    }
-                                });
-                            } else {
-                                delete discountMap[opt.id];
-                            }
-                            renderAccordion();
-                        };
-                        requirements.appendChild(discountBtn);
-                    });
-
-                    contentWrapper.appendChild(label);
-                    contentWrapper.appendChild(requirements);
-                    contentWrapper.appendChild(desc);
-
-                    if (opt.inputType === "slider") {
-                        const {
-                            currencyType,
-                            attributeType
-                        } = getSliderTypes(opt.costPerPoint || {});
-
-                        const attrName = attributeType;
-
-                        const effectiveMin = opt.min ?? attributeRanges[attrName]?.min ?? 0;
-                        // Use attributeRanges for max, which will be updated by dynamic effects
-                        const effectiveMax = attributeRanges[attrName]?.max ?? opt.max ?? 40;
-
-                        // Ensure current value respects the new effectiveMax/Min
-                        let currentValue = attributeSliderValues[opt.id] ?? effectiveMin;
-                        if (currentValue > effectiveMax) {
-                            currentValue = effectiveMax;
-                            attributeSliderValues[opt.id] = currentValue;
-                            if (attrName) attributeSliderValues[attrName] = currentValue;
-                        }
-                        if (currentValue < effectiveMin) {
-                            currentValue = effectiveMin;
-                            attributeSliderValues[opt.id] = currentValue;
-                            if (attrName) attributeSliderValues[attrName] = currentValue;
-                        }
-
-                        if (attributeSliderValues[opt.id] === undefined) {
-                            attributeSliderValues[opt.id] = currentValue;
-                        }
-                        if (attrName && attributeSliderValues[attrName] === undefined) {
-                            attributeSliderValues[attrName] = currentValue;
-                        }
-
-
-                        const sliderWrapper = document.createElement("div");
-                        sliderWrapper.className = "slider-wrapper";
-
-                        const sliderLabel = document.createElement("label");
-                        sliderLabel.textContent = `${opt.label}: ${currentValue}`;
-                        sliderLabel.htmlFor = `${opt.id}-slider`;
-
-                        const slider = document.createElement("input");
-                        slider.type = "range";
-                        slider.min = effectiveMin;
-                        slider.max = effectiveMax; // Set slider max to the effective max
-                        slider.value = currentValue;
-                        slider.id = `${opt.id}-slider`;
-
-
-                        slider.oninput = (e) => {
-                            const newVal = parseInt(e.target.value);
-                            const {
-                                currencyType: currentCurrency,
-                                attributeType: currentAttribute
-                            } = getSliderTypes(opt.costPerPoint || {});
-                            const costPerPoint = opt.costPerPoint?.[currentCurrency] || 0;
-                            const attrNameForCost = currentAttribute;
-
-                            // Re-check current effective max (could have been changed by a dynamic cap)
-                            const currentEffectiveMax = attributeRanges[attrNameForCost]?.max ?? parseInt(slider.max);
-                            slider.max = currentEffectiveMax; // Update slider's max attribute visually
-
-                            if (newVal > currentEffectiveMax) {
-                                e.target.value = currentEffectiveMax; // Cap the slider visually if user dragged past cap
-                                // Only update label, do not proceed with cost calculation if it's beyond valid range
-                                sliderLabel.textContent = `${opt.label}: ${currentEffectiveMax}`;
-                                return;
-                            }
-
-                            const oldVal = attributeSliderValues[opt.id] ?? effectiveMin; // Value before this input event
-                            let diff = newVal - oldVal;
-
-                            let freeBoostAmount = 0;
-                            // Dynamically find boost for this attribute if it exists from any dynamic selection
-                            for (const dynOptId in dynamicSelections) {
-                                const dynOpt = findOptionById(dynOptId);
-                                if (dynOpt && dynOpt.dynamicCost) {
-                                    dynOpt.dynamicCost.choices.forEach((choice, i) => {
-                                        if (dynamicSelections[dynOptId][i] === attrNameForCost && dynOpt.dynamicCost.types[i] === "Boost Attribute") {
-                                            freeBoostAmount = parseInt(dynOpt.dynamicCost.values[i]);
-                                        }
-                                    });
-                                }
-                            }
-
-                            // Calculate the cost/refund for "Attribute Points"
-                            // Points are only spent/refunded for the "paid" portion of the attribute.
-                            let pointsChange = 0;
-
-                            if (diff > 0) { // Increasing attribute value
-                                const paidOldVal = Math.max(0, oldVal - freeBoostAmount);
-                                const paidNewVal = Math.max(0, newVal - freeBoostAmount);
-                                const paidIncrease = paidNewVal - paidOldVal;
-
-                                if (paidIncrease > 0) {
-                                    const cost = costPerPoint * paidIncrease;
-                                    if (points[currentCurrency] < cost && !allowNegativeTypes.has(currentCurrency)) {
-                                        e.target.value = oldVal; // Revert slider visually
-                                        sliderLabel.textContent = `${opt.label}: ${oldVal}`; // Also revert label
-                                        return; // Not enough points, prevent change
-                                    }
-                                    pointsChange = -cost; // Deduct points
-                                }
-                            } else if (diff < 0) { // Decreasing attribute value
-                                const paidOldVal = Math.max(0, oldVal - freeBoostAmount);
-                                const paidNewVal = Math.max(0, newVal - freeBoostAmount);
-                                const paidDecrease = paidOldVal - paidNewVal; // This should be positive for refund
-
-                                if (paidDecrease > 0) {
-                                    pointsChange = costPerPoint * paidDecrease; // Refund points
-                                }
-                            }
-
-                            // Apply the calculated point change
-                            if (pointsChange !== 0) {
-                                points[currentCurrency] += pointsChange;
-                            }
-
-                            // Update the stored attribute value
-                            attributeSliderValues[opt.id] = newVal;
-                            if (attrNameForCost) {
-                                attributeSliderValues[attrNameForCost] = newVal;
-                            }
-                            // Also update the points object if the attribute is directly tied to a point type
-                            // (this was causing issues with 'Strength' not updating in points display previously)
-                            if (attrNameForCost && points.hasOwnProperty(attrNameForCost)) {
-                                points[attrNameForCost] = newVal;
-                            }
-
-                            sliderLabel.textContent = `${opt.label}: ${newVal}`; // Update label dynamically
-                            evaluateFormulas(); // Re-evaluate formulas after slider change
-                            updatePointsDisplay();
-                        };
-
-                        sliderWrapper.appendChild(sliderLabel);
-                        sliderWrapper.appendChild(slider);
-                        contentWrapper.appendChild(sliderWrapper);
-
-                    } else {
-                        // Regular button for selection
-                        const controls = document.createElement("div");
-                        controls.className = "option-controls";
-
-                        const count = selectedOptions[opt.id] || 0;
-                        const max = opt.maxSelections || 1;
-
-                        const btn = document.createElement("button");
-                        if (count > 0) {
-                            const maxLabel = max === Infinity ? "" : ` / ${max}`;
-                            btn.textContent = `✓ Selected (${count}${maxLabel})`;
-                        } else {
-                            btn.textContent = "Select";
-                        }
-
-                        const canAdd = canSelect(opt);
-                        // Disable if cannot select AND nothing is already selected (prevent adding)
-                        // Or if max selections reached
-                        btn.disabled = (!canAdd && count === 0) || (count >= max && max !== Infinity);
-
-                        // Add 'Remove' button if already selected and maxSelections allows removal (or no maxSelections)
-                        if (count > 0) {
-                            const removeBtn = document.createElement("button");
-                            removeBtn.textContent = "Remove";
-                            removeBtn.classList.add("remove-btn"); // Add a class for potential styling
-                            removeBtn.onclick = (e) => {
-                                e.stopPropagation(); // Prevent parent button's click from firing
-                                removeSelection(opt);
-                            };
-                            controls.appendChild(removeBtn);
-                        }
-
-
-                        btn.onclick = () => {
-                            if (count > 0 && max === 1) { // If single selection already picked, deselect
-                                removeSelection(opt);
-                            } else if (canAdd) { // If can add and not at max, add it
-                                addSelection(opt);
-                            }
-                        };
-                        controls.appendChild(btn);
-                        contentWrapper.appendChild(controls);
-
-                        // Render dynamic cost choices if applicable
-                        if (selectedOptions[opt.id] && opt.dynamicCost && Array.isArray(opt.dynamicCost.choices) && Array.isArray(opt.dynamicCost.values)) {
-                            const choiceWrapper = document.createElement("div");
-                            choiceWrapper.className = "dynamic-choice-wrapper";
-
-                            const numChoices = opt.dynamicCost.values.length;
-                            const affectedTypes = opt.dynamicCost.types || [];
-
-                            // Initialize dynamicSelections for this option if not already present
-                            if (!dynamicSelections[opt.id]) {
-                                dynamicSelections[opt.id] = Array(numChoices).fill("");
-                            }
-
-                            for (let i = 0; i < numChoices; i++) {
-                                const select = document.createElement("select");
-                                select.innerHTML = `<option value="">-- Select --</option>` +
-                                    opt.dynamicCost.choices.map(choice => `<option value="${choice}">${choice}</option>`).join("");
-                                select.value = dynamicSelections[opt.id][i] || ""; // Set current selected value
-
-                                const label = document.createElement("label");
-                                // Adjust label to reflect "Cap" or "Boost" clearly
-                                const valueText = opt.dynamicCost.values[i];
-                                let effectText = "";
-                                if (typeof valueText === 'string' && valueText.startsWith("cap:")) {
-                                    effectText = `(Cap at ${valueText.slice(4)})`;
-                                } else if (typeof valueText === 'number') {
-                                    effectText = `(${valueText >= 0 ? "+" : ""}${valueText})`;
-                                }
-                                label.textContent = `${affectedTypes[i] || "Select Effect"}: ${effectText}`;
-                                label.style.display = "block";
-                                label.style.marginTop = "0.25em";
-
-                                select.onchange = (e) => {
-                                    const newValue = e.target.value;
-                                    const prevValue = dynamicSelections[opt.id][i]; // Get previous value
-
-                                    const targetValue = opt.dynamicCost.values[i];
-                                    const typeOfEffect = opt.dynamicCost.types[i]; // e.g., "Cap Attribute", "Boost Attribute"
-                                    const isAttributeTarget = opt.dynamicCost.target === "attributes";
-
-
-                                    // Check for duplicate selections within the same option's dynamic choices
-                                    const tempDynamicSelections = [...dynamicSelections[opt.id]];
-                                    tempDynamicSelections[i] = newValue; // Temporarily update for duplicate check
-                                    const uniqueSelections = new Set(tempDynamicSelections.filter(v => v !== "")); // Exclude empty
-                                    if (uniqueSelections.size !== tempDynamicSelections.filter(v => v !== "").length) {
-                                        // A duplicate was found among selected non-empty choices
-                                        alert("Each selection must be unique for this set of choices.");
-                                        e.target.value = prevValue; // Revert dropdown
-                                        return; // Stop processing
-                                    }
-
-
-                                    // --- Update dynamicSelections array (this needs to happen BEFORE evaluateFormulas) ---
-                                    dynamicSelections[opt.id][i] = newValue;
-
-                                    // --- Trigger re-evaluation of all dynamic effects and formulas ---
-                                    // evaluateFormulas will now correctly reset attributeRanges and apply boosts/caps
-                                    evaluateFormulas();
-                                    updatePointsDisplay();
-                                    renderAccordion(); // Re-render to update slider positions/labels
-                                };
-                                choiceWrapper.appendChild(label);
-                                choiceWrapper.appendChild(select);
-                            }
-                            contentWrapper.appendChild(choiceWrapper);
-                        }
-                    }
-                    wrapper.appendChild(contentWrapper);
-                    grid.appendChild(wrapper);
-                });
-            });
-
-            // Add "Close Section" button at the bottom of the category
-            const footer = document.createElement("div");
-            footer.style.textAlign = "center";
-            footer.style.padding = "20px 0";
-            const closeBtn = document.createElement("button");
-            closeBtn.className = "button-subtle";
-            closeBtn.style.backgroundColor = "transparent";
-            closeBtn.style.border = "1px solid var(--border-color)";
-            closeBtn.style.color = "var(--text-color)";
-            closeBtn.textContent = "↑ Close Section";
-            closeBtn.onclick = () => {
-                openCategories.delete(cat.name);
-                renderAccordion();
-                header.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            };
-            footer.appendChild(closeBtn);
-            content.appendChild(footer);
-        }
-        container.appendChild(item);
+    (subcat.options || []).forEach(opt => {
+        renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll, isDiscountableSubcat);
     });
 }
+
+function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll, isDiscountableSubcat) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "option-wrapper";
+
+    const imageUrl = opt.image || opt.img;
+    if (imageUrl) {
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = opt.label;
+        wrapper.appendChild(img);
+    }
+
+    const contentWrapper = document.createElement("div");
+    contentWrapper.className = "option-content";
+
+    const label = document.createElement("strong");
+    label.textContent = opt.label;
+
+    const requirements = document.createElement("div");
+    requirements.className = "option-requirements";
+    const gain = [], spend = [];
+    const displayCost = getOptionEffectiveCost(opt);
+    Object.entries(displayCost || {}).forEach(([type, val]) => {
+        if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
+        else spend.push(`${type} ${val}`);
+    });
+    if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
+    if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
+    const originalCost = opt.cost || {};
+    const discountApplied = Object.entries(displayCost || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
+    if (discountApplied) {
+        const freeApplied = Object.entries(displayCost || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
+        requirements.innerHTML += freeApplied ? `🔻 Discount Applied (Free)<br>` : `🔻 Discount Applied<br>`;
+    }
+
+    // Show prerequisites...
+    if (opt.prerequisites && opt.prerequisites.length > 0) {
+        let prereqLines = [];
+        if (typeof opt.prerequisites === 'string') {
+            const tokens = opt.prerequisites.match(/!?[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?/g) || [];
+            const reserved = new Set(['true', 'false', 'null', 'undefined', 'if', 'else', 'return', 'let', 'var', 'const', 'function', 'while', 'for', 'do', 'switch', 'case', 'break', 'continue', 'default', 'new', 'this', 'typeof', 'instanceof', 'void', 'delete', 'in', 'of', 'with', 'try', 'catch', 'finally', 'throw', 'class', 'extends', 'super', 'import', 'export', 'from', 'as', 'await', 'async', 'yield']);
+            const seen = new Set();
+            let exprTrue = false;
+            try {
+                exprTrue = !!window.evaluatePrereqExpr(opt.prerequisites, id => selectedOptions[id] || 0);
+            } catch (e) {
+                exprTrue = false;
+            }
+            tokens.forEach(token => {
+                const negated = token.startsWith('!');
+                const core = negated ? token.slice(1) : token;
+                const [id, minSuffix] = core.split('__');
+                if (reserved.has(id) || seen.has(core)) return;
+                seen.add(core);
+                const requiredCount = minSuffix ? Number(minSuffix) : 1;
+                let satisfied;
+                if (exprTrue) {
+                    satisfied = true;
+                } else {
+                    const actual = selectedOptions[id] || 0;
+                    satisfied = negated ? actual < requiredCount : actual >= requiredCount;
+                }
+                const label = getOptionLabel(id) + (requiredCount > 1 ? ` (x${requiredCount})` : "");
+                prereqLines.push(`${satisfied ? "✅" : "❌"} ${label}`);
+            });
+        } else if (Array.isArray(opt.prerequisites)) {
+            prereqLines = opt.prerequisites.map(id => {
+                const label = getOptionLabel(id);
+                const isSelected = selectedOptions[id];
+                const symbol = isSelected ? "✅" : "❌";
+                return `${symbol} ${label}`;
+            });
+        } else if (typeof opt.prerequisites === 'object' && opt.prerequisites !== null) {
+            const andList = opt.prerequisites.and || [];
+            const orList = opt.prerequisites.or || [];
+            let orAccepted = orList.some(id => selectedOptions[id]);
+            if (andList.length)
+                prereqLines.push(...andList.map(id => {
+                    const label = getOptionLabel(id);
+                    const isSelected = selectedOptions[id];
+                    const symbol = isSelected ? "✅" : "❌";
+                    return `${symbol} ${label}`;
+                }));
+            if (orList.length)
+                prereqLines.push(...orList.map(id => {
+                    const label = getOptionLabel(id);
+                    const symbol = orAccepted ? "✅" : (selectedOptions[id] ? "✅" : "❌");
+                    return `${symbol} ${label}`;
+                }));
+        }
+        let prereqHelpTitle = "Prerequisites are checked against selected options. String expressions support &&, ||, and !. When the overall expression evaluates true the UI marks referenced prerequisites as satisfied for clarity.";
+        if (typeof opt.prerequisites === 'string') {
+            const rawExpr = opt.prerequisites;
+            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+            let human = rawExpr;
+            const seenIds = new Set();
+            tokens.forEach(tok => {
+                const [id] = tok.split('__');
+                if (seenIds.has(tok)) return;
+                seenIds.add(tok);
+                const label = getOptionLabel(id) || id;
+                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+            });
+            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+            prereqHelpTitle = `${human}\n\nExpression: ${rawExpr}`;
+        }
+        const helpHtml = `<span class=\"prereq-help\" title=\"${prereqHelpTitle.replace(/\"/g, '&quot;')}\">?</span>`;
+        requirements.innerHTML += `🔒 Requires: ${helpHtml}<br>${prereqLines.join("<br>")}`;
+
+        if (opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
+            const conflictLines = opt.conflictsWith.map(id => {
+                const label = getOptionLabel(id) || id;
+                const selected = !!selectedOptions[id];
+                const symbol = selected ? '❌' : '✅';
+                return `${symbol} ${label}`;
+            });
+            requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
+        }
+    }
+
+    if ((!requirements.innerHTML || !requirements.innerHTML.includes('Incompatible With')) && opt.conflictsWith && Array.isArray(opt.conflictsWith) && opt.conflictsWith.length > 0) {
+        const conflictLines = opt.conflictsWith.map(id => {
+            const label = getOptionLabel(id) || id;
+            const selected = !!selectedOptions[id];
+            const symbol = selected ? '❌' : '✅';
+            return `${symbol} ${label}`;
+        });
+        requirements.innerHTML += `<br>⚠️ Incompatible With:<br>${conflictLines.join("<br>")}`;
+    }
+
+    const desc = document.createElement("div");
+    desc.className = "option-description";
+    setMultilineText(desc, opt.description || "");
+
+    const baseIpCost = (opt.cost && typeof opt.cost.IP === 'number') ? opt.cost.IP : null;
+    const discountContexts = [];
+    if (isDiscountableSubcat && opt.disableSubcategoryDiscount !== true) {
+        discountContexts.push({
+            level: 'subcategory',
+            limit: subcat.discountSelectionLimit,
+            eligible: subcat.discountEligibleUnder,
+            map: getSubcategoryDiscountMap(subcatKey),
+            mode: subcat.discountMode || 'half'
+        });
+    }
+    if (catDiscountUnlocked && opt.disableCategoryDiscount !== true && !catAutoApplyAll) {
+        discountContexts.push({
+            level: 'category',
+            limit: cat.discountSelectionLimit,
+            eligible: cat.discountEligibleUnder,
+            map: getCategoryDiscountMap(catKey),
+            mode: cat.discountMode || 'half'
+        });
+    }
+
+    discountContexts.forEach(discountContext => {
+        if (baseIpCost === null || baseIpCost <= 0 || baseIpCost > discountContext.eligible) {
+            return;
+        }
+
+        const discountMap = discountContext.map;
+        const assignedCount = discountMap[opt.id] || 0;
+        const totalAssigned = getDiscountTotalCount(discountMap);
+        const discountLimit = discountContext.limit || 0;
+        const alreadySelected = selectedOptions[opt.id] > 0;
+        const totalOthers = totalAssigned - assignedCount;
+        const availableSlots = Math.max(0, discountLimit - totalOthers);
+        const contextLabel = discountContext.level === 'subcategory' ? 'subcategory' : 'category';
+        const discountLabel = discountContext.mode === 'free' ? 'Free slots' : 'Discount slots';
+
+        if (assignedCount > 0) {
+            const remaining = Math.max(0, assignedCount - (selectedOptions[opt.id] || 0));
+            const remainingText = remaining > 0 ? ` (remaining ${remaining})` : '';
+            requirements.innerHTML += `${discountLabel} assigned (${contextLabel}): ${assignedCount}${remainingText}<br>`;
+        }
+
+        const discountBtn = document.createElement("button");
+        discountBtn.className = "discount-toggle";
+        if (assignedCount > 0) {
+            discountBtn.textContent = discountContext.mode === 'free'
+                ? `Discount Applied (${assignedCount}) – Free (${contextLabel})`
+                : `Discount Applied (${assignedCount}) (${contextLabel})`;
+        } else {
+            discountBtn.textContent = discountContext.mode === 'free'
+                ? `Apply Free Slot (${contextLabel})`
+                : `Apply Discount (${contextLabel})`;
+        }
+
+        const canIncrease = availableSlots > assignedCount;
+        discountBtn.disabled = alreadySelected || (assignedCount === 0 && !canIncrease);
+        if (alreadySelected) {
+            discountBtn.title = `Remove and re-select this item to change ${contextLabel} discount status.`;
+        } else if (assignedCount === 0 && !canIncrease) {
+            const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
+            discountBtn.title = `${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`;
+        } else {
+            discountBtn.title = discountContext.mode === 'free'
+                ? `Assign or remove a free ${contextLabel} slot for this item.`
+                : `Cycle the number of ${contextLabel} discount slots applied to this item.`;
+        }
+
+        discountBtn.onclick = () => {
+            if (selectedOptions[opt.id] > 0) return;
+
+            const current = discountMap[opt.id] || 0;
+            const freshTotal = getDiscountTotalCount(discountMap) - current;
+            const maxAllowed = Math.max(0, discountLimit - freshTotal);
+
+            if (maxAllowed === 0 && current === 0) {
+                const limitLabel = discountContext.mode === 'free' ? 'Free slot' : 'Discount';
+                alert(`${limitLabel} limit reached at the ${contextLabel} level. Remove an existing selection to free a slot (limit ${discountLimit}).`);
+                return;
+            }
+
+            let next = current + 1;
+            if (next > maxAllowed) {
+                next = 0;
+            }
+
+            if (next > 0) {
+                discountMap[opt.id] = next;
+                discountContexts.forEach(otherContext => {
+                    if (otherContext !== discountContext && otherContext.map[opt.id]) {
+                        delete otherContext.map[opt.id];
+                    }
+                });
+            } else {
+                delete discountMap[opt.id];
+            }
+            renderAccordion();
+        };
+        requirements.appendChild(discountBtn);
+    });
+
+    contentWrapper.appendChild(label);
+    contentWrapper.appendChild(requirements);
+    contentWrapper.appendChild(desc);
+
+    if (opt.inputType === "slider") {
+        renderSliderControl(opt, contentWrapper);
+    } else {
+        renderSelectionButton(opt, contentWrapper);
+        if (selectedOptions[opt.id] && opt.dynamicCost) {
+            renderDynamicCost(opt, contentWrapper);
+        }
+    }
+
+    wrapper.appendChild(contentWrapper);
+    grid.appendChild(wrapper);
+}
+
+function renderSliderControl(opt, contentWrapper) {
+    const { currencyType, attributeType } = getSliderTypes(opt.costPerPoint || {});
+    const attrName = attributeType;
+    const effectiveMin = opt.min ?? attributeRanges[attrName]?.min ?? 0;
+    const effectiveMax = attributeRanges[attrName]?.max ?? opt.max ?? 40;
+
+    let currentValue = attributeSliderValues[opt.id] ?? effectiveMin;
+    if (currentValue > effectiveMax) {
+        currentValue = effectiveMax;
+        attributeSliderValues[opt.id] = currentValue;
+        if (attrName) attributeSliderValues[attrName] = currentValue;
+    }
+    if (currentValue < effectiveMin) {
+        currentValue = effectiveMin;
+        attributeSliderValues[opt.id] = currentValue;
+        if (attrName) attributeSliderValues[attrName] = currentValue;
+    }
+
+    if (attributeSliderValues[opt.id] === undefined) {
+        attributeSliderValues[opt.id] = currentValue;
+    }
+    if (attrName && attributeSliderValues[attrName] === undefined) {
+        attributeSliderValues[attrName] = currentValue;
+    }
+
+    const sliderWrapper = document.createElement("div");
+    sliderWrapper.className = "slider-wrapper";
+
+    const sliderLabel = document.createElement("label");
+    sliderLabel.textContent = `${opt.label}: ${currentValue}`;
+    sliderLabel.htmlFor = `${opt.id}-slider`;
+
+    const slider = document.createElement("input");
+    slider.type = "range";
+    slider.min = effectiveMin;
+    slider.max = effectiveMax;
+    slider.value = currentValue;
+    slider.id = `${opt.id}-slider`;
+
+    slider.oninput = (e) => {
+        const newVal = parseInt(e.target.value);
+        const { currencyType: currentCurrency, attributeType: currentAttribute } = getSliderTypes(opt.costPerPoint || {});
+        const costPerPoint = opt.costPerPoint?.[currentCurrency] || 0;
+        const attrNameForCost = currentAttribute;
+
+        const currentEffectiveMax = attributeRanges[attrNameForCost]?.max ?? parseInt(slider.max);
+        slider.max = currentEffectiveMax;
+
+        if (newVal > currentEffectiveMax) {
+            e.target.value = currentEffectiveMax;
+            sliderLabel.textContent = `${opt.label}: ${currentEffectiveMax}`;
+            return;
+        }
+
+        const oldVal = attributeSliderValues[opt.id] ?? effectiveMin;
+        let diff = newVal - oldVal;
+
+        let freeBoostAmount = 0;
+        for (const dynOptId in dynamicSelections) {
+            const dynOpt = findOptionById(dynOptId);
+            if (dynOpt && dynOpt.dynamicCost) {
+                dynOpt.dynamicCost.choices.forEach((choice, i) => {
+                    if (dynamicSelections[dynOptId][i] === attrNameForCost && dynOpt.dynamicCost.types[i] === "Boost Attribute") {
+                        freeBoostAmount = parseInt(dynOpt.dynamicCost.values[i]);
+                    }
+                });
+            }
+        }
+
+        let pointsChange = 0;
+
+        if (diff > 0) {
+            const paidOldVal = Math.max(0, oldVal - freeBoostAmount);
+            const paidNewVal = Math.max(0, newVal - freeBoostAmount);
+            const paidIncrease = paidNewVal - paidOldVal;
+
+            if (paidIncrease > 0) {
+                const cost = costPerPoint * paidIncrease;
+                if (points[currentCurrency] < cost && !allowNegativeTypes.has(currentCurrency)) {
+                    e.target.value = oldVal;
+                    sliderLabel.textContent = `${opt.label}: ${oldVal}`;
+                    return;
+                }
+                pointsChange = -cost;
+            }
+        } else if (diff < 0) {
+            const paidOldVal = Math.max(0, oldVal - freeBoostAmount);
+            const paidNewVal = Math.max(0, newVal - freeBoostAmount);
+            const paidDecrease = paidOldVal - paidNewVal;
+
+            if (paidDecrease > 0) {
+                pointsChange = costPerPoint * paidDecrease;
+            }
+        }
+
+        if (pointsChange !== 0) {
+            points[currentCurrency] += pointsChange;
+        }
+
+        attributeSliderValues[opt.id] = newVal;
+        if (attrNameForCost) {
+            attributeSliderValues[attrNameForCost] = newVal;
+        }
+        if (attrNameForCost && points.hasOwnProperty(attrNameForCost)) {
+            points[attrNameForCost] = newVal;
+        }
+
+        sliderLabel.textContent = `${opt.label}: ${newVal}`;
+        evaluateFormulas();
+        updatePointsDisplay();
+    };
+
+    sliderWrapper.appendChild(sliderLabel);
+    sliderWrapper.appendChild(slider);
+    contentWrapper.appendChild(sliderWrapper);
+}
+
+function renderSelectionButton(opt, contentWrapper) {
+    const controls = document.createElement("div");
+    controls.className = "option-controls";
+
+    const count = selectedOptions[opt.id] || 0;
+    const max = opt.maxSelections || 1;
+
+    const btn = document.createElement("button");
+    if (count > 0) {
+        const maxLabel = max === Infinity ? "" : ` / ${max}`;
+        btn.textContent = `✓ Selected (${count}${maxLabel})`;
+    } else {
+        btn.textContent = "Select";
+    }
+
+    const canAdd = canSelect(opt);
+    btn.disabled = (!canAdd && count === 0) || (count >= max && max !== Infinity);
+
+    if (count > 0) {
+        const removeBtn = document.createElement("button");
+        removeBtn.textContent = "Remove";
+        removeBtn.classList.add("remove-btn");
+        removeBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeSelection(opt);
+        };
+        controls.appendChild(removeBtn);
+    }
+
+    btn.onclick = () => {
+        if (count > 0 && max === 1) {
+            removeSelection(opt);
+        } else if (canAdd) {
+            addSelection(opt);
+        }
+    };
+    controls.appendChild(btn);
+    contentWrapper.appendChild(controls);
+}
+
+function renderDynamicCost(opt, contentWrapper) {
+    const choiceWrapper = document.createElement("div");
+    choiceWrapper.className = "dynamic-choice-wrapper";
+
+    const numChoices = opt.dynamicCost.values.length;
+    const affectedTypes = opt.dynamicCost.types || [];
+
+    if (!dynamicSelections[opt.id]) {
+        dynamicSelections[opt.id] = Array(numChoices).fill("");
+    }
+
+    for (let i = 0; i < numChoices; i++) {
+        const select = document.createElement("select");
+        select.innerHTML = `<option value="">-- Select --</option>` +
+            opt.dynamicCost.choices.map(choice => `<option value="${choice}">${choice}</option>`).join("");
+        select.value = dynamicSelections[opt.id][i] || "";
+
+        const label = document.createElement("label");
+        const valueText = opt.dynamicCost.values[i];
+        let effectText = "";
+        if (typeof valueText === 'string' && valueText.startsWith("cap:")) {
+            effectText = `(Cap at ${valueText.slice(4)})`;
+        } else if (typeof valueText === 'number') {
+            effectText = `(${valueText >= 0 ? "+" : ""}${valueText})`;
+        }
+        label.textContent = `${affectedTypes[i] || "Select Effect"}: ${effectText}`;
+        label.style.display = "block";
+        label.style.marginTop = "0.25em";
+
+        select.onchange = (e) => {
+            const newValue = e.target.value;
+            const prevValue = dynamicSelections[opt.id][i];
+
+            const tempDynamicSelections = [...dynamicSelections[opt.id]];
+            tempDynamicSelections[i] = newValue;
+            const uniqueSelections = new Set(tempDynamicSelections.filter(v => v !== ""));
+            if (uniqueSelections.size !== tempDynamicSelections.filter(v => v !== "").length) {
+                alert("Each selection must be unique for this set of choices.");
+                e.target.value = prevValue;
+                return;
+            }
+
+            dynamicSelections[opt.id][i] = newValue;
+            evaluateFormulas();
+            updatePointsDisplay();
+            renderAccordion();
+        };
+        choiceWrapper.appendChild(label);
+        choiceWrapper.appendChild(select);
+    }
+    contentWrapper.appendChild(choiceWrapper);
+}
+
+// Put this near your other helpers (top-level scope)
 
 // Put this near your other helpers (top-level scope)
 function prereqReferencesId(prereq, id) {
