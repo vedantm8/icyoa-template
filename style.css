@@ -1,3 +1,9 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 :root {
     --bg-color: #f9f9f9;
     --container-bg: #ffffff;
@@ -88,7 +94,7 @@ button:disabled {
 .options-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 16px;
+    gap: 24px 16px;
     margin-top: 12px;
 }
 
@@ -102,13 +108,15 @@ button:disabled {
     border-radius: 8px;
     background-color: var(--container-bg);
     transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-    height: 100%;
+    /* Removed height: 100% and margin-bottom to prevent grid overflow */
 }
 
 .option-wrapper:hover {
     border-color: var(--accent-color);
     box-shadow: 0 4px 12px var(--shadow-color);
     transform: translateY(-2px);
+    z-index: 10;
+    position: relative;
 }
 
 .option-wrapper img {
