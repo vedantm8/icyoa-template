@@ -39,6 +39,7 @@
             <button id="exportBtn">Export Choices</button>
             <button id="importBtn">Import Choices</button>
             <button id="resetBtn" style="background-color: #f44336; color: white;">Reset All</button>
+            <button id="backpackBtn" style="display: none; background-color: #4CAF50; color: white;">View Backpack</button>
         </div>
     </div>
 
@@ -62,6 +63,16 @@
             </div>
         </div>
     </div>
+
+    <!-- Backpack Modal -->
+    <div id="backpackModal" class="modal">
+        <div class="modal-content" id="backpackModalContent">
+            <span id="backpackModalClose" class="modal-close">&times;</span>
+            <h3 id="backpackTitle">Your Selections</h3>
+            <div id="backpackContent" style="max-height: 70vh; overflow-y: auto;"></div>
+        </div>
+    </div>
+
     <script src="logicExpr.js"></script>
     <script src="script.js"></script>
 </body>

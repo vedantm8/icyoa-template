@@ -5,6 +5,7 @@ const discountedSelections = {};
 const openCategories = new Set();
 const storyInputs = {};
 let currentTab = null; // Track current active tab
+let backpackEnabled = false; // Track if backpack is enabled
 
 const openSubcategories = new Set();
 const attributeSliderValues = {};
@@ -208,6 +209,9 @@ function setMultilineText(element, text = "") {
 document.getElementById("exportBtn").onclick = () => openModal("export");
 document.getElementById("importBtn").onclick = () => openModal("import");
 document.getElementById("modalClose").onclick = () => closeModal();
+
+document.getElementById("backpackBtn").onclick = () => openBackpackModal();
+document.getElementById("backpackModalClose").onclick = () => closeBackpackModal();
 
 document.getElementById("resetBtn").onclick = () => {
     if (!confirm("Are you sure you want to reset all selections?")) return;
@@ -679,7 +683,13 @@ function applyCyoaData(rawData, {
 
         categories = data.filter(entry => !entry.type || entry.name);
 
-
+        // Handle backpack feature
+        const backpackEntry = data.find(entry => entry.type === "backpack");
+        backpackEnabled = backpackEntry?.enabled || false;
+        const backpackBtn = document.getElementById("backpackBtn");
+        if (backpackBtn) {
+            backpackBtn.style.display = backpackEnabled ? "inline-block" : "none";
+        }
 
         renderAccordion();
         applyDynamicCosts();
@@ -2193,3 +2203,101 @@ function toggleDarkMode() {
 }
 
 document.getElementById('themeToggle')?.addEventListener('click', toggleDarkMode);
+
+// Backpack Feature
+function openBackpackModal() {
+    const modal = document.getElementById("backpackModal");
+    const content = document.getElementById("backpackContent");
+    content.innerHTML = "";
+
+    // Group selected options by category
+    const backpackByCategory = {};
+
+    categories.forEach((cat) => {
+        if (["points", "headerImage", "title", "description", "formulas", "backpack"].includes(cat.type)) {
+            return;
+        }
+
+        const catName = cat.name;
+        const selectedInCat = [];
+
+        const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
+        subcats.forEach((subcat) => {
+            (subcat.options || []).forEach((opt) => {
+                if (selectedOptions[opt.id] > 0) {
+                    selectedInCat.push(opt);
+                }
+            });
+        });
+
+        if (selectedInCat.length > 0) {
+            backpackByCategory[catName] = selectedInCat;
+        }
+    });
+
+    // Render categories and items
+    Object.entries(backpackByCategory).forEach(([catName, options]) => {
+        const categoryDiv = document.createElement("div");
+        categoryDiv.className = "backpack-category";
+
+        const titleDiv = document.createElement("div");
+        titleDiv.className = "backpack-category-title";
+        titleDiv.textContent = catName;
+        categoryDiv.appendChild(titleDiv);
+
+        const gridDiv = document.createElement("div");
+        gridDiv.className = "backpack-grid";
+
+        options.forEach((opt) => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "backpack-item";
+
+            const imageUrl = opt.image || opt.img;
+            if (imageUrl) {
+                const img = document.createElement("img");
+                img.src = imageUrl;
+                img.alt = opt.label;
+                img.className = "backpack-item-image";
+                itemDiv.appendChild(img);
+            }
+
+            const labelDiv = document.createElement("div");
+            labelDiv.className = "backpack-item-label";
+            labelDiv.textContent = opt.label;
+            itemDiv.appendChild(labelDiv);
+
+            gridDiv.appendChild(itemDiv);
+        });
+
+        categoryDiv.appendChild(gridDiv);
+        content.appendChild(categoryDiv);
+    });
+
+    // Show empty message if no selections
+    if (Object.keys(backpackByCategory).length === 0) {
+        const emptyMsg = document.createElement("p");
+        emptyMsg.style.textAlign = "center";
+        emptyMsg.style.color = "var(--text-muted)";
+        emptyMsg.textContent = "No selections yet. Make some choices to see them here!";
+        content.appendChild(emptyMsg);
+    }
+
+    modal.style.display = "block";
+}
+
+function closeBackpackModal() {
+    const modal = document.getElementById("backpackModal");
+    modal.style.display = "none";
+}
+
+
+
+// Close modal when clicking outside
+window.onclick = (event) => {
+    const modal = document.getElementById("modal");
+    const backpackModal = document.getElementById("backpackModal");
+
+    if (event.target === modal) closeModal();
+    if (event.target === backpackModal) closeBackpackModal();
+};
+

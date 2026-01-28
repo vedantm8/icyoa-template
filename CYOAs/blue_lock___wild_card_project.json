@@ -465,5 +465,55 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Drawbacks",
+    "subcategories": [
+      {
+        "name": "Drawbacks",
+        "type": "storyBlock",
+        "text": "Drawbacks gain extra points at the cost of enduring a setback or other type of handicap to add to the challenge.",
+        "options": [
+          {
+            "label": "Anxious",
+            "description": "You are afflicted by the same anxiety that Tokimitsu feels both in and out of games. Best of luck.",
+            "cost": {
+              "Weapons": -1
+            },
+            "id": "drawbacksDrawbacksAnxious",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fc2%2F94%2Ff9%2Fc294f98a04c48299596732561fa6159d.jpg&f=1&nofb=1&ipt=7f351575909d301b77b1c17ef02da9330c45988ce6036b0d3d69d80e0c3bdbd7"
+          },
+          {
+            "label": "Ticking Time Bomb",
+            "description": "You have a prior ACL tear injury that threatens to re-occur if you place too mush stress on it. ",
+            "cost": {
+              "Weapons": -1
+            },
+            "id": "drawbacksDrawbacksTickingTimeBomb",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp15254795.jpg&f=1&nofb=1&ipt=2266fb39c36bbca087ce6188773622116136b13f54e6b48b1cf42abcc42f0650"
+          },
+          {
+            "label": "Codependent",
+            "description": "Pick an existing character: For some reason you are codependent on this character. You will not remember choosing this drawback.",
+            "cost": {
+              "Weapons": -1
+            },
+            "id": "drawbacksDrawbacksCodependent",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpaperaccess.com%2Ffull%2F8887429.jpg&f=1&nofb=1&ipt=767ca070b65e8bfc556124e4bfaad9ab5691f253c5f75b9313e2341cf3248eec"
+          },
+          {
+            "label": "Optic Neuropathy",
+            "description": "You are afflicted with optic neuropathy: This makes being an active player increasingly difficult if not treated properly. ",
+            "cost": {},
+            "id": "drawbacksDrawbacksOpticNeuropathy",
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fyukimiya-colored-panel-v0-uoihu8n6z42d1.png%3Fwidth%3D1080%26crop%3Dsmart%26auto%3Dwebp%26s%3De0465a572a270afb304300e69679829c109b0fdd&f=1&nofb=1&ipt=09c65d80527e64292ffcde1ef3cbcfa2218e079af17e2b01d997a1fc32ab223e"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type": "backpack",
+    "enabled": true
   }
 ]

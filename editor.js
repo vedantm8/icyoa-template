@@ -484,6 +484,12 @@
         if (!pointsEntry.attributeRanges) pointsEntry.attributeRanges = {};
         fragment.appendChild(renderPointsSection(pointsEntry));
 
+        const backpackEntry = ensureEntry("backpack", () => ({
+            type: "backpack",
+            enabled: false
+        })).entry;
+        fragment.appendChild(renderBackpackSection(backpackEntry));
+
         const themeEntry = ensureEntry("theme", () => ({
             type: "theme",
             "bg-color": "#f9f9f9",
@@ -718,6 +724,41 @@
 
         body.appendChild(rangesContainer);
         body.appendChild(addAttrBtn);
+
+        return container;
+    }
+
+    function renderBackpackSection(backpackEntry) {
+        const {
+            container,
+            body
+        } = createSectionContainer("Backpack Feature", {
+            defaultOpen: false
+        });
+
+        const field = document.createElement("div");
+        field.className = "field-inline";
+
+        const label = document.createElement("label");
+        label.textContent = "Enable Backpack";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = backpackEntry.enabled || false;
+        checkbox.addEventListener("change", () => {
+            backpackEntry.enabled = checkbox.checked;
+            schedulePreviewUpdate();
+        });
+
+        field.appendChild(checkbox);
+        field.appendChild(label);
+        body.appendChild(field);
+
+        const description = document.createElement("p");
+        description.style.fontSize = "12px";
+        description.style.color = "var(--text-muted)";
+        description.innerHTML = "When enabled, shows a button at the bottom of the page that displays all selected choices in a modal that can be downloaded as an image.";
+        body.appendChild(description);
 
         return container;
     }

@@ -4896,5 +4896,9 @@
     "points-bg": "#f0f0f0",
     "points-border": "#cccccc",
     "shadow-color": "rgba(0,0,0,0.1)"
+  },
+  {
+    "type": "backpack",
+    "enabled": true
   }
 ]

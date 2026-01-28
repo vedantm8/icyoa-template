@@ -1960,7 +1960,7 @@
             "label": "Durex Suit",
             "description": "Now, this is a super suit. It is strong and stylish. It will not stop a bullet, but it might stop a knife. Maybe don't wear upper armor with this. Show off a bit.",
             "cost": {
-              "SC": 0
+              "SC": 40
             },
             "id": "lowerLayerDurexSuit",
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.wikia.nocookie.net%2Fmarvel_dc%2Fimages%2Fa%2Fa9%2FSuit_001.jpg%2Frevision%2Flatest%3Fcb%3D20200320104108&f=1&nofb=1&ipt=ad91b623bad53c8977ffa61f43bc7915af38dd43df873077de842b123393d22c"
@@ -2479,5 +2479,24 @@
         "maxSelections": 1
       }
     ]
+  },
+  {
+    "type": "backpack",
+    "enabled": true
+  },
+  {
+    "type": "theme",
+    "bg-color": "#f9f9f9",
+    "container-bg": "#ffffff",
+    "text-color": "#333333",
+    "text-muted": "#555555",
+    "accent-color": "#007acc",
+    "accent-text": "#ffffff",
+    "border-color": "#dddddd",
+    "item-bg": "#f4f4f4",
+    "item-header-bg": "#e0e0e0",
+    "points-bg": "#f0f0f0",
+    "points-border": "#cccccc",
+    "shadow-color": "rgba(0,0,0,0.1)"
   }
 ]
