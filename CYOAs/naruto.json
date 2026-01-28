@@ -306,7 +306,7 @@
         "options": [
           {
             "id": "perkChakraFree",
-            "label": "Chakra",
+            "label": "Chakra (Free)",
             "description": "Begin with chakra reserves equal to an average Jōnin. In future Jumps you can awaken chakra pathways in others by channeling your energy.",
             "cost": {
               "CP": 0
@@ -319,7 +319,7 @@
           },
           {
             "id": "perkChakra100",
-            "label": "Chakra",
+            "label": "Chakra (100)",
             "description": "Start with chakra reserves comparable to an average Kage.",
             "cost": {
               "CP": 100
@@ -332,7 +332,7 @@
           },
           {
             "id": "perkChakra200",
-            "label": "Chakra",
+            "label": "Chakra (200)",
             "description": "Possess immense chakra on par with Kisame Hoshigaki, the 'Tailless Tailed Beast'.",
             "cost": {
               "CP": 200
@@ -403,7 +403,7 @@
             },
             "maxSelections": 20,
             "discountType": "jutsu",
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fnarutofanon%2Fimages%2F4%2F44%2FGreat_Dragon_Fire_Technique_2.PNG%2Frevision%2Flatest%3Fcb%3D20111202141718&f=1&nofb=1&ipt=760ba4315055391e7b057a6310e026c9bfa966b50ddaaf92dd0882fd1e3c0181"
+            "image": "https://static.wikia.nocookie.net/naruto/images/b/b7/Mind_Body_Switch_Handseal.png"
           },
           {
             "id": "perkJutsuB",
@@ -648,7 +648,7 @@
             },
             "prerequisites": "perkSpecialistPaid",
             "maxSelections": 20,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fvignette.wikia.nocookie.net%2Fnarutofanon%2Fimages%2F4%2F44%2FGreat_Dragon_Fire_Technique_2.PNG%2Frevision%2Flatest%3Fcb%3D20111202141718&f=1&nofb=1&ipt=760ba4315055391e7b057a6310e026c9bfa966b50ddaaf92dd0882fd1e3c0181"
+            "image": "https://static.wikia.nocookie.net/naruto/images/b/b7/Mind_Body_Switch_Handseal.png"
           },
           {
             "id": "discountJutsuB",
@@ -739,7 +739,7 @@
                 }
               }
             ],
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%3Fid%3DOIF.o6vXoZfMuHLKaLB%252fQnFoFg%26cb%3D12%26pid%3DApi&f=1&ipt=952f6905dc0581aa445c5ba2c5e4ef12edec6494c068650bea49dc9c2279c7c2&ipo=images"
+            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fimage.geekship.com.br%2FDjKmdgyM8gwu7ysswbVFR6W_wUs%3D%2F1920x0%2Fsmart%2Ffilters%3Astrip_icc()%3Aformat(webp)%2Fhull.geekship.com.br%2Fwp-content%2Fuploads%2F2023%2F04%2FNaruto-Shippuden.jpg&f=1&nofb=1&ipt=00a1e2d530d6a60e328cbcf779237ded71c61282ada7c919e1b297dc6a9c3665"
           },
           {
             "id": "perkOldFashionedNinja",
@@ -951,7 +951,7 @@
                 }
               }
             ],
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.t9XrCqoCgbv8oATWkdNabwHaEJ%3Fcb%3D12%26pid%3DApi&f=1&ipt=b7089dea8cecea7f0380ae2c6b717328ee3dcbb40d7924b279adfb2d50e7cbd2&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/7/72/Scientific_Ninja_Tools.png"
           },
           {
             "id": "perkMasterOfBiology",
@@ -1059,7 +1059,7 @@
                 }
               }
             ],
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.xlClQUrssPGw4339KlXqxQHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=587f631bf3180146e1aa229d01ed2de9b722652c5dac0f40cc8bd07133c4f1ed&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/3/3c/Obito.png"
           },
           {
             "id": "perkMasterfulPlanning",
@@ -1476,7 +1476,7 @@
               "BLP": 200
             },
             "maxSelections": 1,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.J6OWqE10cRxCdGbqa4mFeQAAAA%3Fcb%3D12%26pid%3DApi&f=1&ipt=31315272a401fc97332d77a3b2c5490e49fe807584d8166ec1782e2e0c1ffc02&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/8/8f/C2_Dragon.png"
           },
           {
             "id": "kgExplosionReleaseCombo",
@@ -1838,7 +1838,7 @@
             },
             "prerequisites": "kgMangekyoSharingan",
             "maxSelections": 1,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.Cd2qQQX8QE0skhWboGnfJAHaFj%3Fcb%3D12%26pid%3DApi&f=1&ipt=42deaf13f6fd43c8a18c250e62b037cb9bd28f48978e4926e39c44ffc6c7d7fe&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/e/e0/Amaterasu.png"
           },
           {
             "id": "kgMangekyoKagutsuchi",
@@ -2021,7 +2021,8 @@
               "RGP": 1
             },
             "prerequisites": "kgRinnegan",
-            "maxSelections": 1
+            "maxSelections": 1,
+            "image": "https://static.wikia.nocookie.net/naruto/images/1/1e/Rinnegan_multi_colour.png"
           },
           {
             "id": "kgRinneganChakraEdibles",
@@ -2032,7 +2033,8 @@
               "RGP": 1
             },
             "prerequisites": "kgRinnegan",
-            "maxSelections": 1
+            "maxSelections": 1,
+            "image": "https://static.wikia.nocookie.net/naruto/images/3/3a/Shinju_Fruit.png"
           },
           {
             "id": "kgRinneganAbsorption",
@@ -2043,7 +2045,8 @@
               "RGP": 1
             },
             "prerequisites": "kgRinnegan",
-            "maxSelections": 1
+            "maxSelections": 1,
+            "image": "https://static.wikia.nocookie.net/naruto/images/5/52/Momoshiki%27s_rinnegan.png"
           },
           {
             "id": "kgRinneganTemporalRewind",
@@ -2054,7 +2057,8 @@
               "RGP": 1
             },
             "prerequisites": "kgRinnegan",
-            "maxSelections": 1
+            "maxSelections": 1,
+            "image": "https://static.wikia.nocookie.net/naruto/images/d/d1/Glowing_Blue_Rinnegan.png"
           }
         ]
       }
@@ -2571,7 +2575,7 @@
             "cost": {
               "JP": 400
             },
-            "image": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fpm1.aminoapps.com%2F8385%2F8f13cf4e428e869cf40b2ec2349f7cb481d83606r1-1920-1080v2_uhq.jpg&f=1&nofb=1&ipt=4247cff92ca6750b895dac99259783fd7b531b3ee5eaae034fd1f92d99aa45db"
+            "image": "https://static.wikia.nocookie.net/naruto/images/a/a3/Kokuo.png"
           },
           {
             "id": "tailedSaiken",
@@ -3168,7 +3172,7 @@
               "IP": 100
             },
             "maxSelections": 1,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.wikia.nocookie.net%2Fnaruto%2Fimages%2Fa%2Faf%2FChakra_Disruption_Device.png%2Frevision%2Flatest%3Fcb%3D20230601205344%26path-prefix%3Dit&f=1&nofb=1&ipt=87baecd2d97353cae38c6906ff51708923e4804e9a5934fd400844299cb8282d"
+            "image": "https://static.wikia.nocookie.net/naruto/images/a/af/Chakra_Disruption_Device.png"
           },
           {
             "id": "itemsChakraDisruptionUnlimited",
@@ -3179,7 +3183,7 @@
             },
             "prerequisites": "itemsChakraDisruption",
             "maxSelections": 1,
-            "image": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fpm1.aminoapps.com%2F8334%2Fdd50f878e6f2b1a9522754bc835da9d32ebec6bar1-150-150v2_uhq.jpg&f=1&nofb=1&ipt=e2806156c8ad252e2c3611204524f634270b1331a04bda0ec8183f5964633451"
+            "image": "https://static.wikia.nocookie.net/naruto/images/a/af/Chakra_Disruption_Device.png"
           },
           {
             "id": "itemsHeroWater",
@@ -3251,7 +3255,7 @@
               "IP": 200
             },
             "maxSelections": 1,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.6nDKwirlyMT-rDLojL1PLQHaHa%3Fcb%3D12%26pid%3DApi&f=1&ipt=24c3fdc128c31ca71f329c50be145f5cb89175c96081fa944eb45165f79f49b1&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/1/1e/Dragon_Blade_and_Orbs.png"
           },
           {
             "id": "itemsDragonBladeOrbs",
@@ -3498,7 +3502,7 @@
               "IP": 200
             },
             "maxSelections": 1,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.kpTtIRsuBwukokuwq0YhtwHaHa%3Fcb%3D12%26pid%3DApi&f=1&ipt=68f11711c8508c95059f497275a643f8b827e362965f504b0418a23166d96172&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/a/a4/Aburame_clan.png"
           },
           {
             "id": "itemsAburameBikochu",
@@ -4217,7 +4221,7 @@
             "cost": {
               "CP": -100
             },
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.qACYpC9QNQUvL3QzlaSweAHaEL%3Fcb%3D12%26pid%3DApi&f=1&ipt=f09949e5c775d7a850428fc574833c544cb750a47b8a827ef939ddaf57a8c086&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/6/6a/Summoning_Technique.png"
           },
           {
             "id": "drawbackTheFool",
@@ -4293,7 +4297,7 @@
               "CP": -100
             },
             "maxSelections": 2,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.741d0HRk4Rm4xz2a-cxhZQHaFj%3Fcb%3D12%26pid%3DApi&f=1&ipt=a5b2e3c94d8172639ad2f4a30236a4c88fa3cef403765a87a14f23ff0eebda5a&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/9/99/Naruto_Holds_Sasuke.png"
           },
           {
             "id": "drawbackWhatsAnInternet",
@@ -4331,7 +4335,7 @@
             "cost": {
               "CP": -200
             },
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.siskrcpYxefcxJjejhmf8wHaEI%3Fcb%3D12%26pid%3DApi%26ucfimg%3D1&f=1&ipt=e317d1734117e87bb1f834b9f9cd3782f631e414dd8698248650271c1e105fd7&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/8/8c/Itachi_crying.png"
           },
           {
             "id": "drawbackCantControlIt",
@@ -4399,7 +4403,7 @@
               "CP": -200
             },
             "maxSelections": 20,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.lrXRajKmCa9I3kDL5BUTNQHaEu%3Fcb%3D12%26pid%3DApi&f=1&ipt=f11f03d39a74019a039264f2428ebc6f70c71eb822ef2ce2161515def65003c4&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/b/b2/Willow.png"
           },
           {
             "id": "drawbackWaitThatWasAnIllusion",
@@ -4519,7 +4523,7 @@
             "cost": {
               "CP": -300
             },
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.UYhT67Lemdt27vIgqVcVLQHaFm%3Fcb%3D12%26pid%3DApi&f=1&ipt=42aa59ec76214271fe416566cc84300b9c84dea6aa515acfa05acc08b97ceb6b&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/8/8a/Team_7_Photo.png"
           },
           {
             "id": "drawbackTeam7Luck2",
@@ -4529,7 +4533,7 @@
               "CP": -200
             },
             "prerequisites": "drawbackTeam7Luck",
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP._YJT3Jed6sDDgpYeLeoqpQHaGF%3Fcb%3D12%26pid%3DApi&f=1&ipt=afed4af40234d3f0d4cbe7772f8dc7d18019ff0ee111e28f75552e0f81d8a67a&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/0/0e/Squad_Seven.png"
           },
           {
             "id": "drawbackChakraIneptitude",
@@ -4539,7 +4543,7 @@
               "CP": -300
             },
             "maxSelections": 20,
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.Ev1bcRTaxGJNuyncTnHMgQHaGm%3Fcb%3D12%26pid%3DApi&f=1&ipt=1705e61dc292ec53e3587f273d15d52325df98e1c47d24db3cd0d90d1425bb84&ipo=images"
+            "image": "https://static.wikia.nocookie.net/naruto/images/9/97/Rock_Lee_Part_I.png"
           },
           {
             "id": "drawbackGenin",
@@ -4548,7 +4552,7 @@
             "cost": {
               "CP": -400
             },
-            "image": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fimages4.wikia.nocookie.net%2F__cb20101021161850%2Fdenaruto3%2Fde%2Fimages%2F3%2F39%2FSakuraGenin01.png&f=1&nofb=1&ipt=1fa917d375c9f1aa4990796e29f8663e4bd9bc8412c88c46d56a5a070de0b6a9"
+            "image": "https://static.wikia.nocookie.net/naruto/images/9/99/Genin.png"
           },
           {
             "id": "drawbackPowerLockout",
