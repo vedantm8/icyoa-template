@@ -1615,15 +1615,15 @@
             "label": "The General",
             "description": "A man with no known motivations besides causing chaos with his private militia he calls \"The Corps.\" He robs banks, deals drugs, dabbles in human trafficking, and is a prolific arms dealer. The general has a hand in it all, and he is slowly tearing the community and its guardians apart. ",
             "cost": {},
-            "id": "minroSuperVillainTheGeneral",
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic0.polygonimages.com%2Fwordpress%2Fwp-content%2Fuploads%2Fchorus%2Fuploads%2Fchorus_asset%2Ffile%2F25505846%2FRCO019_1663824646.jpg%3Fq%3D49%26fit%3Dcrop%26w%3D825%26dpr%3D2&f=1&nofb=1&ipt=c4cd8cf06b39bf688141afc5cffa93cc5489723800345158127ecf53eb997c40"
+            "id": "minorSuperVillainTheGeneral",
+            "image": "https://static.wikia.nocookie.net/villains/images/9/94/General_Blue.png"
           },
           {
             "label": "Specimen-X-042",
             "description": "A strange creature that lurks underground, in the mines, sewers, and drainage pipes of the city. It escaped a lab almost a month ago and it has attempted to reproduce several times. It is infertile but that does not stop it from trying and hurting several people. It is incredibly dangerous and it is recommended that you try to trap it and call for help from other supers. Don't get captured. ",
             "cost": {},
             "id": "minorSuperVillainSpecimenX042",
-            "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpaintingvalley.com%2Fdrawings%2Fxenomorph-drawing-11.jpg&f=1&nofb=1&ipt=302b1565c13fd8b6caba33cf45ffa8a69124fee51510be6357877e0aa547a4cd"
+            "image": "https://static.wikia.nocookie.net/aliens/images/b/b6/Isolation.png"
           }
         ]
       },

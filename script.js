@@ -849,6 +849,77 @@ function removeDependentOptions(deselectedId) {
     }
 }
 
+/**
+ * Removes all selected options from categories that no longer meet their requirements.
+ * This handles the case where a conditional category becomes inactive.
+ */
+function removeOptionsFromInactiveCategoriesAndSubcategories() {
+    for (const cat of categories) {
+        // Check if category-level requirements are met
+        const requires = cat.requiresOption;
+        const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];
+        let categoryUnlocked = true;
+        if (requiredItems.length) {
+            categoryUnlocked = requiredItems.every(req => {
+                if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                    try {
+                        return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+                    } catch (e) {
+                        return false;
+                    }
+                }
+                return !!selectedOptions[req];
+            });
+        }
+
+        // If category is locked, remove all selected options from it
+        if (!categoryUnlocked) {
+            // Check options directly in category
+            for (const opt of cat.options || []) {
+                if (selectedOptions[opt.id]) {
+                    removeSelection(opt);
+                }
+            }
+            // Check options within subcategories
+            for (const subcat of cat.subcategories || []) {
+                for (const opt of subcat.options || []) {
+                    if (selectedOptions[opt.id]) {
+                        removeSelection(opt);
+                    }
+                }
+            }
+        } else {
+            // Category is unlocked, but check subcategories
+            for (const subcat of cat.subcategories || []) {
+                const subcatRequires = subcat.requiresOption;
+                const subcatRequiredItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+                let subcategoryUnlocked = true;
+                if (subcatRequiredItems.length) {
+                    subcategoryUnlocked = subcatRequiredItems.every(req => {
+                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                            try {
+                                return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+                            } catch (e) {
+                                return false;
+                            }
+                        }
+                        return !!selectedOptions[req];
+                    });
+                }
+
+                // If subcategory is locked, remove all selected options from it
+                if (!subcategoryUnlocked) {
+                    for (const opt of subcat.options || []) {
+                        if (selectedOptions[opt.id]) {
+                            removeSelection(opt);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 /**
  * Removes an option from selectedOptions and refunds its cost.
@@ -917,6 +988,7 @@ function removeSelection(option) {
         removeDependentOptions(option.id); // Remove any options that depended on this one
     }
 
+    removeOptionsFromInactiveCategoriesAndSubcategories(); // Clear options from categories that no longer meet requirements
     applyDynamicCosts(); // Re-evaluate formulas to reflect changes
     updatePointsDisplay();
     renderAccordion(); // Re-render to update UI elements (sliders, etc.)
@@ -1098,6 +1170,7 @@ function addSelection(option) {
 
     selectedOptions[option.id] = current + 1;
 
+    removeOptionsFromInactiveCategoriesAndSubcategories(); // Clear options from categories that no longer meet requirements
     applyDynamicCosts();
     updatePointsDisplay();
     renderAccordion();
