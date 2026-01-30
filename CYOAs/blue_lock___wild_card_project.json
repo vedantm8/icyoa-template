@@ -504,7 +504,9 @@
           {
             "label": "Optic Neuropathy",
             "description": "You are afflicted with optic neuropathy: This makes being an active player increasingly difficult if not treated properly. ",
-            "cost": {},
+            "cost": {
+              "Weapons": -1
+            },
             "id": "drawbacksDrawbacksOpticNeuropathy",
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fpreview.redd.it%2Fyukimiya-colored-panel-v0-uoihu8n6z42d1.png%3Fwidth%3D1080%26crop%3Dsmart%26auto%3Dwebp%26s%3De0465a572a270afb304300e69679829c109b0fdd&f=1&nofb=1&ipt=09c65d80527e64292ffcde1ef3cbcfa2218e079af17e2b01d997a1fc32ab223e"
           }
