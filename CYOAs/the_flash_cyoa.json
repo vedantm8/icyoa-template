@@ -606,9 +606,80 @@
           },
           {
             "label": "Gorilla Grodd",
-            "description": "Every society has its outcasts. For the peaceful simian civilization of Gorilla City. It is Grodd. ",
+            "description": "Every society has its outcasts. For the peaceful simian civilization of Gorilla City. It is Grodd. \n\nWhen Grodd try to wrest control of Gorilla City, Solovar was able to mentally contact and warn the Flash, who defeated Grodd and worded his plan to extend his power over the entire world.\n\nSince then, Grodd has been a sworn enemy of both Solovar and the Scarlet Speedster. He tried to regain control over Gorilla City on multiple occasions and used his \"force of mind\" powers against the Flash as well. Grodd's stated ambition has always been the subjugation of both humanity and the.\" elevation\" out apes and other animals to their \"rightful\" place as rulers of the Earth, with himself as their undisputed leader, of course.\n\nGrodd is supremely arrogant about the power of his evolved, intellect and force of powers, lowering his superiority over \"primitive\" humans. He still has a fierce animal side, however, and indulgence in sheer bloodlust from time to time.\n\n Grodd is weak in terms of his raw combat abilities: Although he has gorilla strength and speed, he is no match for truly super-strong opponents in direct hand-to-hand combat. Grodd prefers to use his formidable mental powers to deal with foes. \n\nThese powers range from the telekinetic to telepathic, allowing Grodd to hurl objects with great power, read minds, or project his thoughts across a large area. With effort, Grodd can also directly control mind, and perform a devastating mental blast to melt a target brain.",
             "cost": {},
-            "id": "interactionsOtherEnemiesGorillaGrodd"
+            "id": "interactionsOtherEnemiesGorillaGrodd",
+            "image": "https://i.pinimg.com/736x/b1/cb/5b/b1cb5bd2ac0dac881c6a608c1799e654--comic-villains-dc-comic.jpg"
+          },
+          {
+            "label": "Reverse Flash",
+            "description": "Eobard Thawne was born in the 25th century, a descendant of Malcolm Thawne, alias Cobalt Blue. Further details of Eobard's past (or future) stay extremely vague and even he claims to not remember a large part of it. All that's known is that he went as far as to duplicate the electrochemical accident that gave Barry his speed, then traveled back in time to meet Barry Allen. Thawne has a burning animosity towards Barry Allen and all he stands for.\n\nThe Reverse Flash plagued the Flash throughout his career. However, no matter how many times the Flash defeats him, Reverse-Flash has appeared repeatedly to menace his arch-foe, somehow traveling in time either from the future or the past, even existing multiple times in the present. This has let certain heroes to believe that Reverse-Flash has somehow managed to \"disassociate\" himself from the timeline, existing as an entity detach from the flow of cause and affect.\n\nReverse-Flash is a man who has based his entire life on destroying Barry Allen and all that he stands for. This makes the Reverse-Flash petty and vicious, willing to hurt or kill others just to get at his nemesis. \n\nReverse-Flash tapped into the same Speed Force as the Flash's, giving him similar, super speed powers. He can match the Flash's speed and his super speed stunts and capabilities.",
+            "cost": {},
+            "id": "interactionsOtherEnemiesReverseFlash",
+            "image": "https://images2.alphacoders.com/548/thumb-1920-548788.jpg"
+          },
+          {
+            "label": "Zoom",
+            "description": "Hunter Zolomon began his obsession with the criminal mind the day he was leaving home for college. His father, secretly a murderer, killed Hunter's mother when she gave him up to the police, then died in a confrontation with them. Hunter studied psychology and criminology, determined to stop people like his father. He became a criminal profiler, specializing in costumed criminals. \n\nWhile working with the Keystone City Police Department, Zolomon became friends with Wally West (the Flash) and the two worked together on occasion. When the Flash refused to use his Cosmic Treadmill to alter history and prevent Zolomon's mother's death, he tried to steal it. The resulting explosion \"derailed\" Zolomon from ordinary time, allowing him to move at super-speed. \n\nWith his newfound powers, Zolomon embarked on a campaign of vigilantism, fighting the criminal element of Keystone and Central City with brutality that shocked all. When Wally West moved to stop Zoom, he began to believe that Flash did not have the empathy to do what was necessary and use his powers to their fullest extent. Hence, he looked to \"improve\" heroes by bringing tragedy into their lives. \n\nZoom's powers come from his unique disconnection with time, allowing him to move faster than everything around him, giving him the appearance of moving at superspeed. Unlike the Flashes and other speedsters, he does not draw upon the Speed Force. Among other things, this means he cannot duplicate certain stunts, such as vibrating his molecules at super-speed or traveling through time (it also makes him immune to attacks that target the Speed Force, such as Reverse-Flash's leech power) ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesZoom",
+            "image": "https://screenrant.com/wp-content/uploads/Hunter-Zolomon-The-Flash-Zoom.jpg"
+          },
+          {
+            "label": "Girder",
+            "description": "Tony Woondwand's outraged fellow steelworkers tossed him into a vat of molten metal. Unbeknownst to them, the vat held strange materials taken from STAR labs, and they transformed Tony into the living metal man known as Girder. \n\nDespite his clueless boorishness and rusting form, Girder's indestructible nature makes him an in-demand mercenary villain. More prominently, Blacksmith recruited him to be a part of her Rogues, though proved to be one of defeats at the Flash's hands.",
+            "cost": {},
+            "id": "interactionsOtherEnemiesGirder",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2024/05/girder-dc-comics-flash-1.jpeg"
+          },
+          {
+            "label": "Magenta",
+            "description": "Frances Kane joined the world of superheoes when she started dating Wally West. At the time he was known as Kid Flash and was a member of the Teen Titans.\n\nIt later became known that Frances had magnetic base powers. At the behest of Wally, Frances became a superhero in her own right using the codename Magenta. The strain and pressure of the superhero lifestyle caused the couple to split up and exacerbated Frances' growing mental illness. \n\nThe ordinary identity of Frances Kane became overtaken by a darker, often homicidal, personality, calling herself Magenta. In her quest to destroy Wally West, Magenta joined forces with the Injustice League and Captain Cold's rogues. Over the years, Magenta targeted Wally West multiple times and eventually Frances discovered that using her magnetic powers would trigger her split personality.\n\nFrances Kane had a split personality. Her original persona is that of a mousy, innocent woman. She later developed the Mangenta identity, a starkly malevolent personality. \n\nMagenta can control ferrous metals by creating and manipulating magnetic fields.",
+            "cost": {},
+            "id": "interactionsOtherEnemiesMagenta",
+            "image": "https://i.ytimg.com/vi/e9oA314Dtfc/hqdefault.jpg"
+          },
+          {
+            "label": "Murmur",
+            "description": "Dr. Michael Christian Amar is a surgeon turned serial killer. A respected doctor, Amar's insanity drove him to murder; he wanted to quiet the voices in his head. He terrorized Central City and Keystone City before the Flash finally captured him. Amar made 2 mistakes as a serial killer. First, he had a modus operandi, cutting out the tongues of his victims, which made it easy to connect a single criminal to his crimes. Second, he could not stop talking to himself and blurted out the details of his crimes when captured. \n\nAmar quickly became convicted of multiple murders and imprisoned. Due to his insanity, he had immunity from the death penality. However, he discovered that his abnormal body chemistry was immune to poison and disease when he gave himself a lethal injection and did not die. Later, Amar cut out his own tongue and sewed his lips shut to keep himself from talking (though he still murmurs to himself). With the help of the villain Blacksmith, Murmur created and released a virus that killed the prison guards and prisoners so he can escape .\n\nMurmur is a homicidal maniac who enjoys killing: His personality muted by the fact that he cannot speak. \n\nMurmur has an abnormal body chemistry that makes him immune to diseases, poison, and other toxins, which enables him to use them without fear of poisoning himself. He is also an expert knife fighter. ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesMurmur",
+            "image": "https://static.wikia.nocookie.net/villains/images/a/ac/Murmur_(DC).jpg"
+          },
+          {
+            "label": "The Pied Piper",
+            "description": "The wealthy spared no expense curing their son's deafness and indulged his resulting obsession with music. In time, Hartley's genius unlocked the secrets of sound and, having grown bored with idle wealth, he turned to crime as the Pied Piper. Despite his talents, the second Flash invariably defeated the Piper, even when he joined the Rogues. \n\nEntirely self-centered, Hartley is nonetheless a nonviolent sort (unless something threatens his friends or causes). However, he has quite a soft-spot for the poor and needy. \n\nHartley's a genius in sonology yields devices capable of shattering barriers and causing tsunamis. ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesThePiedPiper",
+            "image": "https://www.comicbasics.com/wp-content/uploads/2023/07/Pied-Piper.webp"
+          },
+          {
+            "label": "Plunder",
+            "description": "Plunder was one of the deadliest killers-for-hire. Using an accidental creation of Mirror Master, Plunder crafted weaponry based on future-tech he had gleamed. \n\nQuickly finding a place in Blacksmith's Rogues, Plunder supported her plans for months before his identity as Keystone City Police detective Jared Morillo became known. Eventually, the Flash defeated Plunder and the other assembled rogues. ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesPlunder",
+            "image": "https://s3.superluchas.com/2015/07/Plunder.jpg"
+          },
+          {
+            "label": "Tar Pit",
+            "description": "Joey Monteleone was the far less successful brother of one of Keystone City's major drug kingpins. What made Joey unique was his ability to project his mind into inanimate objects, making his frequent imprisonments quite bearable. One one fateful day, his mind became trapped inside a huge mass of flaming hot tar, leaving his body comatose inside Iron Heights prison. \n\nIt was all a lark to Joey and calling himself Tar Pit, he embarked on a career in super-villainy. Despite repeated defeats at the hands of the third Flash, Tar Pit continues a fast climb up the ranks of costumed crooks. In his brief career, he has already been apart of Blacksmith's Rogues and the Secret Society of Super-Villains. ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesTarPit",
+            "image": "https://comicbook.com/wp-content/uploads/sites/4/2025/11/Tar-Pit-DC-Comics.png?w=1024"
+          },
+          {
+            "label": "Shade",
+            "description": "Richard Swift was an English gentlemen in the early Victorian period who involved himself in a mystical event of n unknown nature that resulted in his transformation into something not human. The experience cost him his memories, and the Shade began a period of world travel and adventure (as well as occasionally hiring out as a killer). During this time, he met interesting people and began acquiring his great fortune. \n\nFrom boredom, the Shade turned to crime as a diversion. He sparred repeatedly with The Flash (Jay Garrick) and later with Garrick's successor, Barry Allen. This was a game to Swift, who was debonair and restrained. He would play the villain, then retire in Opal City (which he had adopted as his home and where he never committed crimes) when he needed a break. \n\nSwift is jaded in his immortality. He is sophisticated, cosmopolitan, erudite, and occassioanlly a bit of a snob, as a Victorian living in a \"less-civilized\" age. He is not so much immoral as amoral, though he retains an unyielding sense of honor. \n\nThe Shade is immortal and quite possibly one of the few beings in the DC Universe that cannot die. He possesses a mystical connection to the dimension of the Shadowlands and can tap into it to manipulate shadow stuff for a variety of effects, including creating large zones of darkness and phantasmagorical arsenal of attacking shapes. He is quite accomplished in the use of his powers and his variety of stunts highlight his abilities, with exotic uses that include highly precise energy absorption and time travel. Aside from his powers, the Shade is intelligent, highly educated and an experienced world traveler.",
+            "cost": {},
+            "id": "interactionsOtherEnemiesShade",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2021/01/shade-dc.jpg"
+          },
+          {
+            "label": "Johnny Quick",
+            "description": "Little is known about the Anti-universe's speedster, but he may be a counterpart to Wally West, the third Flash. Like Wally West, Johnny Quick is in his twenties and inherited the role from another speedster. This Johnny Quick gained his powers by ingesting a drug derived from the blood of the previous Johnny Quick, whom he murdered. Since then, he has switched to using a synthetic form of \"speed juice\" (supplied by the US Government) with similar effects. He is a drug addict and suffers from poor impulse control and reduced attention span as a result. When the speed juice wears off, Johnny Quick slows down to sub-normal levels mentally and physically, with even his speech becoming drawn out and laborious. \n\nAn adrenaline junkie and thrill-seeker, Johnny Quick acts without thinking first. The Anti-Earth's fastest man alive is less fearless than senseless, throwing himself into battle at top-speed without regard for his own well-being or that of his allies. Johnny Quick's impulsiveness draws the ire of his teammates. His hyperactive antics particularly vex Owlman, who taunts and punishes him for foolishness. His bigotry angers Power Ring, who bristles at Johnny's references to his race. The other Syndicators treat his as a useful flunky, not to trust with matters that require much common sense. \n\nJohnny Quick has super-speed abilities like those of the Flash, though they come through artificial means. It is unknown whether he has a connection to the Speed Force (or whatever the equivalent is in the anti-universe) as do the normal speedsters.",
+            "cost": {},
+            "id": "interactionsOtherEnemiesJohnnyQuick",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2018/04/Johnny-Quick-Cropped.jpg"
           }
         ],
         "defaultCost": {
