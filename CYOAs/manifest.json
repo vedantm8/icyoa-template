@@ -10,5 +10,9 @@
   {
     "filename": "superheroAmalgam.json",
     "title": "Becoming a Superhero"
+  },
+  {
+    "filename": "the_flash_cyoa.json",
+    "title": "The Flash CYOA"
   }
 ]
