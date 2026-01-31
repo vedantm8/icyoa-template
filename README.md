@@ -79,7 +79,7 @@ icyoa-template/
 
 ## Advanced Customization
 
-* **Colors & Fonts:** Open `style.css` to change the appearance of your CYOA.
+* **Colors & Fonts:** You can modify the theme in either the visual editor or in the theme block in the JSON.
 * **Point Systems:** You can have multiple types of points (e.g., Health, Mana, Gold) by editing the `points` section in the editor.
 
 ---
