@@ -25,18 +25,18 @@
   },
   {
     "type": "theme",
-    "bg-color": "#f9f9f9",
+    "bg-color": "#fff7f6",
     "container-bg": "#ffffff",
-    "text-color": "#333333",
-    "text-muted": "#555555",
-    "accent-color": "#007acc",
+    "text-color": "#2b0b0b",
+    "text-muted": "#7a3a34",
+    "accent-color": "#e41b13",
     "accent-text": "#ffffff",
-    "border-color": "#dddddd",
-    "item-bg": "#f4f4f4",
-    "item-header-bg": "#e0e0e0",
-    "points-bg": "#f0f0f0",
-    "points-border": "#cccccc",
-    "shadow-color": "rgba(0,0,0,0.1)"
+    "border-color": "#ffe3da",
+    "item-bg": "#fff4f3",
+    "item-header-bg": "#ffeae7",
+    "points-bg": "#ffd700",
+    "points-border": "#e6b800",
+    "shadow-color": "rgba(228,27,19,0.08)"
   },
   {
     "name": "Benefits",
