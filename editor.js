@@ -364,6 +364,16 @@
         if (subcategory) subcategoryOpenState.set(subcategory, true);
     }
 
+    function slugifyKey(str) {
+        return String(str || "").replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '');
+    }
+
+    function buildSubcategoryKey(catIndex, catName, subIndex, subName) {
+        const catPart = `${catIndex}-${slugifyKey(catName || `Category${catIndex}`)}`;
+        const subPart = `${subIndex}-${slugifyKey(subName || `Sub${subIndex}`)}`;
+        return `${catPart}__${subPart}`;
+    }
+
     function createDefaultCategory() {
         return {
             name: "New Category",
@@ -470,6 +480,26 @@
         });
         headerField.appendChild(headerLabel);
         headerField.appendChild(headerInput);
+
+        // Prevent upscaling toggle
+        const preventField = document.createElement("div");
+        preventField.className = "field";
+        const preventInput = document.createElement("input");
+        preventInput.type = "checkbox";
+        preventInput.id = "preventUpscaleCheckbox";
+        preventInput.checked = !!headerImageEntry.preventUpscale;
+        preventInput.addEventListener("change", () => {
+            headerImageEntry.preventUpscale = preventInput.checked;
+            if (!headerImageEntry.preventUpscale) delete headerImageEntry.preventUpscale;
+            schedulePreviewUpdate();
+        });
+        const preventLabel = document.createElement("label");
+        preventLabel.htmlFor = preventInput.id;
+        preventLabel.textContent = "Prevent upscaling (don't stretch small images)";
+        preventField.appendChild(preventInput);
+        preventField.appendChild(preventLabel);
+        headerSection.body.appendChild(preventField);
+
         headerSection.body.appendChild(headerField);
         fragment.appendChild(headerSection.container);
 
@@ -850,6 +880,7 @@
         snapshotOpenStates(categories);
         categoryListEl.innerHTML = "";
 
+
         if (!categories.length) {
             const emptyState = document.createElement("div");
             emptyState.className = "empty-state";
@@ -1085,8 +1116,62 @@
                 maxRow.appendChild(minInput);
                 subBody.appendChild(maxRow);
 
+                // Discount controls
+                const discountRow = document.createElement("div");
+                discountRow.className = "field-inline";
+
+                const discountFirstLabel = document.createElement("label");
+                discountFirstLabel.textContent = "Discount: first N";
+                const discountFirstInput = document.createElement("input");
+                discountFirstInput.type = "number";
+                discountFirstInput.value = subcat.discountFirstN ?? "";
+                discountFirstInput.placeholder = "e.g. 1";
+
+
+                discountFirstInput.addEventListener("input", () => {
+                    const value = discountFirstInput.value.trim();
+                    if (value === "") {
+                        delete subcat.discountFirstN;
+                    } else {
+                        subcat.discountFirstN = Number(value) || 0;
+                    }
+                    schedulePreviewUpdate();
+                });
+
+                discountRow.appendChild(discountFirstLabel);
+                discountRow.appendChild(discountFirstInput);
+                subBody.appendChild(discountRow);
+
+                const discountAmtRow = document.createElement("div");
+                discountAmtRow.className = "field-inline";
+                const discountAmtLabel = document.createElement("label");
+                discountAmtLabel.textContent = "Discount Amount (Points)";
+                const discountAmtInput = document.createElement("input");
+                discountAmtInput.type = "number";
+                discountAmtInput.value = (subcat.discountAmount && subcat.discountAmount.Points) ?? "";
+                discountAmtInput.placeholder = "e.g. 1";
+                discountAmtInput.addEventListener("input", () => {
+                    const value = discountAmtInput.value.trim();
+                    if (value === "") {
+                        if (subcat.discountAmount) delete subcat.discountAmount.Points;
+                        if (subcat.discountAmount && Object.keys(subcat.discountAmount).length === 0) delete subcat.discountAmount;
+                    } else {
+                        if (!subcat.discountAmount) subcat.discountAmount = {};
+                        subcat.discountAmount.Points = Number(value) || 0;
+                    }
+                    schedulePreviewUpdate();
+                });
+
+                discountAmtRow.appendChild(discountAmtLabel);
+                discountAmtRow.appendChild(discountAmtInput);
+                subBody.appendChild(discountAmtRow);
+
+                
                 const columnsRow = document.createElement("div");
                 columnsRow.className = "field-inline";
+
+
+
 
                 const columnsLabel = document.createElement("label");
                 columnsLabel.textContent = "Columns per row";

@@ -374,6 +374,18 @@ textarea {
     align-items: center;
 }
 
+/* Ensure inline numeric and select controls are compact and align with other inline fields */
+.field-inline input[type="number"],
+.field-inline select {
+    max-width: 120px; /* similar to Min/Max selection size */
+    width: 100%;
+}
+
+/* Slightly smaller text for compact inline labels */
+.field-inline label {
+    font-size: 12px;
+}
+
 .inline-actions {
     display: flex;
     gap: 6px;

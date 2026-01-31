@@ -119,11 +119,39 @@ function getOptionEffectiveCost(option) {
         if (catMap[option.id]) delete catMap[option.id];
     }
 
+    // Support "first N" discount display even when discount config flags aren't present.
+    // This mirrors selection behavior where subcat.discountFirstN directly affects the next selections.
+    if (!discountApplied && info.subcat && typeof info.subcat.discountFirstN === 'number' && info.subcat.discountFirstN > 0) {
+        const subcatSelectionsCount = (info.subcat.options || []).reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+        const remaining = Math.max(0, info.subcat.discountFirstN - subcatSelectionsCount);
+        if (remaining > 0) {
+            const alreadySelectedThis = selectedOptions[option.id] || 0;
+            if (alreadySelectedThis === 0) {
+                if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
+                    const merged = { ...bestCost };
+                    Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
+                        if (typeof merged[t] === 'number') {
+                            merged[t] = Math.max(0, merged[t] - amt);
+                        }
+                    });
+                    bestCost = merged;
+                } else {
+                    bestCost = applyDiscountCost(bestCost, info.subcat.discountMode || 'half');
+                }
+                discountApplied = true;
+            }
+        }
+    }
+
     const subcatDiscountActive = allowSubcatDiscount && info.subcat && info.key && canUseDiscount(info.subcat);
     const subcatAutoApplyAll = subcatDiscountActive && shouldAutoApplyDiscount(info.subcat);
     if (subcatDiscountActive) {
-        const ipCost = (baseCost && typeof baseCost.IP === 'number') ? baseCost.IP : null;
-        if (ipCost !== null && ipCost > 0 && ipCost <= info.subcat.discountEligibleUnder) {
+        // Determine primary currency and cost for eligibility checks
+        const costCurrency = Object.entries(baseCost).find(([_, v]) => v > 0)?.[0] || null;
+        const primaryCost = costCurrency ? baseCost[costCurrency] : null;
+        const eligibleUnder = info.subcat.discountEligibleUnder ?? Infinity;
+
+        if (primaryCost !== null && primaryCost > 0 && primaryCost <= eligibleUnder) {
             if (subcatAutoApplyAll) {
                 bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
                 discountApplied = true;
@@ -137,13 +165,67 @@ function getOptionEffectiveCost(option) {
                 }
             }
         }
+
+        // If no explicit assignment/auto-apply, consider "first N" display behavior so users see which items would be discounted
+        if (!discountApplied && typeof info.subcat.discountFirstN === 'number' && info.subcat.discountFirstN > 0) {
+            const subcatSelectionsCount = (info.subcat.options || []).reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+            const remaining = Math.max(0, info.subcat.discountFirstN - subcatSelectionsCount);
+            if (remaining > 0) {
+                // If there are remaining discount slots, unselected items should display as discounted
+                const alreadySelectedThis = selectedOptions[option.id] || 0;
+                // Only show the discounted price for an option that hasn't yet been selected (next-instance price)
+                if (alreadySelectedThis === 0) {
+                    // Apply discountAmount if present, otherwise fall back to discountMode
+                    if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
+                        const merged = { ...bestCost };
+                        Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
+                            if (typeof merged[t] === 'number') {
+                                merged[t] = Math.max(0, merged[t] - amt);
+                            }
+                        });
+                        bestCost = merged;
+                    } else {
+                        bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                    }
+                    discountApplied = true;
+                }
+            }
+        }
+    }
+
+    // Support category-level "first N" display even when discount config flags aren't present
+    if (!discountApplied && info.cat && typeof info.cat.discountFirstN === 'number' && info.cat.discountFirstN > 0) {
+        const catSelectionsCount = (info.cat.subcategories || []).reduce((sum, sc) => {
+            return sum + ((sc.options || []).reduce((s, o) => s + (selectedOptions[o.id] || 0), 0));
+        }, 0);
+        const remaining = Math.max(0, info.cat.discountFirstN - catSelectionsCount);
+        if (remaining > 0) {
+            const alreadySelectedThis = selectedOptions[option.id] || 0;
+            if (alreadySelectedThis === 0) {
+                if (info.cat.discountAmount && typeof info.cat.discountAmount === 'object') {
+                    const merged = { ...bestCost };
+                    Object.entries(info.cat.discountAmount).forEach(([t, amt]) => {
+                        if (typeof merged[t] === 'number') {
+                            merged[t] = Math.max(0, merged[t] - amt);
+                        }
+                    });
+                    bestCost = merged;
+                } else {
+                    bestCost = applyDiscountCost(bestCost, info.cat.discountMode || 'half');
+                }
+                discountApplied = true;
+            }
+        }
     }
 
     const catDiscountActive = !discountApplied && allowCatDiscount && info.cat && info.catKey && canUseDiscount(info.cat);
     const catAutoApplyAll = catDiscountActive && shouldAutoApplyDiscount(info.cat);
     if (catDiscountActive) {
-        const ipCost = (baseCost && typeof baseCost.IP === 'number') ? baseCost.IP : null;
-        if (ipCost !== null && ipCost > 0 && ipCost <= info.cat.discountEligibleUnder) {
+        const costCurrency = Object.entries(baseCost).find(([_, v]) => v > 0)?.[0] || null;
+        const primaryCost = costCurrency ? baseCost[costCurrency] : null;
+        const eligibleUnder = info.cat.discountEligibleUnder ?? Infinity;
+
+        if (primaryCost !== null && primaryCost > 0 && primaryCost <= eligibleUnder) {
             if (catAutoApplyAll) {
                 bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
                 discountApplied = true;
@@ -153,6 +235,31 @@ function getOptionEffectiveCost(option) {
                 const alreadySelected = selectedOptions[option.id] || 0;
                 if (assigned > alreadySelected) {
                     bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                    discountApplied = true;
+                }
+            }
+        }
+
+        // Category-level first-N display behavior (if not already applied)
+        if (!discountApplied && typeof info.cat.discountFirstN === 'number' && info.cat.discountFirstN > 0) {
+            const catSelectionsCount = (info.cat.subcategories || []).reduce((sum, sc) => {
+                return sum + ((sc.options || []).reduce((s, o) => s + (selectedOptions[o.id] || 0), 0));
+            }, 0);
+            const remaining = Math.max(0, info.cat.discountFirstN - catSelectionsCount);
+            if (remaining > 0) {
+                const alreadySelectedThis = selectedOptions[option.id] || 0;
+                if (alreadySelectedThis === 0) {
+                    if (info.cat.discountAmount && typeof info.cat.discountAmount === 'object') {
+                        const merged = { ...bestCost };
+                        Object.entries(info.cat.discountAmount).forEach(([t, amt]) => {
+                            if (typeof merged[t] === 'number') {
+                                merged[t] = Math.max(0, merged[t] - amt);
+                            }
+                        });
+                        bestCost = merged;
+                    } else {
+                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                    }
                     discountApplied = true;
                 }
             }
@@ -664,7 +771,26 @@ function applyCyoaData(rawData, {
         const headerContainer = document.getElementById("headerImageContainer");
         if (headerContainer) {
             if (headerImageEntry?.url) {
-                headerContainer.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image" />`;
+                const noUpscaleClass = headerImageEntry.preventUpscale ? ' no-upscale' : '';
+                headerContainer.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image${noUpscaleClass}" />`;
+                // Add a warning badge if the image will be upscaled and user did NOT opt-out (preventUpscale=false)
+                const imgEl = headerContainer.querySelector('img');
+                if (imgEl) {
+                    imgEl.onload = () => {
+                        const existingBadge = headerContainer.querySelector('.header-image-warning');
+                        if (existingBadge) existingBadge.remove();
+                        const dpr = window.devicePixelRatio || 1;
+                        const containerWidth = headerContainer.clientWidth || headerContainer.offsetWidth;
+                        if (!headerImageEntry.preventUpscale && imgEl.naturalWidth && imgEl.naturalWidth < containerWidth * dpr) {
+                            const warn = document.createElement('div');
+                            warn.className = 'header-image-warning';
+                            warn.textContent = '⚠️ Image may appear blurry at this size';
+                            headerContainer.appendChild(warn);
+                        }
+                    };
+                    // Also trigger immediately if already cached
+                    if (imgEl.complete) imgEl.onload();
+                }
             } else {
                 headerContainer.innerHTML = initialHeaderImageHTML;
             }
@@ -1785,19 +1911,50 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
 
     const requirements = document.createElement("div");
     requirements.className = "option-requirements";
-    const gain = [], spend = [];
+
+    // Default display cost is what the next selection would cost (considering discounts)
     const displayCost = getOptionEffectiveCost(opt);
-    Object.entries(displayCost || {}).forEach(([type, val]) => {
-        if (val < 0) gain.push(`${type} ${Math.abs(val)}`);
-        else spend.push(`${type} ${val}`);
+    const originalCost = opt.cost || {};
+
+    // If this option is already selected, prefer showing the actual paid cost for the existing instance(s)
+    let costToShow = displayCost;
+    const selectedCount = selectedOptions[opt.id] || 0;
+    if (selectedCount > 0 && discountedSelections[opt.id] && discountedSelections[opt.id].length >= selectedCount) {
+        // Show the cost that was actually paid for the last recorded instance
+        costToShow = discountedSelections[opt.id][selectedCount - 1] || displayCost;
+    }
+
+    const gain = [], spend = [];
+
+    Object.entries(costToShow || {}).forEach(([type, val]) => {
+        if (val < 0) {
+            gain.push(`${type} ${Math.abs(val)}`);
+        } else {
+            const orig = originalCost[type];
+            if (orig !== undefined && orig !== val) {
+                // Show discounted price and original in parentheses
+                spend.push(`${type} ${val} (was ${orig})`);
+            } else {
+                spend.push(`${type} ${val}`);
+            }
+        }
     });
+
     if (gain.length) requirements.innerHTML += `Gain: ${gain.join(', ')}<br>`;
     if (spend.length) requirements.innerHTML += `Cost: ${spend.join(', ')}<br>`;
-    const originalCost = opt.cost || {};
-    const discountApplied = Object.entries(displayCost || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
-    if (discountApplied) {
-        const freeApplied = Object.entries(displayCost || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
-        requirements.innerHTML += freeApplied ? `🔻 Discount Applied (Free)<br>` : `🔻 Discount Applied<br>`;
+
+    // Indicate discount availability/applied for this item
+    const displayDiffers = Object.entries(displayCost || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
+    const currentPaidDiffers = Object.entries(costToShow || {}).some(([type, val]) => val !== (originalCost[type] ?? val));
+    const displayShowsFree = Object.entries(displayCost || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
+    const currentShowsFree = Object.entries(costToShow || {}).some(([type, val]) => val === 0 && (originalCost[type] ?? 0) > 0);
+
+    if (selectedCount > 0 && currentPaidDiffers) {
+        // A paid (or free) discount has been applied to an existing selection
+        requirements.innerHTML += currentShowsFree ? `🔻 Discount Applied (Free)<br>` : `🔻 Discount Applied<br>`;
+    } else if (selectedCount === 0 && displayDiffers) {
+        // Discount is available for this item (but not yet used)
+        requirements.innerHTML += displayShowsFree ? `🔻 Discount Available (Free)<br>` : `🔻 Discount Available<br>`;
     }
 
     // Show prerequisites...

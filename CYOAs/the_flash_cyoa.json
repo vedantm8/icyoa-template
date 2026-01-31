@@ -1,0 +1,98 @@
+[
+  {
+    "type": "title",
+    "text": "The Flash CYOA"
+  },
+  {
+    "type": "description",
+    "text": "Breathe. Breathe. Feel the air. Feel that wind on your face. Feel the ground, your feet lifting you, pushing you forward. Feel the lightning. Feel its power. Its electricity is pumping through your veins, crackling through you, traveling to every nerve in your body, like a shock. You are no longer you now. You are part of something greater. You are a part of the Speed Force. It is yours. Now, run.\n\nWelcome to the Flash Family, Speedster"
+  },
+  {
+    "type": "headerImage",
+    "url": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2024/07/how-to-start-reading-the-flash-comics.jpg"
+  },
+  {
+    "type": "points",
+    "values": {
+      "Points": 12
+    },
+    "allowNegative": [],
+    "attributeRanges": {}
+  },
+  {
+    "type": "backpack",
+    "enabled": true
+  },
+  {
+    "type": "theme",
+    "bg-color": "#f9f9f9",
+    "container-bg": "#ffffff",
+    "text-color": "#333333",
+    "text-muted": "#555555",
+    "accent-color": "#007acc",
+    "accent-text": "#ffffff",
+    "border-color": "#dddddd",
+    "item-bg": "#f4f4f4",
+    "item-header-bg": "#e0e0e0",
+    "points-bg": "#f0f0f0",
+    "points-border": "#cccccc",
+    "shadow-color": "rgba(0,0,0,0.1)"
+  },
+  {
+    "name": "Benefits",
+    "subcategories": [
+      {
+        "name": "Basic Benefits",
+        "type": "storyBlock",
+        "text": "The flashes and other speedsters (Kid Flash and Jesse Chambers) receive their power from an extra-dimensional energy known as the \"Speed Force\" Not everyone with superhuman speed draws from the Speed Force (Superman, for example, does not), but those empowered by it are amongst the fastest around. You have received this momentous gift, and it bestows upon you an already impressive set of abilities by default. \n\nThe following 2 abilities are free. ",
+        "options": [
+          {
+            "label": "Frictionless Aura",
+            "description": "The Speed Force's most basic and necessary power grants a weak force field around you, protecting you from air resistance and friction heat with the ground, allowing you to run at triple digit speeds without shredding your skin or causing massive turbulence in your wake. This only extends up to wind speeds of a certain level and does nothing to block large solid or liquid matter, hence limiting you to below the speed of sound, as the sonic boom will liquefy your organs. Additionally, you cannot strike with too much speed as it will shatter your human fists against the target, nor can you perform superhuman feats of strength like lifting a full-grown man. ",
+            "cost": {},
+            "id": "benefitsBasicBenefitsFrictionlessAura",
+            "image": "https://wallpapercave.com/wp/wp7311709.jpg"
+          },
+          {
+            "label": "Super Speed",
+            "description": "The big one. A universal power that all speedsters share, regardless of nature or origin. The speed force allows you to hyper-accelerate your bosy to superhuman speeds, allowing you to effortlessly dodge, parry, evade, and act with lightning quickness. You can complete basic tasks instantaneously and 'cruise' at 500 kph (300 mph) without effort, edging towards 900 kph (560 mph) if you push yourself. Note that going below the speed of sound also means that you are slower than explosions and bullets so keep that in mind. ",
+            "cost": {},
+            "id": "benefitsBasicBenefitsSuperSpeed",
+            "image": "https://images2.alphacoders.com/918/thumb-1920-918754.jpg"
+          }
+        ],
+        "columnsPerRow": 2
+      },
+      {
+        "name": "Costume",
+        "type": "storyBlock",
+        "text": "Choose a costume — the first costume you pick is free; additional costume choices cost 1 Point each.",
+        "discountFirstN": 1,
+        "discountAmount": {
+          "Points": 1
+        },
+        "options": [
+          {
+            "label": "Classic Costume",
+            "description": "A familiar, iconic red-and-gold suit — simple and aerodynamic.",
+            "cost": {
+              "Points": 1
+            },
+            "id": "costumeClassic",
+            "image": "https://example.com/classic-costume.jpg"
+          },
+          {
+            "label": "Stealth Suit",
+            "description": "A darker, reinforced suit built for covert operations.",
+            "cost": {
+              "Points": 1
+            },
+            "id": "costumeStealth",
+            "image": "https://example.com/stealth-suit.jpg"
+          }
+        ],
+        "columnsPerRow": 2
+      }
+    ]
+  }
+]
