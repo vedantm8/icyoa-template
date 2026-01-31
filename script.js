@@ -70,8 +70,16 @@ function meetsCountRequirement(rawId) {
     return (selectedOptions[id] || 0) >= required;
 }
 
+// Returns the merged base cost for an option, preferring subcategory defaults when present.
+function getOptionBaseCost(option) {
+    if (!option) return {};
+    const info = findSubcategoryInfo(option.id);
+    const subDefault = info.subcat?.defaultCost || {};
+    return { ...subDefault, ...(option.cost || {}) };
+}
+
 function getOptionEffectiveCost(option) {
-    const baseCost = { ...(option.cost || {}) };
+    const baseCost = getOptionBaseCost(option);
     let bestCost = baseCost;
     let bestTotal = Object.entries(baseCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
 
@@ -360,7 +368,7 @@ document.getElementById("resetBtn").onclick = () => {
         if (option) {
             const count = selectedOptions[id];
             for (let i = 0; i < count; i++) {
-                const refundCost = discountedSelections[id]?.shift() || option.cost; // Use shift to get the correct instance cost
+                const refundCost = discountedSelections[id]?.shift() || getOptionBaseCost(option); // Use shift to get the correct instance cost
                 Object.entries(refundCost).forEach(([type, cost]) => {
                     points[type] += cost;
                 });
@@ -1101,7 +1109,7 @@ function removeSelection(option) {
 
 
     // Get the last recorded discounted cost for this selection instance
-    const refundCost = (discountedSelections[option.id]?.pop()) ?? (option.cost ?? {});
+    const refundCost = (discountedSelections[option.id]?.pop()) ?? getOptionBaseCost(option);
     Object.entries(refundCost).forEach(([type, cost]) => {
         points[type] += cost;
     });
@@ -1914,7 +1922,7 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
 
     // Default display cost is what the next selection would cost (considering discounts)
     const displayCost = getOptionEffectiveCost(opt);
-    const originalCost = opt.cost || {};
+    const originalCost = getOptionBaseCost(opt);
 
     // If this option is already selected, prefer showing the actual paid cost for the existing instance(s)
     let costToShow = displayCost;

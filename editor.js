@@ -1166,7 +1166,31 @@
                 discountAmtRow.appendChild(discountAmtInput);
                 subBody.appendChild(discountAmtRow);
 
-                
+                // Default cost (subcategory) controls
+                const defaultCostRow = document.createElement("div");
+                defaultCostRow.className = "field-inline";
+                const defaultCostLabel = document.createElement("label");
+                defaultCostLabel.textContent = "Default cost (Points)";
+                const defaultCostInput = document.createElement("input");
+                defaultCostInput.type = "number";
+                defaultCostInput.value = (subcat.defaultCost && subcat.defaultCost.Points) ?? "";
+                defaultCostInput.placeholder = "e.g. 1";
+                defaultCostInput.addEventListener("input", () => {
+                    const value = defaultCostInput.value.trim();
+                    if (value === "") {
+                        if (subcat.defaultCost) delete subcat.defaultCost.Points;
+                        if (subcat.defaultCost && Object.keys(subcat.defaultCost).length === 0) delete subcat.defaultCost;
+                    } else {
+                        if (!subcat.defaultCost) subcat.defaultCost = {};
+                        subcat.defaultCost.Points = Number(value) || 0;
+                    }
+                    schedulePreviewUpdate();
+                });
+
+                defaultCostRow.appendChild(defaultCostLabel);
+                defaultCostRow.appendChild(defaultCostInput);
+                subBody.appendChild(defaultCostRow);
+
                 const columnsRow = document.createElement("div");
                 columnsRow.className = "field-inline";
 

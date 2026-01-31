@@ -71,27 +71,549 @@
         "discountAmount": {
           "Points": 1
         },
+        "defaultCost": {
+          "Points": 1
+        },
         "options": [
           {
             "label": "Classic Costume",
             "description": "A familiar, iconic red-and-gold suit — simple and aerodynamic.",
-            "cost": {
-              "Points": 1
-            },
             "id": "costumeClassic",
-            "image": "https://example.com/classic-costume.jpg"
+            "image": "https://example.com/classic-costume.jpg",
+            "cost": {}
           },
           {
             "label": "Stealth Suit",
             "description": "A darker, reinforced suit built for covert operations.",
-            "cost": {
-              "Points": 1
-            },
             "id": "costumeStealth",
-            "image": "https://example.com/stealth-suit.jpg"
+            "image": "https://example.com/stealth-suit.jpg",
+            "cost": {}
           }
         ],
         "columnsPerRow": 2
+      }
+    ]
+  },
+  {
+    "name": "Stunts",
+    "subcategories": [
+      {
+        "name": "Speed Stunts",
+        "type": "storyBlock",
+        "text": "The speed force activates on instinct, so your applications rely on muscle memory. You do not think quickly enough to solve complex tasks or execute advanced applications without training.",
+        "options": [
+          {
+            "label": "Run up Walls",
+            "description": "Like running on water, you can overcome the pool of gravity by stepping so rapidly on the wall that friction allows you to stick to it.",
+            "cost": {},
+            "id": "stuntsSpeedStuntsRunUpWalls",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2022/08/The-Flashes-Running-Up-A-Wall-Cropped.jpg"
+          },
+          {
+            "label": "Run on Water",
+            "description": "Moving quickly enough and stepping onto the water with sufficient force, you can run on water using surface tension.",
+            "cost": {},
+            "id": "stuntsSpeedStuntsRunOnWater",
+            "image": "https://townsquare.media/site/622/files/2011/09/flash05.jpg"
+          },
+          {
+            "label": "Turbine",
+            "description": "You can control your arms at incredible speeds, blowing objects back with a cone of air. You can also use the same ability to slow falls, either for yourself or others.",
+            "cost": {},
+            "id": "stuntsSpeedStuntsTurbine",
+            "image": "https://screenrant.com/wp-content/uploads/SR-flash-vortex.jpg"
+          },
+          {
+            "label": "Vacuum",
+            "description": "You cna run in a circle, creating a vortex that sucks all the air out of an area, suffocating targets inside or putting out fires.",
+            "cost": {},
+            "id": "stuntsSpeedStuntsVacuum",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/The-Flash-Speed-Vortex-Comics.jpg"
+          },
+          {
+            "label": "Molescular Vibration",
+            "description": "You can vibrate your molecules to pass through solid matter, allowing you to walk through thin walls and escape from any buildings. However, note that you should not stay in this form for too long as you can breathe while intangible, and will start to sink through the ground.",
+            "cost": {},
+            "id": "stuntsSpeedStuntsMolescularVibration",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2017/04/flash-phasing-through-a-wall.jpg"
+          },
+          {
+            "label": "Whirlwind",
+            "description": "You can spin rapidly in place, creating an omnidirectional whirlwind blast of air that knocks objects back. ",
+            "cost": {},
+            "id": "stuntsSpeedStuntsWhirlwind",
+            "image": "https://i.pinimg.com/736x/ad/c6/3c/adc63c18df1f5d69f77898438b49e007.jpg"
+          },
+          {
+            "label": "Transfer Speed",
+            "description": "You can create a \"bubble\" of speed, force energy, allow, allowing you to temporarily take others with you at superhuman speeds. Alternatively, you can use this to boost the speed of other speeds, allow you to achieve even greater feats. ",
+            "cost": {},
+            "id": "stuntsSpeedStuntsTransferSpeed",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2022/10/Barry-and-Iris.jpg"
+          },
+          {
+            "label": "Speed Strike",
+            "description": "You can unleash a ferocious flurry of punches, striking nearby enemies instantly (or one enemy a hundred times) ",
+            "cost": {},
+            "id": "stuntsSpeedStuntsSpeedStrike",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2022/09/300.JPG"
+          },
+          {
+            "label": "Super Speed Flight",
+            "description": "An extremely unorthodox application of the speed force, only available to certain individuals (notably the Quick family) you can fly (or zip around quickly though the air) ",
+            "cost": {},
+            "id": "stuntsSpeedStuntsSuperSpeedFlight",
+            "image": "https://i.pinimg.com/originals/25/bd/19/25bd19375913e1770fac182247fd55fe.jpg"
+          },
+          {
+            "label": "Vibrating Strike",
+            "description": "Reverse-Flash has performed deadly penetrating attacks by vibrating his hands at super speed before rupturing a target organs. For obvious reasons, the good guys never use this move (but there's nothing stopping you)",
+            "cost": {},
+            "id": "stuntsSpeedStuntsVibratingStrike",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/Reverse-Flash-Killing-Vibrating-Hand.jpg"
+          }
+        ],
+        "defaultCost": {
+          "Points": 1
+        }
+      },
+      {
+        "name": "Redline Stunts",
+        "type": "storyBlock",
+        "text": "The speed force grants a speedster impressive baseline ability. However, that is not its full potential. Should you choose, you can draw ever increasing amounts of the Speed Force into reality, enhancing your abilities to impossible levels. At this point, you no longer bend the rules of physics, you break them altogether. To achieve these incredible feats without turning yourself and the entire planet into a smoking crater from the sheer amount of energy released, the speed force \"phases\" you out of reality, edging you out ever closer towards the point of no-return. Be careful, for overuse of these 'redline' abilities will cause you to fall into the speed force itself, disappearing from reality forever. \n\nAll Redline perks cost 2 points ",
+        "options": [
+          {
+            "label": "Hyper-Speed",
+            "description": "You can accelerate beyond the speed of sound, up to 3,000,000 km/h or 1,800,000 mph, allowing you to run around the Earth in minutes.",
+            "cost": {},
+            "id": "stuntsRedlineStuntsHyperSpeed",
+            "image": "https://images4.alphacoders.com/872/872687.jpg"
+          },
+          {
+            "label": "Lightspeed Punch",
+            "description": "You accelerate your fist to near-light speed, delivering a punch that can shatter mountains and vaporize just about anything it touches",
+            "cost": {},
+            "id": "stuntsRedlineStuntsLightspeedPunch",
+            "image": "https://screenrant.com/wp-content/uploads/Infinite-Mass-Punch-the-Flash-Comics.jpg"
+          },
+          {
+            "label": "Time Travel",
+            "description": "A particularly powerful speedster, such as Reverse-Flash, can travel through time under their own power without the use of the Flash's Cosmic Treadmill. This incredibly dangerous stunt can cause massive ripple effects across the timeline, as well as certainly pulling you into the speed force. However, you could attempt what the Reverse-Flash did, and disassociate yourself form the timeline, existing outside of linear flow of cause-and-effect. Not particularly good for sanity, but certainly better than oblivion. ",
+            "cost": {},
+            "id": "stuntsRedlineStuntsTimeTravel",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/2023/02/the-flash-running-towards-the-viewer-1.jpg"
+          },
+          {
+            "label": "Leech Speed Force",
+            "description": "You can leech the power of other speedsters, 'tainting' the speed force, and making it deadly to other speedsters, causing them damage when they try to run fast. A highly evil application of the speed force, only Reverse-Flash has used it so far. ",
+            "cost": {},
+            "id": "stuntsRedlineStuntsLeechSpeedForce",
+            "image": "https://1.bp.blogspot.com/-RC5Mn3_JPvY/Xs2XgE8D84I/AAAAAAAACVg/Day0xIHi3ssuaHI3q2TwJz_bwVul49hOQCLcBGAsYHQ/s1600/2.jpg"
+          }
+        ],
+        "defaultCost": {
+          "Points": 2
+        }
+      }
+    ]
+  },
+  {
+    "name": "Equipment",
+    "subcategories": [
+      {
+        "name": "Equipment",
+        "type": "storyBlock",
+        "text": "The Flash family hardly ever uses equipment in their everyday superheroing, but there is nothing stopping you from borrowing something.",
+        "options": [
+          {
+            "label": "Cosmic Treadmill",
+            "description": "Speedsters cannot normally travel through time, not without falling into the speed force or through exceptional circumstance. The specifically designed cosmic treadmill significantly lowers the speed threshold for time, travel by carefully modulating the speed, force energy, the user creates, allowing (relatively) safe temporal jaunts. Additionally, this precise manipulation of speed allows you to perform a \"partial\" time jump, glimpsing into the past without going through and altering it: An incredibly useful feature that mitigate the risks of altering the space-time continuum",
+            "cost": {},
+            "id": "equipmentEquipmentCosmicTreadmill",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2021/08/Flash-Cosmic-Treadmill.jpg"
+          },
+          {
+            "label": "Cold Gun",
+            "description": "Captain Cold's signature, accidentally created, cold gun. The most common application of this weapon, and the primary way cold is a threat to The Flash, is it ability to emit omni-directional blast of super cooling energy, slowing the speed of all the particles in the area and countering the effects of the speed force. for obvious reasons, this would make it rather difficult to use while traveling is super speed. Alternatively, the gun can fire a beam of energy, freezing objects into icy blocks, turning the ground into a slick frictionless surface, or even creating icy shapes out of thin air, like icicles or giant ice cubes.",
+            "cost": {},
+            "id": "equipmentEquipmentColdGun",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2024/08/captain-cold-firing-his-cold-gun-from-dc-comics.jpg"
+          },
+          {
+            "label": "Cold's Suit",
+            "description": "Captain Cold's thick insulated suit. Its material grants immunity to cold and even basic protection against blunt force trauma and projectiles. ",
+            "cost": {},
+            "id": "equipmentEquipmentColdSSuit",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/2018/07/DC-Flash-Comic-Commander-Cold-Hero.jpg"
+          },
+          {
+            "label": "Fireproof Suit",
+            "description": "Heat Wave's fireproof suit consists of advanced flame, retardant material, granting the user complete immunity to heat and fire. It's thick construction also provides a level of protection against damage.",
+            "cost": {},
+            "id": "equipmentEquipmentFireproofSuit",
+            "image": "https://alchetron.com/cdn/heat-wave-comics-bb6af1f0-ea17-4634-858a-993802edea6-resize-750.jpeg"
+          },
+          {
+            "label": "Heat Gun",
+            "description": "Heat Wave's gun is a surprisingly complex piece of machinery for its function. At its most basic, it can emit a \"heat ray,\" spontaneously, combusting any material it hits. For a longer lasting burn, it holds a reserve of Nepal that it mixes in, creating a makeshift flamethrower like projector that can cause grievous damage. ",
+            "cost": {},
+            "id": "equipmentEquipmentHeatGun",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2020/04/DC-Heatwave-Cropped.jpg"
+          },
+          {
+            "label": "Exploding Rubber Chicken",
+            "description": "The Trickster's joke rubber chicken, hiding a pound of C4 inside. Detonates a short while after you squeeze it. ",
+            "cost": {},
+            "id": "equipmentEquipmentExplodingRubberChicken",
+            "image": "https://paintingvalley.com/drawings/rubber-chicken-drawing-3.png"
+          },
+          {
+            "label": "Combat Yo-Yo",
+            "description": "The Trickster's yo-yo, weighted to use as a flail, with spikes that extend when you spend it at maximum speed.",
+            "cost": {},
+            "id": "equipmentEquipmentCombatYoYo",
+            "image": "https://i.pinimg.com/736x/fa/e4/46/fae446996718b73113a7d0b830550be0.jpg"
+          },
+          {
+            "label": "Hard Candy Trap",
+            "description": "The trickster's jar of hard candy that shatters upon impact, unleashing a super-sticky and super-strong gel that rapidly expands to cover a massive area, hardening in seconds to trap targets inside. Overly sweet and tends to attract ants, but still edible. ",
+            "cost": {},
+            "id": "equipmentEquipmentHardCandyTrap",
+            "image": "https://img.freepik.com/premium-vector/jar-candy-with-drawing-jar-candy_1120554-64746.jpg?w=826"
+          },
+          {
+            "label": "Air Walking Shoes",
+            "description": "Shoes that allow the trickster to fly (somehow). As they emit no noise, this can allow you to move extremely stealthily. ",
+            "cost": {},
+            "id": "equipmentEquipmentAirWalkingShoes",
+            "image": "https://i.pinimg.com/236x/32/70/46/32704692917370508f494dd6efc535fb--flash-comics-reverse-flash.jpg"
+          },
+          {
+            "label": "Weather Wand",
+            "description": "Weather Wizard's wand can control the weather to affect an entire city or direct a focused strike on an individual. Fortunately, Mardon uses his powers extremely carefully. You can summon a storm, blanket, and area with fog, call lightning bolts from the sky, generate, miniature, glaciers, and whip up hurrican-force winds. Additionally, you can generate a \"solid\" cloud underneath your feet, allow you to fly short distances",
+            "cost": {},
+            "id": "equipmentEquipmentWeatherWand",
+            "image": "https://alchetron.com/cdn/weather-wizard-cbceb6f7-ab1f-46ab-9431-4d719416de2-resize-750.png"
+          },
+          {
+            "label": "Weather-Proof Suit",
+            "description": "Weather Wizard's suit consists of advanced nanotech materials, granting the user complete immunity to weather effects.",
+            "cost": {},
+            "id": "equipmentEquipmentWeatherProofSuit",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2020/04/Weather-Wizard.jpg"
+          },
+          {
+            "label": "Mirror Costume",
+            "description": "Mirror Master's costume hides a surprising amount of armor in its thin fabric-like material. Additionally, it can shift its properties to make the user transparent. ",
+            "cost": {},
+            "id": "equipmentEquipmentMirrorCostume",
+            "image": "https://comicvine.gamespot.com/a/uploads/scale_medium/3/34588/736923-mirrormaster02.jpg"
+          },
+          {
+            "label": "Mirror Gun",
+            "description": "Sam Scudder discovered the properties of the mirror gun and experimented with it extensively, creating a bewildering number of effects, ranging from the illusory to the quite real. The gun can create holo-duplicates of objects, confound peoples site with a bright flash, focus light destructively into a laser, and, most impressively, turn any reflective surface into a portal to the mirror dimension, allowing the user to teleport through reflective surfaces.",
+            "cost": {},
+            "id": "equipmentEquipmentMirrorGun",
+            "image": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/8359efd9-fa97-4919-8f02-3712e70a0eeb/des5vr1-61ddd77e-1c0e-494a-80d1-8a8ff3fd68b7.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzgzNTllZmQ5LWZhOTctNDkxOS04ZjAyLTM3MTJlNzBhMGVlYlwvZGVzNXZyMS02MWRkZDc3ZS0xYzBlLTQ5NGEtODBkMS04YThmZjNmZDY4YjcucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.r-clNQopg4Rt3j2CFOu3nCuLWgQT-TeyfuL4bK9HmvM"
+          },
+          {
+            "label": "Trick Boomerangs",
+            "description": "A cache of Captain Boomerang's boomerangs, which have extraordinary properties. Aside form standard weighted boomerangs to knock out targets, this box has BOOMerangs that can emit blinding light, Smokerangs that emit a cloud of smoke, aciderangs that spray a corrosive acid, electrorangs that stun a target with electricity, and Razorangs that have precision-milled aerodynamic surfaces for striking distant targets. ",
+            "cost": {},
+            "id": "equipmentEquipmentTrickBoomerangs",
+            "image": "https://comicyears.com/wp-content/uploads/2022/09/captain-boomerang.jpg"
+          },
+          {
+            "label": "\"De-Evolution\" Ray",
+            "description": "A bulky and complex device often used by Gorilla Grodd in his quest for world domination, the \"De-Evolution\" ray causes the victim to become increasingly dominated by ape like impulses and transforms them into a gorilla overtime. The transformation is particularly permanent, but strong will people can grapple with the challenges of their gorilla nature and gradually revert.",
+            "cost": {},
+            "id": "equipmentEquipmentDeEvolutionRay",
+            "image": "https://static.wikia.nocookie.net/villains/images/c/c9/Gorilla_Grodd_%28Batman_The_Brave_and_the_Bold%29_02.jpg"
+          },
+          {
+            "label": "Pied Pipe",
+            "description": "Pied Piper's pipe can create music that causes those who hear it to fall into a trance-like state, receptive to his demands. Strong willpower can resist it, however. Alternatively, the pipe can simply fire off a powerful sonic blast to knock targets down or create complex noises to trick targets.",
+            "cost": {},
+            "id": "equipmentEquipmentPiedPipe",
+            "image": "https://alchetron.com/cdn/pied-piper-comics-56c97bed-0162-43dd-b748-ed4e7eae49f-resize-750.jpeg"
+          },
+          {
+            "label": "Blaster Pistol",
+            "description": "Future tech-baed pistol that fires blasts of superheated plasma causing powerful detonations wherever it strikes. ",
+            "cost": {},
+            "id": "equipmentEquipmentBlasterPistol",
+            "image": "https://i.pinimg.com/736x/37/4a/14/374a140483c8d48752da53e59c2baa88.jpg"
+          },
+          {
+            "label": "Future Tech Rifle",
+            "description": "Rifle modified with future tech that fires standard 5.56mm bullets as standard with an automatic rate and extended range. Also has a hidden tracer that constantly transmits its location, allowing you to track it. Finally, Plunder has attached a powerful under barrel laser to fire a devastating pinpoint accurate blast. ",
+            "cost": {},
+            "id": "equipmentEquipmentFutureTechRifle",
+            "image": "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/e36b69a2-a218-4f43-97c0-dd316a21c699/diq33ok-435da6b1-ff6a-4445-bb99-85984e61598b.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcL2UzNmI2OWEyLWEyMTgtNGY0My05N2MwLWRkMzE2YTIxYzY5OVwvZGlxMzNvay00MzVkYTZiMS1mZjZhLTQ0NDUtYmI5OS04NTk4NGU2MTU5OGIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.g75Qt6rw-KMOt2om6vUol8H3l_2xLo_upY-i14U8tVA"
+          },
+          {
+            "label": "Trick Tops",
+            "description": "The top's collection of trick tops, all with impressive effects. Among these are streamer tops that burst into a continuous cloud of binding streamers, a \"darklight\" top that he met an unusual \"darklight\" the blocks hall light from passing through, a blinding top that blinds targets with a flashbang, bola tops that clamp around a single target, electro tops that tazes a single target, flamethrower tops that explode into a continuous burning field of napalm, tear gas tops that explode into a cloud of tear gas, glue tops that explode into a pool of sticky glue, standard grenade tops that just explode, sound wave of tops that he met a continuous piercing shriek at a target, and tornado tops that generate a mini tornado to pick up and throw things around.",
+            "cost": {},
+            "id": "equipmentEquipmentTrickTops",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/11/The-Top-Reinvented.jpg"
+          }
+        ],
+        "defaultCost": {
+          "Points": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "Perks",
+    "subcategories": [
+      {
+        "name": "Perks",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Cryptic Past",
+            "description": "Your true history is well hidden, making it extraordinarily difficult to dig up information about you, and to expose your identity. Anyone except for the world's greatest detectives, such as Batman, can hope to figure out your past.",
+            "cost": {},
+            "id": "perksPerksCrypticPast",
+            "image": "https://cdnb.artstation.com/p/assets/images/images/012/688/399/large/theodoros-mavrogonatos-shadow-people.jpg?1536028425"
+          },
+          {
+            "label": "Wealthy Business Owner",
+            "description": "You own your own multimillion dollar business, granting you a sizable and independent source of income to finance your superheroic ventures. While nowhere near the heavy hitters like Wayne Enterprises or LexCorp, your business is still invaluable in tackling corporate related crimes.",
+            "cost": {},
+            "id": "perksPerksWealthyBusinessOwner",
+            "image": "https://comicbook.com/wp-content/uploads/sites/4/2025/07/Lex-Luthor_skyline.png?resize=2000"
+          },
+          {
+            "label": "Renowned",
+            "description": "Everyone loves you! From the local police to the town mayor to the average Joe on the street, people greet you with eager smiles and high-fives as you passed at 100 km/h. They even have a little exhibit dedicated to you in the Flash Museum.",
+            "cost": {},
+            "id": "perksPerksRenowned",
+            "image": "https://hyperborea.org/flash/bigimages/museum-postignition.jpg"
+          },
+          {
+            "label": "Journalism",
+            "description": "Turn on the song that says surprisingly common profession among superheroes, for one simple reason: you might be able to cross the country in an hour, but you sure as hell cannot see that far. By positioning yourself in the heart of information exchange, you can keep abreast of all the latest and greatest happenings, as well as giving yourself a convenient excuse for cross country trips on short notice.",
+            "cost": {},
+            "id": "perksPerksJournalism",
+            "image": "https://comicbook.com/wp-content/uploads/sites/4/2025/03/loislanecover.jpg"
+          },
+          {
+            "label": "Technical Knowledge",
+            "description": "A large part of speedsters are also intelligent and practical inventors, boosting a healthy amount of knowledge on mechanical, electronic, and chemical sciences. With this, you can easily bring your own equipment or advise expert on how to best make something completely new.",
+            "cost": {},
+            "id": "perksPerksTechnicalKnowledge",
+            "image": "https://i.pinimg.com/originals/94/c1/66/94c166d672b0f01f84355264659f6097.jpg"
+          },
+          {
+            "label": "Forensics",
+            "description": "A surprisingly common pairing with super speed, a good knowledge on behavioral sciences, criminal profiling, and forensics allows you to make snap deductions when you enter a scene, hopefully exploiting your powers to their maximum potential.",
+            "cost": {},
+            "id": "perksPerksForensics",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/2022/01/Barry-Allen-in-his-lab-in-the-comics.jpg"
+          },
+          {
+            "label": "Contacts",
+            "description": "You have extensive and well formed contacts, allowing you to quickly gather information on subjects or make special requests normally difficult to find.",
+            "cost": {},
+            "id": "perksPerksContacts",
+            "image": "https://static.manweimi.cn/wp-content/uploads/2023/08/2023080617005724.jpg"
+          },
+          {
+            "label": "Ultimate Speed",
+            "description": "You have achieved ultimate understanding of the speed force, allowing you to execute moves and maneuvers with practiced ease. Every week, you can tap into your speed, force knowledge to execute a speed stunt or red line you have not taken.",
+            "cost": {
+              "Points": 2
+            },
+            "id": "perksPerksUltimateSpeed",
+            "image": "https://www.comicbookherald.com/wp-content/uploads/2016/06/silver-age-flash.png"
+          },
+          {
+            "label": "Lifeline",
+            "description": "The speed force is a constant pull on any speech that uses its gifts. At any point of great stress or fatigue, the temptation is all to present to simply… give in... and fade away from reality. You encounter the dangerous nature of the speed force with a \"lifeline,\" and earthly connection, giving sufficient reason to not yield to the temptation to vanish forever, holding onto what is real, just a little longer ",
+            "cost": {
+              "Points": 2
+            },
+            "id": "perksPerksLifeline",
+            "image": "https://static0.gamerantimages.com/wordpress/wp-content/uploads/2023/04/dark-flash-in-comics-1.jpg"
+          }
+        ],
+        "defaultCost": {
+          "Points": 1
+        }
+      }
+    ]
+  },
+  {
+    "name": "Interactions",
+    "subcategories": [
+      {
+        "name": "Allies",
+        "type": "storyBlock",
+        "text": "",
+        "options": [
+          {
+            "label": "Barry Allen",
+            "description": "Barry Allen developed a reputation for taking things slow, to the bemusement and occasional frustration of friends, family, and his fiancee, fast-acting journalist Iris West: Barry's proclivity for deliberation and detail, made an excellent forensic scientist for the Central City Police Department, however, known for his ability to crack difficult cases.\n\nBarry was working late one night in his lab when a bolt of lightning crashed through the window, striking a shelf of chemicals. Bathed in those electrified chemicals, he gained the power of super speed! Inspired by his childhood hero: Jay Garrick, Barry created a unique crimson costume, able to compress down to fit into a attending compartment in a tiny ring he wore. He took on the name and mantle of the Flash, the fastest man alive! \n\nBarry has a reputation as a \"straight\" law and order type. He is intelligent, careful, and thoughtful, and living life in the (literal) \"fast lane\" give him an appreciation for the smaller things",
+            "cost": {
+              "Points": 2
+            },
+            "id": "interactionsAlliesBarryAllen",
+            "image": "https://images.alphacoders.com/725/725294.jpg"
+          },
+          {
+            "label": "Iris West",
+            "description": "A go-getting reporter for the Central City Picture News, Iris West found herself dating the laidback, perpetually late police scientist Barry Allen. They eventually married, and Iris learned Barry was the Flash, because he talked in his sleep. ",
+            "cost": {},
+            "id": "interactionsAlliesIrisWest",
+            "image": "https://static.wikia.nocookie.net/marvel_dc/images/2/2f/Iris_West_%28Prime_Earth%29_0001.png/"
+          },
+          {
+            "label": "Jay Garrick",
+            "description": "As a college student in chemistry at Midwestern University, Jay Garrick accidentally exposed himself to the vapors of an unknown experiment. Inhaling those vapors granted him the power of super-speed. Donning a red shirt with a lightning bolt crest and his distinctive winged helmet, Jay began using his powers to fight crime as the Flash. \n\nHe became a founding member of the Justice Society of America and married his college sweetheart, Joan Williams. Now, one of the 'elder statesmen' of the superhero set, Jay considers it his responsibility to guide and mentor younger heroes, to help make them better at what they do. \n\nJay is known for his good nature, folksy charm, and knack for fatherly advice, making him a great mentor and role-model for younger heroes. He has an iron core of strength when it comes to doing the right thing and protecting the people he cares about. ",
+            "cost": {
+              "Points": 2
+            },
+            "id": "interactionsAlliesJayGarrick",
+            "image": "https://static.wikia.nocookie.net/flash-comics/images/5/5b/Jay_Garrick.jpg"
+          },
+          {
+            "label": "Wally West",
+            "description": "Iris West's nephew Wallace \"Wally\" West was president of the Blue Valley chapter of the Official Flash Fan Club. He was less than thrilled by his Aunt Iris' fiance Barry Allen, until he found out that Barry, through his work with the police department, knew the Flash! Wally jump at the opportunity to meet his idol, and the Flash showed him how he got his super-speed. Then, lightning struck twice, spilling. The same mixture of chemical goes onto Wally West, and granting him super speed!\n\nWally adopted a costume like his mentor and became Kid Flash, the fastest boy alive. He eventually became a founding member of the Teen Titans, but left the team to attend college, where he eventually adopted the name and costume of The Flash, moving to Keystone City, across the river from Barry's Old Central City stomping grounds. There, he met reporter Linda Park and the two of them developed a romantic relationship, eventually married and having twins: Jai and Iris. \n\nAlthough humble about the idea of succeeding Barry as The Flash, Wally learned more about the origins of the speeders' powers than virtually anyone: He was the first to break the lightspeed barrier and pass into the Speed Force and return, anchored by his love for Linda. \n\nWally began his career as an impulsive and brash young man whose powers matched his personality. He grew up to become a fun-loving hero always ready with a quip, but constantly concerned he was not living up to Barry Allen's legacy. Over the years, he has become more confident in his abilities and, more importantly, in his role as The Flash. Now, Wally is a capable, friendly man who is always willing to lend a hand.",
+            "cost": {
+              "Points": 2
+            },
+            "id": "interactionsAlliesWallyWest",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/2018/07/The-Flash-Wally-West-DC-Rebirth.jpg"
+          },
+          {
+            "label": "Linda Park",
+            "description": "Television journalist, Linda Park started her relationship with Wally West on an adversarial note, pressing him for an interview over the property damage caused by one of his super battles. Eventually, they became friendly and began to date. Wally has acknowledge his love for Linda as the \"lifeline\" that keeps him connected to the world, allowing him to return from the speed force.\n\nLinda and Wally married, and they have twin children: Iris and Jai. The \"Tornado Twins\" have inherited versions of their father's super-speed, Linda decided to leave her career in journalism to study paediatrics, allowing her to better deal with the unique challenges posed by her children's heritage. ",
+            "cost": {},
+            "id": "interactionsAlliesLindaPark",
+            "image": "https://s3.amazonaws.com/comicgeeks/characters/avatars/57693.jpg?t=1671535659"
+          },
+          {
+            "label": "Bart Allen",
+            "description": "Bart Allen was born in the 30th century, grandson to Barry Allen and genetic heir to his grandfather's super-speed. Unfortunately, Bart's growth was hyper-accelerated, and the only way to protect him from his own speed, was to put him in a virtual reality environment.\n\nBart finally got to live a real life when you traveled back in time to the 20th century to stop an impending apocalypse, where he learned to use his powers with the help of the speech of the time, training alongside the Flash and Max Mercury. Bart became a hero with the name to match: Impulse.\n\nJoining other young heroes, Impulse formed a team called Young Justice who adventured together. After joining the Teen Titans, Bart Allen finally felt ready to embrace the heroic legacy of a new name: Kid Flash. \n\nThough he has endured severe injury in his time as a hero, Kid Flash most often runs with a smile on his face, thrilled to be racing to battle alongside his friends and family.",
+            "cost": {
+              "Points": 2
+            },
+            "id": "interactionsAlliesBartAllen",
+            "image": "https://static.wikia.nocookie.net/marvel_dc/images/a/a3/Kid_Flash_Bart_Allen_0003.jpg"
+          },
+          {
+            "label": "Jesse Quick",
+            "description": "The race to assume her father Johnny (Quick) Chambers' super-heroic mantle, Jesse Chambers yield to her mother Libby's concerns for her safety and opted instead for Meta-human studies at Gotham University. Once there, however, watching her father and his Justice Society of America cohorts firsthand inspired her to finally embrace Johnny's legacy as the costumed Jesse Quick. Sadly, tragedy filled stints with the Titans, the death of her father, and various personal problems soured her on super-heroics, to the point she welcomes losing her powers while defeating Zoom. \n\nEventually, Jesse's marriage to Hourman (Rick Tyler) and reconciliation with Libby restored both her heroic commitment and meta-human abilities, inspiring her to resume her Jesse Quick guise and accept an invitation to join the Justice League of America. \n\nMarriage has made Jesse self-confident, happy, and obnoxiously romantic, as well as curbing her old workaholic tendencies. ",
+            "cost": {
+              "Points": 2
+            },
+            "id": "interactionsAlliesJesseQuick",
+            "image": "https://tvovermind.com/wp-content/uploads/2018/05/Jesse-Quick-750x421.jpg"
+          },
+          {
+            "label": "Max Mercury",
+            "description": "In 1838, a US Cavalry scout tried but could not prevent a massacre of the Blackfoot tribe he had befriended. Before the Scout died, a shaman blessed him, granting, the man superhuman speed, so he might stop further blood chat. After he recovered, the scout used his powers to help others, becoming renowned as Ahwehota, the Windrunner. When Windrunner first experienced the call of the Speed Force, he resisted merging with it and as a result suddenly found himself thrust into the 1890s. He continued his heroic activities in that era as Whip Whirlwind until later brushes with the Speed Force catapulted him to 1940. \n\nSettling in Oakwood Park, he took a job as a circus acrobat and secretly battled evildoers as Quicksilver throughout the 1940s. As Quicksilver, he gained newfound allies in Johnny Quick and the original Flash and shared with htem his hard-earned knowledge of the Speed Force. In 1948, Quicksilver found himself thrust through time once again. He landed in present-day Keystone City. \n\nNow known as Max Mercury, he continues to mentor speedsters, most notably Bart Allen. Max's Zen outlook makes him quiet and patient, as well as a perfect teacher and mentor. ",
+            "cost": {},
+            "id": "interactionsAlliesMaxMercury",
+            "image": "https://static.wikia.nocookie.net/marvel_dc/images/7/72/Max_Mercury_0001.jpg"
+          },
+          {
+            "label": "Solovar",
+            "description": "King Solovar is one of the wisest and smartest citizens of Gorilla City: He is also its ruler. He has dedicated himself to peaceful coexistence with humankind, which he has proven to the heroes of Earth multiple times. He often stands against machinations of Gorilla Grodd when they focus on Gorilla City. The outside world sometimes calls upon Solovar for technical advice on rogue pieces of Gorilla City technology. ",
+            "cost": {},
+            "id": "interactionsAlliesSolovar",
+            "image": "https://comicvine.gamespot.com/a/uploads/original/11125/111253436/5609266-solovar.jpg"
+          }
+        ],
+        "defaultCost": {
+          "Points": 1
+        }
+      },
+      {
+        "name": "The Rogues",
+        "type": "storyBlock",
+        "text": "The rogues are a collection of technologically armed villains who banded together for bigger criminal payoffs and mutual support against their common enemy: The Flash. Over the years, the Rogues have evolved from a unique criminal comaraderie and played poker or visited their costume tailor of choice, Paul Gambi, as often as they plan new heists. They have evolved a set of rules governing the use of deadly force and other aspects of criminal behavior, enforced with ruthless relish by their acknowledged leader: Captain Cold. Years have passed since the Rogues' debut and one thing seems  certain, so long as there are Flashes there will be rogues to challenge them. \n\nEach Rogue add +1 points to your total",
+        "options": [
+          {
+            "label": "Captain Cold",
+            "description": "In hopes of escaping his abusive father, Leonard Snart moved in with his grandfather. He often rode in his grandfather's cold-storage truck which triggered his love of the cold. When his grandfather died, Leonard refused to go back to his father. Having no job and no prospects, Snart became a petty criminal, planning a robbery with other hoods only for the Flash to bust him. With his nascent gang in prison, Snart vowed revenge. \n\nHe built a handheld prototype weapon that would, in theory, slow the Flash. He broke into a cyclotron lab to refine and empower his prototype. A guard stumbled across his break in, surprising him, and he fired the new weapon. To his amazement, the device froze the guard in place. Declaring a successful experiment, Snart reinvented himself as Captain Cold. \n\nCaptain Cold has fought most incarnates of the Flash over the years and has developed a special relationship with that legacy. Snart has returned to his criminal ways after multiple attempts to break away from his past. \n\nCaptain Cold portrays himself as an ice-hearted criminal, but he cares deeply about his fellow Rogues and just wants to earn a dishonest buck. Leo is not a killer, he will go out of his way to immobilize rather than kill. ",
+            "cost": {},
+            "id": "interactionsTheRoguesCaptainCold",
+            "image": "https://staticg.sportskeeda.com/editor/2022/03/2a8d0-16476964283355-1920.jpg"
+          },
+          {
+            "label": "Heat Wave",
+            "description": "Mick Rory has been fascinated with fire since he was a child, but eventually killed his own parents when he set their family home aflame. He lived with his uncle, but Mick's obsession continued to engulf him. \n\nWhile watching the news one night, Mick saw a resport on the Rogues, a group of Flash villains, Mick decided to turn his pyromania into a life of crime. Creating a hand-held flamethrower and designing his own fire-resistant suit, Mick began calling himself Heat Wave. \n\nHeat Wave has committed crimes in Central City and fought multiple incarnations of the Flash, before eventually meeting Captain Cold and joining the Rogues. \n\nMick is a barely controlled pyromaniac. His criminal ventures are meant to please his obsession more than line his pockets, but he has bouts of extreme guilt and regret when given chances to reflect on the damage his life has caused. ",
+            "cost": {},
+            "id": "interactionsTheRoguesHeatWave",
+            "image": "https://alchetron.com/cdn/heat-wave-comics-7fc42cab-00e5-4a78-a793-473d9343638-resize-750.jpeg"
+          },
+          {
+            "label": "The Trickster",
+            "description": "A juvenile delinquent from a badly broken home, young Axel Walker attracted the attention of the mysterious villainess known as Blascksmith just after he dropped out of high school. Walker did not have any impressive skills or accomplishments to boast of, but Blacksmith recognized that his recklessness and burning hatred could make him a formidable criminal operative. She gave Walker gadgets and weapons she somehow got from James Jesse, the original Trickster d recruited him into her criminal syndicate known as the Network. \n\nAfter the Network collapsed, Flash's rogues Gallery reluctantly accepted Walker. \n\nAxel Walker is an adrenaline junkie and closet nihilist. He has never left particularly close to another human being, and he never found anything worth believing in. He tries to fill the void in his soul with mischief and mayhem. Walker is much more ferocious and bloodthirsty than the rest of the Flash's so-called Rogues, but he is desperate for their dubious fraternity to accept him, and this is the sole reason he has yet to kill anyone yet in his crimes.",
+            "cost": {},
+            "id": "interactionsTheRoguesTheTrickster",
+            "image": "https://vignette.wikia.nocookie.net/marvel_dc/images/b/b3/Trickster_0001.jpg"
+          },
+          {
+            "label": "Weather Wizard",
+            "description": "Mark Mardon was serving jail time for robbery when he escaped and fled to the observatory where his brother Clyde was working on an experimental weather-controlling wand, When Clyde called Central City police to turn him in, Mark panicked at the thought of returning to jail and accidentally killed his brother with the weather wand. This crime haunts Mark's conscience to this day. \n\nIn a deluded attempt at honoring his brother's legacy, Mark used the weather wand to commit crimes as the Weather Wizard. He was among the original Rogues who tangled with Barry Allen, and Mardon pondered retiring from his life of crime. However, the Rogues came back together every time a new speedster assumed the mantle of the Flash. \n\nWeather Wizard is about as unpredictable as, well, the weather. Mark delights in using ihs powers for destruction regardless of the collateral damage to others, but his guilt over his brother's death continues to burden him. Likewise, despite having enough savvy to apply his brother's weather technology, he limits his powers and his crimes, incapable of visualizing destruction on a global scale. ",
+            "cost": {},
+            "id": "interactionsTheRoguesWeatherWizard",
+            "image": "https://www.writeups.org/wp-content/uploads/Weather-Wizard-Flash-Rogues-DC-Comics-blood-moon-h.jpg"
+          },
+          {
+            "label": "Mirror Master",
+            "description": "Sam Scudder first discovered his 'powers' while performing menial work in prison, where he accidentally poured a unique chemical on a mirror. Intrigued by the strange properties the mirror developed, Scudder eventually discerned the different powers at his disposal, the first being the ability to create mirror diplicates of people so they could commit crimes in his stead. \n\nScudder met the Flash countless times, as a member of the Rogues and other criminal groups, later retiring. \n\nThe current Mirror Master is Evan McCullouch. The Scottish mercenary grew up in an orphanage and, after not making an honest living, became one of the best hit men in the country. His life turned around when he realized his latest hit had been his biological father. He was too late to contact his mother, for depression led her to commit suicide. McCullouch was ready for a change when an American consortium approached him, offering him the gear of the first Mirror Master to function as a black op hit man in the guise of a super villain. \n\nMcCullouch is still free and abroad along with his fellow Rogues, struggling with a cocaine addiction. He is a toghened mercenary, pragmatic, and a bit at odds with himself. He does not regret his criminal ways, but he follows a strict code of honor that he actively enforces, and he has his priorities set very clearly; to the point of betraying a client (and seeking revenge) if his work harms innocents.",
+            "cost": {},
+            "id": "interactionsTheRoguesMirrorMaster",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2017/07/Mirror-Master-Brian-Bolland.jpg"
+          },
+          {
+            "label": "Captain Boomerang",
+            "description": "After he learned to throw the boomerang as a child, Harkness' mother sent him from Australia to live in America. He went to work performing boomerang tricks for a toy company unknowningly owned by his father but would steal from the crowds to help line his pockets until the Flash put a stop to his thievery. \n\nAfter collaborating with the Rogues for a time, Captain Boomerang joined the Suicide Squad and retired after finishing his prison sentence, \n\nCaptain Boomerang tends to get on people's nerves, making it difficult for others to like him. He is elf-serving, blunt, and a childish jerk with a sense of a superiority complex towards everyone else, including his allies. He is, however, a patriotic Aussie. ",
+            "cost": {},
+            "id": "interactionsTheRoguesCaptainBoomerang",
+            "image": "https://www.writeups.org/wp-content/uploads/Captain-Boomerang-DC-Comics-Flash-Rogues-Suicide-Squad.jpg"
+          },
+          {
+            "label": "The Top",
+            "description": "While imprisoned, Roscone Dillon resolved to use his childhood love of toys to become a better crook. Dillon eventually mastered the ability to spin in place at high speeds and built an arsenal of gimmick namesake toys to use as the costumed criminal Top. He became a Rogue and played the second Flash for ears, until unexplained reaction to the Scarlet Speedster's powers caused Dillon to discover his ability to transfer his consciousnesses into vacant minds. ",
+            "cost": {},
+            "id": "interactionsTheRoguesTheTop",
+            "image": "https://dailysuperheroes.com/wp-content/uploads/2016/11/5-top.jpg"
+          }
+        ],
+        "defaultCost": {
+          "Points": -1
+        }
+      },
+      {
+        "name": "Other Enemies",
+        "type": "storyBlock",
+        "text": "Miscellenois enemies that have plagued the Flash Family thorughout the years. They are generally more violent and deadly, having greater ambitions than petty robbery (and also likely insane).. So, choose wisely before taking them up as your enemies. \n\nEach enemy adds +2 points",
+        "options": [
+          {
+            "label": "Abra Kadabra",
+            "description": "Citizen Abra hails from the 64th century Earth, a time in which advanced technology has erased the line between science and sorcery, and an oppressive regime has ground the remaining sense of wonder from people's lives. Abra's dream of becoming a stage magician made him an anarchronism, and a most unhappy one at that. He fled at the first opportunity, stealing a time machine bound for the 21st century, erasing his timeline in the process. ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesAbraKadabra",
+            "image": "https://comicvine.gamespot.com/a/uploads/scale_medium/11131/111319715/6410703-abra-kadabra700_58bdcf22b0c6a1.68156654.jpg"
+          },
+          {
+            "label": "Gorilla Grodd",
+            "description": "Every society has its outcasts. For the peaceful simian civilization of Gorilla City. It is Grodd. ",
+            "cost": {},
+            "id": "interactionsOtherEnemiesGorillaGrodd"
+          }
+        ],
+        "defaultCost": {
+          "Points": -2
+        }
       }
     ]
   }
