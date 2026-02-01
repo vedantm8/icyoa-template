@@ -75,7 +75,11 @@ function getOptionBaseCost(option) {
     if (!option) return {};
     const info = findSubcategoryInfo(option.id);
     const subDefault = info.subcat?.defaultCost || {};
-    return { ...subDefault, ...(option.cost || {}) };
+    const optionCost = option.cost || {};
+    if (Object.keys(optionCost).length === 0) {
+        return { ...subDefault };
+    }
+    return { ...optionCost };
 }
 
 function getOptionEffectiveCost(option, {
@@ -119,6 +123,10 @@ function getOptionEffectiveCost(option, {
     let discountApplied = false;
     const allowSubcatDiscount = option.disableSubcategoryDiscount !== true;
     const allowCatDiscount = option.disableCategoryDiscount !== true;
+    const subcatHasDiscountAmount = hasDiscountAmount(info.subcat);
+    const catHasDiscountAmount = hasDiscountAmount(info.cat);
+    const subcatModeTypes = getModeDiscountTypes(info.subcat);
+    const catModeTypes = getModeDiscountTypes(info.cat);
 
     if (!allowSubcatDiscount && info.key) {
         const subMap = getSubcategoryDiscountMap(info.key);
@@ -139,17 +147,15 @@ function getOptionEffectiveCost(option, {
                 const alreadySelectedThis = selectedOptions[option.id] || 0;
                 if (alreadySelectedThis === 0) {
                     if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
-                        const merged = { ...bestCost };
-                        Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
-                            if (typeof merged[t] === 'number') {
-                                merged[t] = Math.max(0, merged[t] - amt);
-                            }
-                        });
-                        bestCost = merged;
+                        const result = applyDiscountAmount(bestCost, info.subcat.discountAmount);
+                        if (result.applied) {
+                            bestCost = result.cost;
+                            discountApplied = true;
+                        }
                     } else {
-                        bestCost = applyDiscountCost(bestCost, info.subcat.discountMode || 'half');
+                        bestCost = applyDiscountCost(bestCost, info.subcat.discountMode || 'half', subcatModeTypes);
+                        discountApplied = true;
                     }
-                    discountApplied = true;
                 }
             }
         }
@@ -159,21 +165,38 @@ function getOptionEffectiveCost(option, {
     const subcatAutoApplyAll = subcatDiscountActive && shouldAutoApplyDiscount(info.subcat);
     if (subcatDiscountActive) {
         // Determine primary currency and cost for eligibility checks
-        const costCurrency = Object.entries(baseCost).find(([_, v]) => v > 0)?.[0] || null;
-        const primaryCost = costCurrency ? baseCost[costCurrency] : null;
+        const {
+            value: primaryCost
+        } = getDiscountEligibleCost(baseCost, info.subcat);
         const eligibleUnder = info.subcat.discountEligibleUnder ?? Infinity;
 
         if (primaryCost !== null && primaryCost > 0 && primaryCost <= eligibleUnder) {
             if (subcatAutoApplyAll) {
-                bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
-                discountApplied = true;
+                if (subcatHasDiscountAmount) {
+                    const result = applyDiscountAmount(bestCost, info.subcat.discountAmount);
+                    if (result.applied) {
+                        bestCost = result.cost;
+                        discountApplied = true;
+                    }
+                } else {
+                    bestCost = applyDiscountCost(bestCost, info.subcat.discountMode, subcatModeTypes);
+                    discountApplied = true;
+                }
             } else {
                 const map = getSubcategoryDiscountMap(info.key);
                 const assigned = map[option.id] || 0;
                 const alreadySelected = selectedOptions[option.id] || 0;
                 if (assigned > alreadySelected) {
-                    bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
-                    discountApplied = true;
+                    if (subcatHasDiscountAmount) {
+                        const result = applyDiscountAmount(bestCost, info.subcat.discountAmount);
+                        if (result.applied) {
+                            bestCost = result.cost;
+                            discountApplied = true;
+                        }
+                    } else {
+                        bestCost = applyDiscountCost(bestCost, info.subcat.discountMode, subcatModeTypes);
+                        discountApplied = true;
+                    }
                 }
             }
         }
@@ -190,17 +213,15 @@ function getOptionEffectiveCost(option, {
                     if (alreadySelectedThis === 0) {
                         // Apply discountAmount if present, otherwise fall back to discountMode
                         if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
-                            const merged = { ...bestCost };
-                            Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
-                                if (typeof merged[t] === 'number') {
-                                    merged[t] = Math.max(0, merged[t] - amt);
-                                }
-                            });
-                            bestCost = merged;
+                            const result = applyDiscountAmount(bestCost, info.subcat.discountAmount);
+                            if (result.applied) {
+                                bestCost = result.cost;
+                                discountApplied = true;
+                            }
                         } else {
-                            bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                            bestCost = applyDiscountCost(bestCost, info.subcat.discountMode, subcatModeTypes);
+                            discountApplied = true;
                         }
-                        discountApplied = true;
                     }
                 }
             }
@@ -218,17 +239,15 @@ function getOptionEffectiveCost(option, {
                 const alreadySelectedThis = selectedOptions[option.id] || 0;
                 if (alreadySelectedThis === 0) {
                     if (info.cat.discountAmount && typeof info.cat.discountAmount === 'object') {
-                        const merged = { ...bestCost };
-                        Object.entries(info.cat.discountAmount).forEach(([t, amt]) => {
-                            if (typeof merged[t] === 'number') {
-                                merged[t] = Math.max(0, merged[t] - amt);
-                            }
-                        });
-                        bestCost = merged;
+                        const result = applyDiscountAmount(bestCost, info.cat.discountAmount);
+                        if (result.applied) {
+                            bestCost = result.cost;
+                            discountApplied = true;
+                        }
                     } else {
-                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode || 'half');
+                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode || 'half', catModeTypes);
+                        discountApplied = true;
                     }
-                    discountApplied = true;
                 }
             }
         }
@@ -237,21 +256,38 @@ function getOptionEffectiveCost(option, {
     const catDiscountActive = !discountApplied && allowCatDiscount && info.cat && info.catKey && canUseDiscount(info.cat);
     const catAutoApplyAll = catDiscountActive && shouldAutoApplyDiscount(info.cat);
     if (catDiscountActive) {
-        const costCurrency = Object.entries(baseCost).find(([_, v]) => v > 0)?.[0] || null;
-        const primaryCost = costCurrency ? baseCost[costCurrency] : null;
+        const {
+            value: primaryCost
+        } = getDiscountEligibleCost(baseCost, info.cat);
         const eligibleUnder = info.cat.discountEligibleUnder ?? Infinity;
 
         if (primaryCost !== null && primaryCost > 0 && primaryCost <= eligibleUnder) {
             if (catAutoApplyAll) {
-                bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
-                discountApplied = true;
+                if (catHasDiscountAmount) {
+                    const result = applyDiscountAmount(bestCost, info.cat.discountAmount);
+                    if (result.applied) {
+                        bestCost = result.cost;
+                        discountApplied = true;
+                    }
+                } else {
+                    bestCost = applyDiscountCost(bestCost, info.cat.discountMode, catModeTypes);
+                    discountApplied = true;
+                }
             } else {
                 const map = getCategoryDiscountMap(info.catKey);
                 const assigned = map[option.id] || 0;
                 const alreadySelected = selectedOptions[option.id] || 0;
                 if (assigned > alreadySelected) {
-                    bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
-                    discountApplied = true;
+                    if (catHasDiscountAmount) {
+                        const result = applyDiscountAmount(bestCost, info.cat.discountAmount);
+                        if (result.applied) {
+                            bestCost = result.cost;
+                            discountApplied = true;
+                        }
+                    } else {
+                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode, catModeTypes);
+                        discountApplied = true;
+                    }
                 }
             }
         }
@@ -266,17 +302,15 @@ function getOptionEffectiveCost(option, {
                 const alreadySelectedThis = selectedOptions[option.id] || 0;
                 if (alreadySelectedThis === 0) {
                     if (info.cat.discountAmount && typeof info.cat.discountAmount === 'object') {
-                        const merged = { ...bestCost };
-                        Object.entries(info.cat.discountAmount).forEach(([t, amt]) => {
-                            if (typeof merged[t] === 'number') {
-                                merged[t] = Math.max(0, merged[t] - amt);
-                            }
-                        });
-                        bestCost = merged;
+                        const result = applyDiscountAmount(bestCost, info.cat.discountAmount);
+                        if (result.applied) {
+                            bestCost = result.cost;
+                            discountApplied = true;
+                        }
                     } else {
-                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode);
+                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode, catModeTypes);
+                        discountApplied = true;
                     }
-                    discountApplied = true;
                 }
             }
         }
@@ -1517,10 +1551,66 @@ function getDiscountTotalCount(map) {
     return Object.values(map || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
 }
 
-function applyDiscountCost(cost = {}, mode = 'half') {
+function hasDiscountAmount(entity) {
+    return !!(entity && entity.discountAmount && typeof entity.discountAmount === 'object' && Object.keys(entity.discountAmount).length > 0);
+}
+
+function getDiscountTypes(entity) {
+    if (!entity) return [];
+    if (Array.isArray(entity.discountTypes) && entity.discountTypes.length) return entity.discountTypes;
+    if (hasDiscountAmount(entity)) return Object.keys(entity.discountAmount);
+    return [];
+}
+
+function getModeDiscountTypes(entity) {
+    if (!entity) return null;
+    if (Array.isArray(entity.discountTypes) && entity.discountTypes.length) return entity.discountTypes;
+    return null;
+}
+
+function getDiscountEligibleCost(baseCost = {}, entity) {
+    const types = getDiscountTypes(entity);
+    if (types.length) {
+        for (const type of types) {
+            const val = baseCost[type];
+            if (typeof val === 'number' && val > 0) {
+                return { type, value: val };
+            }
+        }
+        return { type: null, value: null };
+    }
+    const entry = Object.entries(baseCost).find(([_, val]) => val > 0);
+    return entry ? { type: entry[0], value: entry[1] } : { type: null, value: null };
+}
+
+function getDiscountTypeLabel(entity, fallback = 'IP') {
+    const types = getDiscountTypes(entity);
+    if (types.length === 1) return types[0];
+    if (types.length > 1) return 'matching points';
+    return fallback;
+}
+
+function applyDiscountAmount(cost = {}, discountAmount) {
+    if (!discountAmount || typeof discountAmount !== 'object') {
+        return { cost, applied: false };
+    }
+    let applied = false;
     const updated = { ...cost };
+    Object.entries(discountAmount).forEach(([type, amt]) => {
+        if (typeof updated[type] === 'number' && updated[type] > 0 && typeof amt === 'number') {
+            const next = Math.max(0, updated[type] - amt);
+            if (next !== updated[type]) applied = true;
+            updated[type] = next;
+        }
+    });
+    return { cost: updated, applied };
+}
+
+function applyDiscountCost(cost = {}, mode = 'half', allowedTypes = null) {
+    const updated = { ...cost };
+    const typeSet = Array.isArray(allowedTypes) && allowedTypes.length ? new Set(allowedTypes) : null;
     Object.entries(updated).forEach(([type, val]) => {
-        if (val > 0) {
+        if (val > 0 && (!typeSet || typeSet.has(type))) {
             updated[type] = mode === 'free' ? 0 : Math.ceil(val / 2);
         }
     });
@@ -1728,7 +1818,8 @@ function renderCategoryContent(cat) {
                 const catMap = getCategoryDiscountMap(catKey);
                 const used = getDiscountTotalCount(catMap);
                 const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
-                catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} IP, ${catModeLabel})`;
+                const eligibleLabel = getDiscountTypeLabel(cat, 'IP');
+                catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} ${eligibleLabel}, ${catModeLabel})`;
             }
             content.appendChild(catInfo);
         }
@@ -2073,11 +2164,12 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
     desc.className = "option-description";
     setMultilineText(desc, opt.description || "");
 
-    const baseIpCost = (opt.cost && typeof opt.cost.IP === 'number') ? opt.cost.IP : null;
+    const baseCost = getOptionBaseCost(opt);
     const discountContexts = [];
     if (isDiscountableSubcat && opt.disableSubcategoryDiscount !== true) {
         discountContexts.push({
             level: 'subcategory',
+            entity: subcat,
             limit: subcat.discountSelectionLimit,
             eligible: subcat.discountEligibleUnder,
             map: getSubcategoryDiscountMap(subcatKey),
@@ -2087,6 +2179,7 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
     if (catDiscountUnlocked && opt.disableCategoryDiscount !== true && !catAutoApplyAll) {
         discountContexts.push({
             level: 'category',
+            entity: cat,
             limit: cat.discountSelectionLimit,
             eligible: cat.discountEligibleUnder,
             map: getCategoryDiscountMap(catKey),
@@ -2095,7 +2188,10 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
     }
 
     discountContexts.forEach(discountContext => {
-        if (baseIpCost === null || baseIpCost <= 0 || baseIpCost > discountContext.eligible) {
+        const {
+            value: eligibleCost
+        } = getDiscountEligibleCost(baseCost, discountContext.entity);
+        if (eligibleCost === null || eligibleCost <= 0 || eligibleCost > discountContext.eligible) {
             return;
         }
 

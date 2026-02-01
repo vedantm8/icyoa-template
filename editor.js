@@ -873,6 +873,132 @@
         return container;
     }
 
+    function getPointTypeNames() {
+        const pointsEntry = state.data.find(entry => entry.type === "points");
+        const names = Object.keys(pointsEntry?.values || {});
+        return names.length ? names : ["Points"];
+    }
+
+    function renderPointTypeAmountControls(parent, {
+        labelPrefix,
+        getMap,
+        setMap,
+        placeholder = "e.g. 1"
+    }) {
+        const container = document.createElement("div");
+        container.className = "point-type-amount-controls";
+        parent.appendChild(container);
+
+        const render = () => {
+            container.innerHTML = "";
+            const map = getMap() || {};
+            const allTypes = getPointTypeNames();
+            const activeTypes = Object.keys(map);
+
+            if (activeTypes.length === 0) {
+                const empty = document.createElement("div");
+                empty.className = "field-note";
+                empty.textContent = "No point types configured.";
+                container.appendChild(empty);
+            }
+
+            activeTypes.forEach(type => {
+                const row = document.createElement("div");
+                row.className = "field-inline";
+
+                const label = document.createElement("label");
+                label.textContent = `${labelPrefix} (${type})`;
+
+                const input = document.createElement("input");
+                input.type = "number";
+                input.value = (typeof map[type] === "number") ? map[type] : "";
+                input.placeholder = placeholder;
+                input.addEventListener("input", () => {
+                    const value = input.value.trim();
+                    let nextMap = getMap() || {};
+                    if (value === "") {
+                        delete nextMap[type];
+                        if (Object.keys(nextMap).length === 0) {
+                            setMap(null);
+                        } else {
+                            setMap(nextMap);
+                        }
+                    } else {
+                        nextMap[type] = Number(value) || 0;
+                        setMap(nextMap);
+                    }
+                    render();
+                    schedulePreviewUpdate();
+                });
+
+                const removeBtn = document.createElement("button");
+                removeBtn.type = "button";
+                removeBtn.className = "button-icon danger";
+                removeBtn.textContent = "✕";
+                removeBtn.title = `Remove ${type}`;
+                removeBtn.addEventListener("click", () => {
+                    const nextMap = getMap() || {};
+                    delete nextMap[type];
+                    if (Object.keys(nextMap).length === 0) {
+                        setMap(null);
+                    } else {
+                        setMap(nextMap);
+                    }
+                    render();
+                    schedulePreviewUpdate();
+                });
+
+                row.appendChild(label);
+                row.appendChild(input);
+                row.appendChild(removeBtn);
+                container.appendChild(row);
+            });
+
+            const addRow = document.createElement("div");
+            addRow.className = "field-inline";
+
+            const addLabel = document.createElement("label");
+            addLabel.textContent = `Add ${labelPrefix} type`;
+
+            const select = document.createElement("select");
+            const available = allTypes.filter(type => !activeTypes.includes(type));
+            const placeholderOption = document.createElement("option");
+            placeholderOption.value = "";
+            placeholderOption.textContent = available.length ? "Select type" : "No more types";
+            select.appendChild(placeholderOption);
+            available.forEach(type => {
+                const opt = document.createElement("option");
+                opt.value = type;
+                opt.textContent = type;
+                select.appendChild(opt);
+            });
+
+            const addBtn = document.createElement("button");
+            addBtn.type = "button";
+            addBtn.className = "button-subtle";
+            addBtn.textContent = "Add";
+            addBtn.disabled = available.length === 0;
+            addBtn.addEventListener("click", () => {
+                const selected = select.value;
+                if (!selected) return;
+                const nextMap = getMap() || {};
+                if (!Object.prototype.hasOwnProperty.call(nextMap, selected)) {
+                    nextMap[selected] = 0;
+                }
+                setMap(nextMap);
+                render();
+                schedulePreviewUpdate();
+            });
+
+            addRow.appendChild(addLabel);
+            addRow.appendChild(select);
+            addRow.appendChild(addBtn);
+            container.appendChild(addRow);
+        };
+
+        render();
+    }
+
 
 
     function renderCategories() {
@@ -1142,54 +1268,30 @@
                 discountRow.appendChild(discountFirstInput);
                 subBody.appendChild(discountRow);
 
-                const discountAmtRow = document.createElement("div");
-                discountAmtRow.className = "field-inline";
-                const discountAmtLabel = document.createElement("label");
-                discountAmtLabel.textContent = "Discount Amount (Points)";
-                const discountAmtInput = document.createElement("input");
-                discountAmtInput.type = "number";
-                discountAmtInput.value = (subcat.discountAmount && subcat.discountAmount.Points) ?? "";
-                discountAmtInput.placeholder = "e.g. 1";
-                discountAmtInput.addEventListener("input", () => {
-                    const value = discountAmtInput.value.trim();
-                    if (value === "") {
-                        if (subcat.discountAmount) delete subcat.discountAmount.Points;
-                        if (subcat.discountAmount && Object.keys(subcat.discountAmount).length === 0) delete subcat.discountAmount;
-                    } else {
-                        if (!subcat.discountAmount) subcat.discountAmount = {};
-                        subcat.discountAmount.Points = Number(value) || 0;
+                renderPointTypeAmountControls(subBody, {
+                    labelPrefix: "Discount Amount",
+                    getMap: () => subcat.discountAmount,
+                    setMap: (next) => {
+                        if (next) {
+                            subcat.discountAmount = next;
+                        } else {
+                            delete subcat.discountAmount;
+                        }
                     }
-                    schedulePreviewUpdate();
                 });
-
-                discountAmtRow.appendChild(discountAmtLabel);
-                discountAmtRow.appendChild(discountAmtInput);
-                subBody.appendChild(discountAmtRow);
 
                 // Default cost (subcategory) controls
-                const defaultCostRow = document.createElement("div");
-                defaultCostRow.className = "field-inline";
-                const defaultCostLabel = document.createElement("label");
-                defaultCostLabel.textContent = "Default cost (Points)";
-                const defaultCostInput = document.createElement("input");
-                defaultCostInput.type = "number";
-                defaultCostInput.value = (subcat.defaultCost && subcat.defaultCost.Points) ?? "";
-                defaultCostInput.placeholder = "e.g. 1";
-                defaultCostInput.addEventListener("input", () => {
-                    const value = defaultCostInput.value.trim();
-                    if (value === "") {
-                        if (subcat.defaultCost) delete subcat.defaultCost.Points;
-                        if (subcat.defaultCost && Object.keys(subcat.defaultCost).length === 0) delete subcat.defaultCost;
-                    } else {
-                        if (!subcat.defaultCost) subcat.defaultCost = {};
-                        subcat.defaultCost.Points = Number(value) || 0;
+                renderPointTypeAmountControls(subBody, {
+                    labelPrefix: "Default cost",
+                    getMap: () => subcat.defaultCost,
+                    setMap: (next) => {
+                        if (next) {
+                            subcat.defaultCost = next;
+                        } else {
+                            delete subcat.defaultCost;
+                        }
                     }
-                    schedulePreviewUpdate();
                 });
-
-                defaultCostRow.appendChild(defaultCostLabel);
-                defaultCostRow.appendChild(defaultCostInput);
-                subBody.appendChild(defaultCostRow);
 
                 const columnsRow = document.createElement("div");
                 columnsRow.className = "field-inline";
