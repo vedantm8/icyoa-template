@@ -2520,7 +2520,7 @@ function openBackpackModal() {
         content.appendChild(emptyMsg);
     }
 
-    modal.style.display = "block";
+    modal.style.display = "flex";
 }
 
 function closeBackpackModal() {
@@ -2538,4 +2538,3 @@ window.onclick = (event) => {
     if (event.target === modal) closeModal();
     if (event.target === backpackModal) closeBackpackModal();
 };
-

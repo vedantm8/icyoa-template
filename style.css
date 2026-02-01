@@ -240,7 +240,7 @@ button:disabled {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
     background-color: rgba(0, 0, 0, 0.6);
     display: none;
 }
@@ -525,6 +525,29 @@ div {
 /* Backpack Styles */
 #backpackBtn {
     display: none;
+}
+
+#backpackModal {
+    align-items: center;
+    justify-content: center;
+}
+
+#backpackModal .modal-content {
+    margin: 0;
+    max-height: 90vh;
+}
+
+#backpackModalContent {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    overflow: hidden;
+}
+
+#backpackContent {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .backpack-category {
