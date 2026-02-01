@@ -531,7 +531,9 @@
           {
             "label": "Max Mercury",
             "description": "In 1838, a US Cavalry scout tried but could not prevent a massacre of the Blackfoot tribe he had befriended. Before the Scout died, a shaman blessed him, granting, the man superhuman speed, so he might stop further blood chat. After he recovered, the scout used his powers to help others, becoming renowned as Ahwehota, the Windrunner. When Windrunner first experienced the call of the Speed Force, he resisted merging with it and as a result suddenly found himself thrust into the 1890s. He continued his heroic activities in that era as Whip Whirlwind until later brushes with the Speed Force catapulted him to 1940. \n\nSettling in Oakwood Park, he took a job as a circus acrobat and secretly battled evildoers as Quicksilver throughout the 1940s. As Quicksilver, he gained newfound allies in Johnny Quick and the original Flash and shared with htem his hard-earned knowledge of the Speed Force. In 1948, Quicksilver found himself thrust through time once again. He landed in present-day Keystone City. \n\nNow known as Max Mercury, he continues to mentor speedsters, most notably Bart Allen. Max's Zen outlook makes him quiet and patient, as well as a perfect teacher and mentor. ",
-            "cost": {},
+            "cost": {
+              "Points": 2
+            },
             "id": "interactionsAlliesMaxMercury",
             "image": "https://static.wikia.nocookie.net/marvel_dc/images/7/72/Max_Mercury_0001.jpg"
           },
