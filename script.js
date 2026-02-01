@@ -823,23 +823,9 @@ function applyCyoaData(rawData, {
             if (headerImageEntry?.url) {
                 const noUpscaleClass = headerImageEntry.preventUpscale ? ' no-upscale' : '';
                 headerContainer.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image${noUpscaleClass}" />`;
-                // Add a warning badge if the image will be upscaled and user did NOT opt-out (preventUpscale=false)
                 const imgEl = headerContainer.querySelector('img');
-                if (imgEl) {
-                    imgEl.onload = () => {
-                        const existingBadge = headerContainer.querySelector('.header-image-warning');
-                        if (existingBadge) existingBadge.remove();
-                        const dpr = window.devicePixelRatio || 1;
-                        const containerWidth = headerContainer.clientWidth || headerContainer.offsetWidth;
-                        if (!headerImageEntry.preventUpscale && imgEl.naturalWidth && imgEl.naturalWidth < containerWidth * dpr) {
-                            const warn = document.createElement('div');
-                            warn.className = 'header-image-warning';
-                            warn.textContent = '⚠️ Image may appear blurry at this size';
-                            headerContainer.appendChild(warn);
-                        }
-                    };
-                    // Also trigger immediately if already cached
-                    if (imgEl.complete) imgEl.onload();
+                if (imgEl && imgEl.complete) {
+                    imgEl.decode?.().catch(() => {});
                 }
             } else {
                 headerContainer.innerHTML = initialHeaderImageHTML;
