@@ -78,7 +78,9 @@ function getOptionBaseCost(option) {
     return { ...subDefault, ...(option.cost || {}) };
 }
 
-function getOptionEffectiveCost(option) {
+function getOptionEffectiveCost(option, {
+    includeFirstNPreview = true
+} = {}) {
     const baseCost = getOptionBaseCost(option);
     let bestCost = baseCost;
     let bestTotal = Object.entries(baseCost).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
@@ -127,26 +129,28 @@ function getOptionEffectiveCost(option) {
         if (catMap[option.id]) delete catMap[option.id];
     }
 
-    // Support "first N" discount display even when discount config flags aren't present.
-    // This mirrors selection behavior where subcat.discountFirstN directly affects the next selections.
-    if (!discountApplied && info.subcat && typeof info.subcat.discountFirstN === 'number' && info.subcat.discountFirstN > 0) {
-        const subcatSelectionsCount = (info.subcat.options || []).reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
-        const remaining = Math.max(0, info.subcat.discountFirstN - subcatSelectionsCount);
-        if (remaining > 0) {
-            const alreadySelectedThis = selectedOptions[option.id] || 0;
-            if (alreadySelectedThis === 0) {
-                if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
-                    const merged = { ...bestCost };
-                    Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
-                        if (typeof merged[t] === 'number') {
-                            merged[t] = Math.max(0, merged[t] - amt);
-                        }
-                    });
-                    bestCost = merged;
-                } else {
-                    bestCost = applyDiscountCost(bestCost, info.subcat.discountMode || 'half');
+    if (includeFirstNPreview) {
+        // Support "first N" discount display even when discount config flags aren't present.
+        // This mirrors selection behavior where subcat.discountFirstN directly affects the next selections.
+        if (!discountApplied && info.subcat && typeof info.subcat.discountFirstN === 'number' && info.subcat.discountFirstN > 0) {
+            const subcatSelectionsCount = (info.subcat.options || []).reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+            const remaining = Math.max(0, info.subcat.discountFirstN - subcatSelectionsCount);
+            if (remaining > 0) {
+                const alreadySelectedThis = selectedOptions[option.id] || 0;
+                if (alreadySelectedThis === 0) {
+                    if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
+                        const merged = { ...bestCost };
+                        Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
+                            if (typeof merged[t] === 'number') {
+                                merged[t] = Math.max(0, merged[t] - amt);
+                            }
+                        });
+                        bestCost = merged;
+                    } else {
+                        bestCost = applyDiscountCost(bestCost, info.subcat.discountMode || 'half');
+                    }
+                    discountApplied = true;
                 }
-                discountApplied = true;
             }
         }
     }
@@ -174,54 +178,58 @@ function getOptionEffectiveCost(option) {
             }
         }
 
-        // If no explicit assignment/auto-apply, consider "first N" display behavior so users see which items would be discounted
-        if (!discountApplied && typeof info.subcat.discountFirstN === 'number' && info.subcat.discountFirstN > 0) {
-            const subcatSelectionsCount = (info.subcat.options || []).reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
-            const remaining = Math.max(0, info.subcat.discountFirstN - subcatSelectionsCount);
+        if (includeFirstNPreview) {
+            // If no explicit assignment/auto-apply, consider "first N" display behavior so users see which items would be discounted
+            if (!discountApplied && typeof info.subcat.discountFirstN === 'number' && info.subcat.discountFirstN > 0) {
+                const subcatSelectionsCount = (info.subcat.options || []).reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+                const remaining = Math.max(0, info.subcat.discountFirstN - subcatSelectionsCount);
+                if (remaining > 0) {
+                    // If there are remaining discount slots, unselected items should display as discounted
+                    const alreadySelectedThis = selectedOptions[option.id] || 0;
+                    // Only show the discounted price for an option that hasn't yet been selected (next-instance price)
+                    if (alreadySelectedThis === 0) {
+                        // Apply discountAmount if present, otherwise fall back to discountMode
+                        if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
+                            const merged = { ...bestCost };
+                            Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
+                                if (typeof merged[t] === 'number') {
+                                    merged[t] = Math.max(0, merged[t] - amt);
+                                }
+                            });
+                            bestCost = merged;
+                        } else {
+                            bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                        }
+                        discountApplied = true;
+                    }
+                }
+            }
+        }
+    }
+
+    if (includeFirstNPreview) {
+        // Support category-level "first N" display even when discount config flags aren't present
+        if (!discountApplied && info.cat && typeof info.cat.discountFirstN === 'number' && info.cat.discountFirstN > 0) {
+            const catSelectionsCount = (info.cat.subcategories || []).reduce((sum, sc) => {
+                return sum + ((sc.options || []).reduce((s, o) => s + (selectedOptions[o.id] || 0), 0));
+            }, 0);
+            const remaining = Math.max(0, info.cat.discountFirstN - catSelectionsCount);
             if (remaining > 0) {
-                // If there are remaining discount slots, unselected items should display as discounted
                 const alreadySelectedThis = selectedOptions[option.id] || 0;
-                // Only show the discounted price for an option that hasn't yet been selected (next-instance price)
                 if (alreadySelectedThis === 0) {
-                    // Apply discountAmount if present, otherwise fall back to discountMode
-                    if (info.subcat.discountAmount && typeof info.subcat.discountAmount === 'object') {
+                    if (info.cat.discountAmount && typeof info.cat.discountAmount === 'object') {
                         const merged = { ...bestCost };
-                        Object.entries(info.subcat.discountAmount).forEach(([t, amt]) => {
+                        Object.entries(info.cat.discountAmount).forEach(([t, amt]) => {
                             if (typeof merged[t] === 'number') {
                                 merged[t] = Math.max(0, merged[t] - amt);
                             }
                         });
                         bestCost = merged;
                     } else {
-                        bestCost = applyDiscountCost(bestCost, info.subcat.discountMode);
+                        bestCost = applyDiscountCost(bestCost, info.cat.discountMode || 'half');
                     }
                     discountApplied = true;
                 }
-            }
-        }
-    }
-
-    // Support category-level "first N" display even when discount config flags aren't present
-    if (!discountApplied && info.cat && typeof info.cat.discountFirstN === 'number' && info.cat.discountFirstN > 0) {
-        const catSelectionsCount = (info.cat.subcategories || []).reduce((sum, sc) => {
-            return sum + ((sc.options || []).reduce((s, o) => s + (selectedOptions[o.id] || 0), 0));
-        }, 0);
-        const remaining = Math.max(0, info.cat.discountFirstN - catSelectionsCount);
-        if (remaining > 0) {
-            const alreadySelectedThis = selectedOptions[option.id] || 0;
-            if (alreadySelectedThis === 0) {
-                if (info.cat.discountAmount && typeof info.cat.discountAmount === 'object') {
-                    const merged = { ...bestCost };
-                    Object.entries(info.cat.discountAmount).forEach(([t, amt]) => {
-                        if (typeof merged[t] === 'number') {
-                            merged[t] = Math.max(0, merged[t] - amt);
-                        }
-                    });
-                    bestCost = merged;
-                } else {
-                    bestCost = applyDiscountCost(bestCost, info.cat.discountMode || 'half');
-                }
-                discountApplied = true;
             }
         }
     }
@@ -1282,7 +1290,7 @@ function addSelection(option) {
         }
     }
 
-    const effectiveCost = getOptionEffectiveCost(option);
+    const effectiveCost = getOptionEffectiveCost(option, { includeFirstNPreview: false });
     const actualCost = {};
     Object.entries(effectiveCost).forEach(([type, cost]) => {
         let finalCost;

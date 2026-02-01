@@ -14,7 +14,8 @@
   {
     "type": "points",
     "values": {
-      "Points": 12
+      "Points": 12,
+      "Test": 4
     },
     "allowNegative": [],
     "attributeRanges": {}
@@ -67,11 +68,7 @@
         "name": "Costume",
         "type": "storyBlock",
         "text": "Choose a costume — the first costume you pick is free; additional costume choices cost 1 Point each.",
-        "discountFirstN": 1,
         "discountAmount": {
-          "Points": 1
-        },
-        "defaultCost": {
           "Points": 1
         },
         "options": [
@@ -104,7 +101,11 @@
             "image": "https://screenrant.com/wp-content/uploads/2017/05/Flash-Comic-Jay-Garrick-Return-Rebirth.jpg"
           }
         ],
-        "columnsPerRow": 2
+        "columnsPerRow": 1,
+        "discountFirstN": 1,
+        "defaultCost": {
+          "Points": 2
+        }
       }
     ]
   },
