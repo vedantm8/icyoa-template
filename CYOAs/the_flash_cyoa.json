@@ -76,18 +76,32 @@
         },
         "options": [
           {
-            "label": "Classic Costume",
-            "description": "A familiar, iconic red-and-gold suit — simple and aerodynamic.",
+            "label": "Costume Ring",
+            "description": "A tiny ring crafted using advanced nanotech that can compress an entire costume inside. Simply thumb the small stud and the ring ejects the costume, which then automatically forms around yourself. ",
             "id": "costumeClassic",
-            "image": "https://example.com/classic-costume.jpg",
+            "image": "https://static1.cbrimages.com/wordpress/wp-content/uploads/2018/07/flash-ring-costume-display.jpg",
             "cost": {}
           },
           {
-            "label": "Stealth Suit",
-            "description": "A darker, reinforced suit built for covert operations.",
+            "label": "Vibrational Guise",
+            "description": "You can vibrate rapidly to blur your facial features and voice, allowing you to act in public without a face covering mask. You can also use this to defeat facial recognition software, granting you near-complete anonymity despite the highly conspicuous nature of your powers. ",
             "id": "costumeStealth",
-            "image": "https://example.com/stealth-suit.jpg",
+            "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjI2hrxYfnwUo3s5Q69GuKogfNNMGc97mqj1neNs5V52qzAXPqGjGIKqdLMqgof6mnjPdDenwE6vqPyn4huXRiLFm0s5bKIBuhq21Epwhbd7QeqLHv-jlA-qbeStZ7TyF77WJl_7oXChzZq3kF9qREcLBmVjBVvgAgkxQPBWYDC9nMOI800lQK8OyFy/s573/sweet%20vibrating.jpg",
             "cost": {}
+          },
+          {
+            "label": "Speed Force Costume",
+            "description": "You can construct your costume out of pure Speed Force energy, allowing you to summon and dispel it at will. Plus, you can instantly repair any damage to it and no longer need to worry about finding situations where it is out of reach (such as the shower) ",
+            "cost": {},
+            "id": "benefitsCostumeSpeedForceCostume",
+            "image": "https://static1.srcdn.com/wordpress/wp-content/uploads/2018/07/The-Flash-Wally-West-DC-Rebirth.jpg"
+          },
+          {
+            "label": "Quick Change",
+            "description": "The most basic form, you have a simple and mundane costume you dry-clean occasionally. With your super-speed, you can change into and out of it instantly. ",
+            "cost": {},
+            "id": "benefitsCostumeQuickChange",
+            "image": "https://screenrant.com/wp-content/uploads/2017/05/Flash-Comic-Jay-Garrick-Return-Rebirth.jpg"
           }
         ],
         "columnsPerRow": 2
