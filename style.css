@@ -17,6 +17,21 @@
     --points-bg: #f0f0f0;
     --points-border: #cccccc;
     --shadow-color: rgba(0, 0, 0, 0.1);
+    --font-base: 16px;
+    --font-title: 28px;
+    --font-description: 16px;
+    --font-tab: 15px;
+    --font-accordion: 16px;
+    --font-subcategory: 16px;
+    --font-option-title: 15px;
+    --font-option-req: 13px;
+    --font-option-desc: 13px;
+    --font-story: 15px;
+    --font-story-input: 14px;
+    --font-points: 14px;
+    --font-points-value: 14px;
+    --font-prereq-help: 12px;
+    --font-label: 14px;
 }
 
 body {
@@ -26,6 +41,7 @@ body {
     padding: 0;
     margin: 0;
     min-height: 100vh;
+    font-size: var(--font-base);
 }
 
 .container {
@@ -62,13 +78,24 @@ button:disabled {
     flex-wrap: wrap;
 }
 
+.description h2 {
+    font-size: var(--font-title);
+    margin: 0 0 8px;
+}
+
+.description p {
+    font-size: var(--font-description);
+    margin: 0 0 16px;
+    color: var(--text-muted);
+}
+
 .tab-button {
     padding: 12px 20px;
     background: none;
     border: none;
     border-bottom: 3px solid transparent;
     color: var(--text-muted);
-    font-size: 15px;
+    font-size: var(--font-tab);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -113,6 +140,7 @@ button:disabled {
     cursor: pointer;
     border-bottom: 1px solid transparent;
     transition: all 0.2s ease;
+    font-size: var(--font-accordion);
 }
 
 .accordion-header:hover {
@@ -184,6 +212,10 @@ button:disabled {
     text-align: center;
 }
 
+.option-content strong {
+    font-size: var(--font-option-title);
+}
+
 .option-wrapper button {
     align-self: stretch;
     padding: 10px 12px;
@@ -204,14 +236,14 @@ button:disabled {
 }
 
 .option-requirements {
-    font-size: 13px;
+    font-size: var(--font-option-req);
     color: var(--text-muted);
     white-space: pre-wrap;
     margin-top: 4px;
 }
 
 .option-description {
-    font-size: 13px;
+    font-size: var(--font-option-desc);
     color: var(--text-color);
     line-height: 1.5;
     margin-top: 4px;
@@ -225,7 +257,7 @@ button:disabled {
     background: var(--points-bg);
     border-top: 1px solid var(--points-border);
     padding: 10px 20px;
-    font-size: 14px;
+    font-size: var(--font-points);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -264,7 +296,7 @@ button:disabled {
     margin-top: 10px;
     padding: 10px;
     font-family: monospace;
-    font-size: 13px;
+    font-size: var(--font-base);
     border-radius: 6px;
     border: 1px solid var(--border-color);
     resize: vertical;
@@ -309,7 +341,7 @@ button:disabled {
     background: #eef3ff;
     color: #0366d6;
     font-weight: 600;
-    font-size: 12px;
+    font-size: var(--font-prereq-help);
     margin-left: 6px;
     cursor: help;
     border: 1px solid rgba(3, 102, 214, 0.12);
@@ -366,7 +398,7 @@ button:disabled {
     padding: 1em;
     margin-bottom: 1em;
     font-family: serif;
-    font-size: 15px;
+    font-size: var(--font-story);
     color: var(--text-color);
 }
 
@@ -378,13 +410,14 @@ button:disabled {
     display: block;
     font-weight: bold;
     margin-bottom: 0.3em;
+    font-size: var(--font-label);
 }
 
 .story-input-wrapper input {
     padding: 0.5em;
     width: 100%;
     max-width: 400px;
-    font-size: 14px;
+    font-size: var(--font-story-input);
     background: var(--container-bg);
     color: var(--text-color);
     border: 1px solid var(--border-color);
@@ -400,6 +433,7 @@ button:disabled {
     justify-content: space-between;
     border: 1px solid var(--border-color);
     transition: all 0.2s ease;
+    font-size: var(--font-subcategory);
 }
 
 .subcategory-header:hover {
@@ -450,7 +484,7 @@ div {
 
 #pointsDisplay span {
     white-space: nowrap;
-    font-size: 14px;
+    font-size: var(--font-points-value);
 }
 
 /* CYOA Selection Styles */
@@ -598,4 +632,8 @@ div {
     font-weight: bold;
     font-size: 14px;
     color: var(--text-color);
+}
+.dynamic-choice-wrapper label,
+.slider-wrapper label {
+    font-size: var(--font-label);
 }

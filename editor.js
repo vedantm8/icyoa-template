@@ -63,6 +63,21 @@
         return JSON.parse(JSON.stringify(data));
     }
 
+    function scrollPreviewToExample(selector) {
+        if (!previewFrame?.contentWindow || !previewFrame.contentDocument) return;
+        try {
+            const doc = previewFrame.contentDocument;
+            const target = doc.querySelector(selector);
+            if (!target) return;
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
+            });
+        } catch (err) {
+            // Ignore cross-origin or access errors.
+        }
+    }
+
     function showEditorMessage(text, tone = "info", timeout = 4000) {
         if (!editorMessageEl) return;
         editorMessageEl.textContent = text;
@@ -533,9 +548,25 @@
             "item-header-bg": "#e0e0e0",
             "points-bg": "#f0f0f0",
             "points-border": "#cccccc",
-            "shadow-color": "rgba(0,0,0,0.1)"
+            "shadow-color": "rgba(0,0,0,0.1)",
+            "font-base": "16px",
+            "font-title": "28px",
+            "font-description": "16px",
+            "font-tab": "15px",
+            "font-accordion": "16px",
+            "font-subcategory": "16px",
+            "font-option-title": "15px",
+            "font-option-req": "13px",
+            "font-option-desc": "13px",
+            "font-story": "15px",
+            "font-story-input": "14px",
+            "font-points": "14px",
+            "font-points-value": "14px",
+            "font-prereq-help": "12px",
+            "font-label": "14px"
         })).entry;
         fragment.appendChild(renderThemeSection(themeEntry));
+        fragment.appendChild(renderTypographySection(themeEntry));
 
         globalSettingsEl.innerHTML = "";
         globalSettingsEl.appendChild(fragment);
@@ -866,6 +897,123 @@
 
             inputContainer.append(colorInput, textInput);
             field.append(label, inputContainer);
+            grid.appendChild(field);
+        });
+
+        body.appendChild(grid);
+        return container;
+    }
+
+    function renderTypographySection(themeEntry) {
+        const {
+            container,
+            body
+        } = createSectionContainer("Typography Settings", {
+            defaultOpen: false
+        });
+
+        const previewTargets = {
+            "font-base": ".container",
+            "font-title": "#cyoaTitle",
+            "font-description": "#cyoaDescription",
+            "font-tab": ".tab-navigation .tab-button",
+            "font-accordion": ".accordion-header",
+            "font-subcategory": ".subcategory-header",
+            "font-option-title": ".option-content strong",
+            "font-option-req": ".option-requirements",
+            "font-option-desc": ".option-description",
+            "font-story": ".story-block",
+            "font-story-input": ".story-input-wrapper input",
+            "font-points": "#pointsTracker",
+            "font-points-value": "#pointsDisplay span",
+            "font-prereq-help": ".prereq-help",
+            "font-label": ".story-input-wrapper label, .dynamic-choice-wrapper label, .slider-wrapper label"
+        };
+
+        const typography = {
+            "font-base": "Base Text",
+            "font-title": "Title",
+            "font-description": "Description",
+            "font-tab": "Tab Label",
+            "font-accordion": "Category Header",
+            "font-subcategory": "Subcategory Header",
+            "font-option-title": "Option Title",
+            "font-option-req": "Option Requirements",
+            "font-option-desc": "Option Description",
+            "font-story": "Story Block",
+            "font-story-input": "Story Input",
+            "font-points": "Points Tracker",
+            "font-points-value": "Points Values",
+            "font-prereq-help": "Prereq Help Badge",
+            "font-label": "Labels"
+        };
+
+        const grid = document.createElement("div");
+        grid.style.display = "grid";
+        grid.style.gridTemplateColumns = "1fr 1fr";
+        grid.style.gap = "12px";
+
+        Object.entries(typography).forEach(([key, labelText]) => {
+            const field = document.createElement("div");
+            field.className = "field";
+
+            const label = document.createElement("label");
+            label.textContent = `${labelText} (px)`;
+
+            const inputRow = document.createElement("div");
+            inputRow.className = "field-inline";
+
+            const previewBtn = document.createElement("button");
+            previewBtn.type = "button";
+            previewBtn.className = "button-subtle";
+            previewBtn.textContent = "Preview";
+            previewBtn.title = "Jump to an example in the preview";
+            previewBtn.addEventListener("click", () => {
+                const selector = previewTargets[key];
+                if (selector) scrollPreviewToExample(selector);
+            });
+
+            const input = document.createElement("input");
+            input.type = "number";
+            input.min = "8";
+            input.step = "1";
+            const raw = themeEntry[key];
+            const numeric = typeof raw === "string" ? parseFloat(raw) : (typeof raw === "number" ? raw : NaN);
+            input.value = Number.isFinite(numeric) ? numeric : "";
+            input.placeholder = "e.g. 14";
+
+            const range = document.createElement("input");
+            range.type = "range";
+            range.min = "8";
+            range.max = "40";
+            range.step = "1";
+            range.value = Number.isFinite(numeric) ? numeric : "16";
+
+            const applyValue = (value) => {
+                if (value === "") {
+                    delete themeEntry[key];
+                } else {
+                    themeEntry[key] = `${Number(value) || 0}px`;
+                }
+                schedulePreviewUpdate();
+            };
+
+            input.addEventListener("input", () => {
+                const value = input.value.trim();
+                if (value !== "") range.value = value;
+                applyValue(value);
+            });
+
+            range.addEventListener("input", () => {
+                input.value = range.value;
+                applyValue(range.value);
+            });
+
+            inputRow.appendChild(previewBtn);
+            inputRow.appendChild(range);
+            inputRow.appendChild(input);
+            field.appendChild(label);
+            field.appendChild(inputRow);
             grid.appendChild(field);
         });
 

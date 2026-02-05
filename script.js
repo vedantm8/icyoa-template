@@ -766,11 +766,32 @@ function applyCyoaData(rawData, {
             root.style.setProperty(`--${key}`, value);
         }
 
+        const TYPOGRAPHY_KEYS = new Set([
+            "font-base",
+            "font-title",
+            "font-description",
+            "font-tab",
+            "font-accordion",
+            "font-subcategory",
+            "font-option-title",
+            "font-option-req",
+            "font-option-desc",
+            "font-story",
+            "font-story-input",
+            "font-points",
+            "font-points-value",
+            "font-prereq-help",
+            "font-label"
+        ]);
+
         if (isDarkMode) {
             Object.entries(DARK_THEME_VARS).forEach(([key, value]) => updateRootProperty(key, value));
-        } else if (themeEntry) {
+        }
+        if (themeEntry) {
             Object.entries(themeEntry).forEach(([key, value]) => {
-                if (key !== "type") updateRootProperty(key, value);
+                if (key === "type") return;
+                if (isDarkMode && !TYPOGRAPHY_KEYS.has(key)) return;
+                updateRootProperty(key, value);
             });
         } else {
             // Reset to default theme variables
@@ -786,7 +807,22 @@ function applyCyoaData(rawData, {
                 "item-header-bg": "#e0e0e0",
                 "points-bg": "#f0f0f0",
                 "points-border": "#cccccc",
-                "shadow-color": "rgba(0, 0, 0, 0.1)"
+                "shadow-color": "rgba(0, 0, 0, 0.1)",
+                "font-base": "16px",
+                "font-title": "28px",
+                "font-description": "16px",
+                "font-tab": "15px",
+                "font-accordion": "16px",
+                "font-subcategory": "16px",
+                "font-option-title": "15px",
+                "font-option-req": "13px",
+                "font-option-desc": "13px",
+                "font-story": "15px",
+                "font-story-input": "14px",
+                "font-points": "14px",
+                "font-points-value": "14px",
+                "font-prereq-help": "12px",
+                "font-label": "14px"
             };
             Object.entries(defaults).forEach(([key, value]) => updateRootProperty(key, value));
         }
