@@ -106,7 +106,8 @@
             "cost": {},
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.m3u4e1OCdqxG9DIYfkYt-QHaFl%3Fcb%3D12%26pid%3DApi&f=1&ipt=21faa5dbcaa08a118867d6b004425524d7ed6b4ad99361d23f160709db6dae82&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -163,7 +164,8 @@
             "cost": {},
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.r2RMGRJ40N_9h9xxkuJmwwHaDt%3Fcb%3D12%26pid%3DApi&f=1&ipt=de9edcc0e764a7c0a436f0cd268d09e84333076887fe2251733c3ccc57ce3c68&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -292,7 +294,8 @@
             "maxSelections": 20,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fb1%2Fe6%2F3b%2Fb1e63b8ac3c8c86925e58b80d454d161.jpg&f=1&nofb=1&ipt=5d86a3d9aab9b9be72c29d2a2446738a3332e49c11d23807ff535ac0abd9f077"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       }
     ]
   },
@@ -562,7 +565,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.8Vk6baLO0I5PV17rkfoBOQHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=4a96a39082b59146ee0badd8781de3f3560258ed1c16e66c2afc597f6d578c90&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -618,7 +622,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2F3.bp.blogspot.com%2F-A7j6Gd4bQlE%2FWDG9kVQI47I%2FAAAAAAAAAB0%2FFA_FJIDB3Pgo1-Vog3zUvrIOnqpXN6fTQCLcB%2Fs1600%2FSix_Paths_Sage_Mode.png&f=1&nofb=1&ipt=8812a024afc26680e7dc2b9128e976e31f45774022df3d2ed81bc4931af24b9c"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -698,7 +703,8 @@
             "maxSelections": 20,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.pinimg.com%2Foriginals%2Fc8%2F6a%2Fda%2Fc86ada0f88fc2cced1c82bbd5de1e998.jpg&f=1&nofb=1&ipt=a33781d8d35a5a41e8b6057475bc9cec9df642d1f847ee643817ac73c21259dc"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -795,7 +801,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.azjFwQsuY8QVPRExr3mbKAHaFc%3Fcb%3D12%26pid%3DApi&f=1&ipt=49c011d7e93460027baff985a3cdbfad444b0c8d72a4d367c5d204dea73546c8&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -892,7 +899,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse2.mm.bing.net%2Fth%2Fid%2FOIP.Z1yKFPWjHLgvy4O3Hh3-oQHaFj%3Fcb%3D12%26pid%3DApi&f=1&ipt=a81292577f65e2537be27435000e1c0102da8c309d19870c1cf7e2a0145d6ec4&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -1000,7 +1008,8 @@
             "maxSelections": 20,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.PixCNfVTJGg_RtRQPAm6HQAAAA%3Fcb%3D12%26pid%3DApi&f=1&ipt=fcf6b9f399b553a2cb5fa086b469ad9f861b18d249beefd8396394b4de98d241&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -1097,7 +1106,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.ZVeiapXuyO1IhR4Q25aiSAHaFm%3Fcb%3D12%26pid%3DApi&f=1&ipt=6c6f4cfa725d09b322a6ebf66e2bd9627237625b64cc7759bc450c9bfe6f2057&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       }
     ]
   },
@@ -1139,7 +1149,8 @@
             "maxSelections": 20,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.pLxkYxebOI5-DykZYDRaYwHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=98a92c60b40d92d65c6a18d91c65d17c6b46b8e62c9341ea438baea58225ae08&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -1304,7 +1315,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.pYI7MPxQDYW_ZCD9tfgbsgHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=7073915625831babee92a55104770edaff58f6b8ac5b9505139eb72789982392&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -1371,7 +1383,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse3.mm.bing.net%2Fth%2Fid%2FOIP.Gmmu3l-85shOuAi0Z3K--gHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=84ddcbbe764539348945e5c863df8855a917ef49722631801fd0a6ad4bdbb909&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -1626,7 +1639,7 @@
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.HudtBDCo7gvUIOc8V69e8AHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=2dad325b9f67fa09f2feb34da6ed4222291a72b7a68754a4117beb3b8b681fd8&ipo=images"
           }
         ],
-        "columnsPerRow": 2
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -1762,7 +1775,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthumb.viva.id%2Fvivagadget%2F665x374%2F2024%2F05%2F19%2F6649479464591-fakta-menarik-tentang-tenseigan-dojutsu-langka-di-serial-naruto_.jpg&f=1&nofb=1&ipt=89a20736b192119bbae72058b23b6d19bf2b5161f2bf42e17bac0bc1ad0f3bfb"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -1912,7 +1926,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.mlsjMEfmAnrIEHne_PcymQHaEJ%3Fcb%3D12%26pid%3DApi&f=1&ipt=9735714d0474adcecee10f404057662b2ad6f45f9ea2b03941c6e273c85555bf&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -2060,7 +2075,8 @@
             "maxSelections": 1,
             "image": "https://static.wikia.nocookie.net/naruto/images/d/d1/Glowing_Blue_Rinnegan.png"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       }
     ]
   },
@@ -2163,7 +2179,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwallpapercave.com%2Fwp%2Fwp6621861.jpg&f=1&nofb=1&ipt=077769af7c7f28f89a2d3b7cdaad61e7ae360805514f6e524b18a680f64e424a"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -2252,7 +2269,8 @@
             "maxSelections": 20,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.qa9EY5Tw_ht_mLewJ8PbAgHaFP%3Fcb%3D12%26pid%3DApi&f=1&ipt=d95a41cbc219994504acc6ae7da59e27c26dc8f9427e44d3b17d746cf7bd8cd3&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -2465,7 +2483,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.vMkRPSs0e3mhrwDCnYDr5gHaEL%3Fcb%3D12%26pid%3DApi&f=1&ipt=3ac617fcdb4fe831b5ce9988c8a33c3d75585ff9acd4206fc83785bfedab6660&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       }
     ]
   },
@@ -2525,7 +2544,8 @@
             "cost": {},
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.xi8a-hM_cOzmqFX0xqj4YwHaDt%3Fcb%3D12%26pid%3DApi%26ucfimg%3D1&f=1&ipt=2bb303f4acf51176c3b6154c622cdfdbf76d167e0cc2d8cf91903ce0ff3f4c1a&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -2624,7 +2644,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.naxj8GUykF0gBG8weLmMfgHaEL%3Fcb%3D12%26pid%3DApi&f=1&ipt=a50a0de0544cd3822409e9baec13c536da3a9d02092d1df71e9754f0bca8bb10&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -2685,7 +2706,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.EYBDgAFnIvEGeaY5MVdx5gHaIr%3Fcb%3D12%26pid%3DApi&f=1&ipt=89c5b6c71711749208d7e825b4e10bd3462fa9b6ea0ef67ad0a3f0ce05719e4e&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -2883,7 +2905,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fimg1.wikia.nocookie.net%2F__cb20130509212058%2Fnaruto%2Fimages%2F0%2F0f%2FBlack_Kurama.png&f=1&nofb=1&ipt=f1248c4787fc1907984d4bf2bd7367746fed5d56fa1a6e3ca9e803c0c774cd07"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       }
     ]
   },
@@ -2999,7 +3022,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.JHraoCliJj3FmABXDZSVRQHaEL%3Fcb%3D12%26pid%3DApi&f=1&ipt=10a92694377a133a09ef17df4819539178cd7d12d87558d5375a70d851791cec&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       }
     ]
   },
@@ -3369,7 +3393,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.fe92S6DGK7O5W3dfJ61N7AHaDt%3Fcb%3D12%26pid%3DApi&f=1&ipt=15634e8dffe5a577392084388e48250f05ab756031488437936476ee947f8a19&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -3426,7 +3451,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.SEtqHWfXTJdfGF3RFIJqzwHaFm%3Fcb%3D12%26pid%3DApi&f=1&ipt=597aa8856aa3a4fe87193b9555f3a04c093d515a2301ee208efe72c125d3ddc1&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -3487,7 +3513,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.wikia.nocookie.net%2Fnaruto%2Fimages%2F6%2F63%2FMaster_Puppet_Brown_Face.jpg%2Frevision%2Flatest%2Fscale-to-width-down%2F180%3Fcb%3D20240223095953&f=1&nofb=1&ipt=d651d13309d7bca108d10605150a8406d823001c4eba89e20a98738526c1695e"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -3573,7 +3600,8 @@
         ],
         "discountSelectionLimit": 2,
         "discountEligibleUnder": 100,
-        "discountMode": "free"
+        "discountMode": "free",
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -3660,7 +3688,8 @@
         ],
         "discountSelectionLimit": 20,
         "discountEligibleUnder": 400,
-        "discountMode": "half"
+        "discountMode": "half",
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -3723,7 +3752,8 @@
         "discountMode": "half",
         "discountRequires": "kgRinnegan",
         "discountAutoApplyAll": true,
-        "discountRequiresMessage": "Purchase the Rinnegan to unlock 50% discounts on every treasured tool."
+        "discountRequiresMessage": "Purchase the Rinnegan to unlock 50% discounts on every treasured tool.",
+        "columnsPerRow": 3
       },
       {
         "type": "storyBlock",
@@ -3800,7 +3830,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.azazmxbM84t9Nj-E1JyjngHaEK%3Fcb%3D12%26pid%3DApi&f=1&ipt=3113f11a72cbd3a8fc1741ec7473a415bb7b9ab9a89e25775204cb9e0d22fbad&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -3831,7 +3862,8 @@
             ],
             "image": "https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fvignette2.wikia.nocookie.net%2Fnaruto%2Fimages%2F3%2F3b%2FTruth_Seeking_Balls.png%2Frevision%2Flatest%3Fcb%3D20151203005048&f=1&nofb=1&ipt=fa8b45a71a9b60679cc531f418e3caef351f42bd6d3f2d36b3519fe0713be499"
           }
-        ]
+        ],
+        "columnsPerRow": 1
       },
       {
         "type": "storyBlock",
@@ -3884,7 +3916,8 @@
               "CP": 500
             }
           }
-        ]
+        ],
+        "columnsPerRow": 1
       }
     ]
   },
@@ -4084,7 +4117,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.1D3KhsQh3IL5hYEMLqPzogHaEO%3Fcb%3D12%26pid%3DApi&f=1&ipt=0796214b9413d8a89370334b1645446809612dafba478550e67f9bd3ff145ee6&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       }
     ]
   },
@@ -4606,7 +4640,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.tk7za7T1-4W_A-1D3TuLGwHaEL%3Fcb%3D12%26pid%3DApi%26ucfimg%3D1&f=1&ipt=c67b7a8b71b2494c4f5f9d75cda347bbb6b2e572f56e12d76f9114ef975ef7e1&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -4679,7 +4714,8 @@
             },
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fthvnext.bing.com%2Fth%2Fid%2FOIP.x-CaOgE1kxR6K1LC_5veBgHaED%3Fcb%3D12%26pid%3DApi%26ucfimg%3D1&f=1&ipt=5ba058221fbb695c4adbc1239d6e0c5632e4092fba486ba4039cbfbb0f14fcb5&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 4
       },
       {
         "type": "storyBlock",
@@ -4736,7 +4772,8 @@
             "maxSelections": 1,
             "image": "https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse4.mm.bing.net%2Fth%2Fid%2FOIP.wrJl2zC98AT9B3YZ4yttGwHaFF%3Fcb%3D12%26pid%3DApi&f=1&ipt=73dad58e89747ce84b2c71a51d1fb647ac1c50162158ff4e7c1f9c776b54958d&ipo=images"
           }
-        ]
+        ],
+        "columnsPerRow": 3
       }
     ]
   },
@@ -4810,7 +4847,8 @@
               "CP": -300
             }
           }
-        ]
+        ],
+        "columnsPerRow": 1
       }
     ]
   },
@@ -4899,7 +4937,22 @@
     "item-header-bg": "#e0e0e0",
     "points-bg": "#f0f0f0",
     "points-border": "#cccccc",
-    "shadow-color": "rgba(0,0,0,0.1)"
+    "shadow-color": "rgba(0,0,0,0.1)",
+    "font-title": "32px",
+    "font-tab": "24px",
+    "font-subcategory": "26px",
+    "font-option-req": "26px",
+    "font-story": "25px",
+    "font-points": "24px",
+    "font-prereq-help": "21px",
+    "font-label": "24px",
+    "font-points-value": "18px",
+    "font-story-input": "23px",
+    "font-option-desc": "22px",
+    "font-option-title": "24px",
+    "font-accordion": "23px",
+    "font-description": "22px",
+    "font-base": "23px"
   },
   {
     "type": "backpack",
