@@ -861,7 +861,7 @@ function applyCyoaData(rawData, {
                 headerContainer.innerHTML = `<img src="${headerImageEntry.url}" alt="Header Image" class="header-image${noUpscaleClass}" />`;
                 const imgEl = headerContainer.querySelector('img');
                 if (imgEl && imgEl.complete) {
-                    imgEl.decode?.().catch(() => {});
+                    imgEl.decode?.().catch(() => { });
                 }
             } else {
                 headerContainer.innerHTML = initialHeaderImageHTML;
@@ -2024,6 +2024,31 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
     const wrapper = document.createElement("div");
     wrapper.className = "option-wrapper";
 
+    const selectedCount = selectedOptions[opt.id] || 0;
+    const maxSelections = opt.maxSelections || 1;
+    const isSingleChoice = maxSelections === 1;
+
+    if (isSingleChoice) {
+        wrapper.classList.add("is-clickable");
+    }
+    if (selectedCount > 0) {
+        wrapper.classList.add("selected");
+    }
+
+    if (isSingleChoice) {
+        wrapper.onclick = (e) => {
+            // Check if we clicked an interactive element like a discount button
+            if (e.target.closest('button') || e.target.closest('select') || e.target.closest('input')) {
+                return;
+            }
+            if (selectedCount > 0) {
+                removeSelection(opt);
+            } else if (canSelect(opt)) {
+                addSelection(opt);
+            }
+        };
+    }
+
     const imageUrl = opt.image || opt.img;
     if (imageUrl) {
         const img = document.createElement("img");
@@ -2047,7 +2072,7 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
 
     // If this option is already selected, prefer showing the actual paid cost for the existing instance(s)
     let costToShow = displayCost;
-    const selectedCount = selectedOptions[opt.id] || 0;
+    // selectedCount is already declared above
     if (selectedCount > 0 && discountedSelections[opt.id] && discountedSelections[opt.id].length >= selectedCount) {
         // Show the cost that was actually paid for the last recorded instance
         costToShow = discountedSelections[opt.id][selectedCount - 1] || displayCost;
@@ -2298,7 +2323,10 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
     if (opt.inputType === "slider") {
         renderSliderControl(opt, contentWrapper);
     } else {
-        renderSelectionButton(opt, contentWrapper);
+        const isSingleChoice = (opt.maxSelections || 1) === 1;
+        if (!isSingleChoice) {
+            renderSelectionButton(opt, contentWrapper);
+        }
         if (selectedOptions[opt.id] && opt.dynamicCost) {
             renderDynamicCost(opt, contentWrapper);
         }
