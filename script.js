@@ -16,6 +16,7 @@ let attributeRanges = {}; // Will be updated by dynamic effects
 let originalAttributeRanges = {}; // Stores the initial, base ranges from input.json
 const subcategoryDiscountSelections = {};
 const categoryDiscountSelections = {};
+const selectionHistory = [];
 
 // Theme State
 let isDarkMode = localStorage.getItem('cyoa-dark-mode') === 'true';
@@ -51,6 +52,7 @@ function resetGlobalState() {
     openSubcategories.clear();
     points = {};
     categories = [];
+    selectionHistory.length = 0;
 
     originalPoints = {};
     attributeRanges = {};
@@ -1129,6 +1131,12 @@ function removeSelection(option) {
     const count = typeof selectedOptions[option.id] === 'number' ? selectedOptions[option.id] : 1;
     if (!selectedOptions[option.id]) return; // Option not selected
 
+    // Update selection history
+    const historyIndex = selectionHistory.indexOf(option.id);
+    if (historyIndex !== -1) {
+        selectionHistory.splice(historyIndex, 1);
+    }
+
     // Generalized dynamic cost refund for any option with dynamicCost (e.g., attribute cap/boost)
     if (option.dynamicCost && option.dynamicCost.types && option.dynamicCost.values && dynamicSelections[option.id]) {
         // Create a copy to iterate, as dynamicSelections[option.id] might be modified
@@ -1367,6 +1375,7 @@ function addSelection(option) {
     discountedSelections[option.id].push(actualCost); // Store the actual cost paid for this instance
 
     selectedOptions[option.id] = current + 1;
+    selectionHistory.push(option.id);
 
     removeOptionsFromInactiveCategoriesAndSubcategories(); // Clear options from categories that no longer meet requirements
     applyDynamicCosts();
@@ -1424,7 +1433,8 @@ function canSelect(option) {
     const subcatOptions = subcat?.options || [];
     const subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
     const subcatMax = subcat?.maxSelections || Infinity; // Default to no limit
-    const underSubcatLimit = subcatCount < subcatMax;
+    // Allow selecting even if at limit, provided there IS a limit (so we can auto-unselect)
+    const underSubcatLimit = (subcatCount < subcatMax) || (subcatMax !== Infinity);
 
     // Check option-specific max selections
     const maxPerOption = option.maxSelections || 1; // Default to 1 selection
@@ -1491,6 +1501,36 @@ function findOptionById(id) {
         }
     }
     return null;
+}
+
+/**
+ * Ensures a subcategory's selection limit is not exceeded by auto-removing the oldest selection.
+ * @param {Object} option - The option being selected.
+ */
+function ensureSubcategoryLimit(option) {
+    const subcat = findSubcategoryOfOption(option.id);
+    if (!subcat || subcat.maxSelections === Infinity) return;
+
+    const subcatOptions = subcat.options || [];
+    let subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+    const subcatMax = subcat.maxSelections;
+
+    if (subcatCount >= subcatMax) {
+        // Find oldest in this subcategory from history
+        const subcatOptionIds = new Set(subcatOptions.map(o => o.id));
+        for (let i = 0; i < selectionHistory.length; i++) {
+            const id = selectionHistory[i];
+            if (subcatOptionIds.has(id)) {
+                const oldestOption = findOptionById(id);
+                if (oldestOption) {
+                    removeSelection(oldestOption);
+                    subcatCount--;
+                    // Re-calculate loop if needed, but we break when under limit
+                    if (subcatCount < subcatMax) break;
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -2043,8 +2083,11 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
             }
             if (selectedCount > 0) {
                 removeSelection(opt);
-            } else if (canSelect(opt)) {
-                addSelection(opt);
+            } else {
+                ensureSubcategoryLimit(opt);
+                if (canSelect(opt)) {
+                    addSelection(opt);
+                }
             }
         };
     }
@@ -2485,8 +2528,15 @@ function renderSelectionButton(opt, contentWrapper) {
     btn.onclick = () => {
         if (count > 0 && max === 1) {
             removeSelection(opt);
-        } else if (canAdd) {
-            addSelection(opt);
+        } else if (count > 0 && max > 1) {
+            // Options with max > 1 should probably use the remove button, 
+            // but we'll allow clicking to remove the first instance if clicking happens here.
+            removeSelection(opt);
+        } else {
+            ensureSubcategoryLimit(opt);
+            if (canSelect(opt)) {
+                addSelection(opt);
+            }
         }
     };
     controls.appendChild(btn);
