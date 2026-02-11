@@ -786,47 +786,51 @@ function applyCyoaData(rawData, {
             "font-label"
         ]);
 
+        // Default theme variables
+        const defaults = {
+            "bg-color": "#f9f9f9",
+            "container-bg": "#ffffff",
+            "text-color": "#333333",
+            "text-muted": "#555555",
+            "accent-color": "#007acc",
+            "accent-text": "#ffffff",
+            "border-color": "#dddddd",
+            "item-bg": "#f4f4f4",
+            "item-header-bg": "#e0e0e0",
+            "points-bg": "#f0f0f0",
+            "points-border": "#cccccc",
+            "shadow-color": "rgba(0, 0, 0, 0.1)",
+            "font-base": "16px",
+            "font-title": "28px",
+            "font-description": "16px",
+            "font-tab": "15px",
+            "font-accordion": "16px",
+            "font-subcategory": "16px",
+            "font-option-title": "15px",
+            "font-option-req": "13px",
+            "font-option-desc": "13px",
+            "font-story": "15px",
+            "font-story-input": "14px",
+            "font-points": "14px",
+            "font-points-value": "14px",
+            "font-prereq-help": "12px",
+            "font-label": "14px"
+        };
+
         if (isDarkMode) {
             Object.entries(DARK_THEME_VARS).forEach(([key, value]) => updateRootProperty(key, value));
+        } else {
+            // Apply all defaults first as a base
+            Object.entries(defaults).forEach(([key, value]) => updateRootProperty(key, value));
         }
+
         if (themeEntry) {
             Object.entries(themeEntry).forEach(([key, value]) => {
                 if (key === "type") return;
+                // If in dark mode, only override typography settings from themeEntry
                 if (isDarkMode && !TYPOGRAPHY_KEYS.has(key)) return;
                 updateRootProperty(key, value);
             });
-        } else {
-            // Reset to default theme variables
-            const defaults = {
-                "bg-color": "#f9f9f9",
-                "container-bg": "#ffffff",
-                "text-color": "#333333",
-                "text-muted": "#555555",
-                "accent-color": "#007acc",
-                "accent-text": "#ffffff",
-                "border-color": "#dddddd",
-                "item-bg": "#f4f4f4",
-                "item-header-bg": "#e0e0e0",
-                "points-bg": "#f0f0f0",
-                "points-border": "#cccccc",
-                "shadow-color": "rgba(0, 0, 0, 0.1)",
-                "font-base": "16px",
-                "font-title": "28px",
-                "font-description": "16px",
-                "font-tab": "15px",
-                "font-accordion": "16px",
-                "font-subcategory": "16px",
-                "font-option-title": "15px",
-                "font-option-req": "13px",
-                "font-option-desc": "13px",
-                "font-story": "15px",
-                "font-story-input": "14px",
-                "font-points": "14px",
-                "font-points-value": "14px",
-                "font-prereq-help": "12px",
-                "font-label": "14px"
-            };
-            Object.entries(defaults).forEach(([key, value]) => updateRootProperty(key, value));
         }
 
         updateThemeToggleButton();

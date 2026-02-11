@@ -184,11 +184,21 @@
         return 0;
     }
 
-    function ensureEntry(type, factory) {
+    function ensureEntry(type, factory, options = {}) {
         let index = state.data.findIndex(entry => entry.type === type);
+        let entry;
         if (index !== -1) {
+            entry = state.data[index];
+            if (options.mergeDefaults) {
+                const defaults = typeof factory === "function" ? factory() : factory;
+                Object.entries(defaults).forEach(([key, val]) => {
+                    if (!Object.prototype.hasOwnProperty.call(entry, key)) {
+                        entry[key] = val;
+                    }
+                });
+            }
             return {
-                entry: state.data[index],
+                entry,
                 index
             };
         }
@@ -564,7 +574,9 @@
             "font-points-value": "14px",
             "font-prereq-help": "12px",
             "font-label": "14px"
-        })).entry;
+        }), {
+            mergeDefaults: true
+        }).entry;
         fragment.appendChild(renderThemeSection(themeEntry));
         fragment.appendChild(renderTypographySection(themeEntry));
 
@@ -977,17 +989,37 @@
             input.type = "number";
             input.min = "8";
             input.step = "1";
+
+            const defaults = {
+                "font-base": 16,
+                "font-title": 28,
+                "font-description": 16,
+                "font-tab": 15,
+                "font-accordion": 16,
+                "font-subcategory": 16,
+                "font-option-title": 15,
+                "font-option-req": 13,
+                "font-option-desc": 13,
+                "font-story": 15,
+                "font-story-input": 14,
+                "font-points": 14,
+                "font-points-value": 14,
+                "font-prereq-help": 12,
+                "font-label": 14
+            };
+
             const raw = themeEntry[key];
             const numeric = typeof raw === "string" ? parseFloat(raw) : (typeof raw === "number" ? raw : NaN);
-            input.value = Number.isFinite(numeric) ? numeric : "";
-            input.placeholder = "e.g. 14";
+            const initialVal = Number.isFinite(numeric) ? numeric : (defaults[key] || 16);
+            input.value = initialVal;
+            input.placeholder = `e.g. ${defaults[key] || 16}`;
 
             const range = document.createElement("input");
             range.type = "range";
             range.min = "8";
-            range.max = "40";
+            range.max = "60";
             range.step = "1";
-            range.value = Number.isFinite(numeric) ? numeric : "16";
+            range.value = initialVal;
 
             const applyValue = (value) => {
                 if (value === "") {

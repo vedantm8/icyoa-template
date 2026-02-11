@@ -612,7 +612,7 @@ div {
 }
 
 .backpack-category-title {
-    font-size: 18px;
+    font-size: var(--font-accordion);
     font-weight: bold;
     margin-bottom: 16px;
     color: var(--text-color);
@@ -646,7 +646,7 @@ div {
 
 .backpack-item-label {
     font-weight: bold;
-    font-size: 14px;
+    font-size: var(--font-label);
     color: var(--text-color);
 }
 
