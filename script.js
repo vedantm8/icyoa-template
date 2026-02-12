@@ -21,6 +21,7 @@ const categoryDiscountSelections = {};
 const selectionHistory = [];
 const optionGridLayouts = new Set();
 const OPTION_CARD_MIN_WIDTH = 280;
+const MOBILE_SINGLE_COLUMN_BREAKPOINT = 768;
 let optionGridResizeListenerBound = false;
 let optionGridResizeQueued = false;
 
@@ -46,13 +47,14 @@ function clearObject(obj) {
     Object.keys(obj).forEach(key => delete obj[key]);
 }
 
-function calculateResponsiveColumnCount(containerWidth, requestedColumns, minCardWidth, columnGap) {
+function calculateResponsiveColumnCount(containerWidth, requestedColumns, minCardWidth, columnGap, minColumns = 1) {
     const requested = Math.max(1, requestedColumns);
-    for (let cols = requested; cols >= 1; cols--) {
+    const floor = Math.max(1, Math.min(minColumns, requested));
+    for (let cols = requested; cols >= floor; cols--) {
         const perColumnWidth = (containerWidth - (columnGap * (cols - 1))) / cols;
         if (perColumnWidth >= minCardWidth) return cols;
     }
-    return 1;
+    return floor;
 }
 
 function updateOptionGridColumns(grid) {
@@ -64,7 +66,13 @@ function updateOptionGridColumns(grid) {
 
     const styles = window.getComputedStyle(grid);
     const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
-    const effectiveColumns = calculateResponsiveColumnCount(width, requestedColumns, OPTION_CARD_MIN_WIDTH, gap);
+    const isMobile = window.matchMedia(`(max-width: ${MOBILE_SINGLE_COLUMN_BREAKPOINT}px)`).matches;
+    if (isMobile) {
+        grid.style.setProperty("--columns-per-row-effective", "1");
+        return;
+    }
+    const minColumns = 1;
+    const effectiveColumns = calculateResponsiveColumnCount(width, requestedColumns, OPTION_CARD_MIN_WIDTH, gap, minColumns);
     grid.style.setProperty("--columns-per-row-effective", String(effectiveColumns));
 }
 
@@ -1506,6 +1514,9 @@ function canSelect(option) {
     const maxPerOption = option.maxSelections || 1; // Default to 1 selection
     const currentOptionCount = selectedOptions[option.id] || 0;
     const underOptionLimit = currentOptionCount < maxPerOption;
+    const categoryMaxSelections = getCategorySelectionLimit(option.id);
+    const categorySelectionCount = getCategorySelectionCount(option.id);
+    const underCategoryLimit = categorySelectionCount < categoryMaxSelections;
 
     // Check if enough points (only for positive costs)
     const effectiveCost = getOptionEffectiveCost(option);
@@ -1515,7 +1526,7 @@ function canSelect(option) {
         return projected >= 0 || allowNegativeTypes.has(type);
     });
 
-    return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && underOptionLimit && underSubcatLimit;
+    return meetsPrereq && hasPoints && hasNoOutgoingConflicts && hasNoIncomingConflicts && underOptionLimit && underSubcatLimit && underCategoryLimit;
 }
 
 
@@ -1545,6 +1556,35 @@ function findSubcategoryOfOption(optionId) {
         }
     }
     return null;
+}
+
+function getCategorySelectionCount(optionId) {
+    const info = findSubcategoryInfo(optionId);
+    const cat = info?.cat;
+    if (!cat) return 0;
+
+    let total = 0;
+    (cat.options || []).forEach(opt => {
+        total += selectedOptions[opt.id] || 0;
+    });
+    (cat.subcategories || []).forEach(subcat => {
+        (subcat.options || []).forEach(opt => {
+            total += selectedOptions[opt.id] || 0;
+        });
+    });
+    return total;
+}
+
+function getCategorySelectionLimit(optionId) {
+    const info = findSubcategoryInfo(optionId);
+    const categoryLimit = Number(info?.cat?.maxSelections);
+    if (Number.isFinite(categoryLimit) && categoryLimit > 0) {
+        return Math.floor(categoryLimit);
+    }
+    if (info?.cat?.singleSelectionOnly === true) {
+        return 1;
+    }
+    return Infinity;
 }
 
 

@@ -714,3 +714,9 @@ div {
 .slider-wrapper label {
     font-size: var(--font-label);
 }
+
+@media (max-width: 768px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+}

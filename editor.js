@@ -1319,6 +1319,36 @@
             requiresField.appendChild(requiresInput);
             body.appendChild(requiresField);
 
+            const categoryMaxRow = document.createElement("div");
+            categoryMaxRow.className = "field-inline";
+            const categoryMaxLabel = document.createElement("label");
+            categoryMaxLabel.textContent = "Max selections (category)";
+            const categoryMaxInput = document.createElement("input");
+            categoryMaxInput.type = "number";
+            categoryMaxInput.min = "1";
+            const initialCategoryMax = category.maxSelections ?? (category.singleSelectionOnly === true ? 1 : "");
+            categoryMaxInput.value = initialCategoryMax;
+            categoryMaxInput.placeholder = "Leave blank for unlimited";
+            categoryMaxInput.addEventListener("input", () => {
+                const value = categoryMaxInput.value.trim();
+                const num = Number(value);
+                if (value === "") {
+                    delete category.maxSelections;
+                    delete category.singleSelectionOnly;
+                } else if (!Number.isFinite(num) || num < 1) {
+                    category.maxSelections = 1;
+                    delete category.singleSelectionOnly;
+                    categoryMaxInput.value = "1";
+                } else {
+                    category.maxSelections = Math.floor(num);
+                    delete category.singleSelectionOnly;
+                }
+                schedulePreviewUpdate();
+            });
+            categoryMaxRow.appendChild(categoryMaxLabel);
+            categoryMaxRow.appendChild(categoryMaxInput);
+            body.appendChild(categoryMaxRow);
+
             const subcategoriesContainer = document.createElement("div");
             subcategoriesContainer.className = "subcategory-list";
             category.subcategories.forEach((subcat, subIndex) => {
