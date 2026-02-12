@@ -8,6 +8,8 @@ let currentTab = null; // Track current active tab
 let backpackEnabled = false; // Track if backpack is enabled
 
 const openSubcategories = new Set();
+let animateMainTab = false;
+const subcategoriesToAnimate = new Set();
 const attributeSliderValues = {};
 let originalPoints = {};
 let allowNegativeTypes = new Set();
@@ -50,6 +52,8 @@ function resetGlobalState() {
     clearObject(categoryDiscountSelections);
     openCategories.clear();
     openSubcategories.clear();
+    animateMainTab = false;
+    subcategoriesToAnimate.clear();
     points = {};
     categories = [];
     selectionHistory.length = 0;
@@ -1785,6 +1789,7 @@ function renderAccordion() {
         tab.textContent = cat.name;
         tab.onclick = () => {
             currentTab = cat.name;
+            animateMainTab = true; // Trigger animation on tab switch
             renderAccordion();
         };
         tabNav.appendChild(tab);
@@ -1793,6 +1798,14 @@ function renderAccordion() {
     // Render content for the active tab
     const activeCategory = categories.find(cat => cat.name === currentTab);
     if (activeCategory && !["points", "headerImage", "title", "description", "formulas"].includes(activeCategory.type)) {
+        if (animateMainTab) {
+            tabContentContainer.classList.add("animate-fade-in");
+            // Remove the class after animation finishes so it doesn't re-trigger on state changes
+            tabContentContainer.addEventListener("animationend", () => {
+                tabContentContainer.classList.remove("animate-fade-in");
+            }, { once: true });
+            animateMainTab = false;
+        }
         renderCategoryContent(activeCategory);
     }
 }
@@ -1930,6 +1943,7 @@ function renderCategoryContent(cat) {
                             openSubcategories.delete(subcatKey);
                         } else {
                             openSubcategories.add(subcatKey);
+                            subcategoriesToAnimate.add(subcatKey); // Only animate when opening
                         }
                         renderAccordion();
                     }
@@ -1944,6 +1958,14 @@ function renderCategoryContent(cat) {
 
                 const subcatContent = document.createElement("div");
                 subcatContent.className = "subcategory-content tab-active";
+
+                if (subcategoriesToAnimate.has(subcatKey)) {
+                    subcatContent.classList.add("animate-fade-in");
+                    subcatContent.addEventListener("animationend", () => {
+                        subcatContent.classList.remove("animate-fade-in");
+                    }, { once: true });
+                    subcategoriesToAnimate.delete(subcatKey);
+                }
 
                 // Add subcategory title as a separator/label
                 const subcatTitle = document.createElement("h3");

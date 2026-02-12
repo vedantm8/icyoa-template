@@ -114,7 +114,10 @@ button:disabled {
 
 .tab-content {
     display: block;
-    animation: fadeIn 0.2s ease;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.3s ease forwards;
 }
 
 @keyframes fadeIn {
@@ -200,7 +203,6 @@ button:disabled {
 
 .subcategory-content.tab-active {
     display: block;
-    animation: fadeIn 0.3s ease;
 }
 
 .subcategory-content-title {
