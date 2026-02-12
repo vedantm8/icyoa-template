@@ -1890,6 +1890,10 @@ function renderCategoryContent(cat) {
             content.appendChild(catInfo);
         }
 
+        const subcatNav = document.createElement("div");
+        subcatNav.className = "subcategory-navigation";
+        content.appendChild(subcatNav);
+
         subcats.forEach((subcat, subIndex) => {
             const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
             const subcatRequires = subcat.requiresOption;
@@ -1908,139 +1912,144 @@ function renderCategoryContent(cat) {
                 });
             }
 
-            const subcatItem = document.createElement("div");
-            subcatItem.className = "subcategory-item";
-
-            const subcatHeader = document.createElement("div");
-            subcatHeader.className = "subcategory-header";
-            subcatHeader.style.cursor = "pointer";
-            subcatHeader.style.fontWeight = "bold";
-            subcatHeader.textContent = subcat.name || `Options ${subIndex + 1}`;
-
-            const subcatContent = document.createElement("div");
-            subcatContent.className = "subcategory-content";
-
-            if (openSubcategories.has(subcatKey)) {
-                subcatContent.style.display = "block";
-                subcatHeader.classList.add("is-open");
-            } else {
-                subcatContent.style.display = "none";
-                subcatHeader.classList.remove("is-open");
-            }
-
-            subcatHeader.onclick = () => {
+            // Create subcategory toggle button
+            if (subcats.length > 1 || subcat.name) {
+                const subButton = document.createElement("button");
+                subButton.className = "subcategory-tab-button";
                 if (openSubcategories.has(subcatKey)) {
-                    openSubcategories.delete(subcatKey);
-                    subcatContent.style.display = "none";
-                    subcatHeader.classList.remove("is-open");
-                } else {
-                    openSubcategories.add(subcatKey);
-                    subcatContent.style.display = "block";
-                    subcatHeader.classList.add("is-open");
+                    subButton.classList.add("active");
                 }
-            };
-
-            subcatItem.appendChild(subcatHeader);
-            subcatItem.appendChild(subcatContent);
-            content.appendChild(subcatItem);
-
-            if (!subcatUnlocked) {
-                const lockMsg = document.createElement("div");
-                lockMsg.style.padding = "8px";
-                lockMsg.style.color = "#666";
-                const lines = [];
-                subcatReqItems.forEach(req => {
-                    if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                        const rawExpr = req;
-                        const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
-                        let human = rawExpr;
-                        const seen = new Set();
-                        tokens.forEach(tok => {
-                            if (seen.has(tok)) return;
-                            seen.add(tok);
-                            const [id] = tok.split('__');
-                            const label = getSubcategoryOptionLabel(id) || id;
-                            const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                            human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
-                        });
-                        human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                        const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; } })();
-                        const symbol = satisfied ? '✅' : '❌';
-                        lines.push(`${symbol} ${human}`);
-                    } else {
-                        const id = req;
-                        const label = getSubcategoryOptionLabel(id);
-                        const isSelected = selectedOptions[id];
-                        const symbol = isSelected ? "✅" : "❌";
-                        lines.push(`${symbol} ${label}`);
+                subButton.textContent = subcat.name || `Options ${subIndex + 1}`;
+                if (!subcatUnlocked) {
+                    subButton.classList.add("locked");
+                    subButton.textContent = "🔒 " + (subcat.name || `Options ${subIndex + 1}`);
+                }
+                subButton.onclick = () => {
+                    if (subcatUnlocked) {
+                        if (openSubcategories.has(subcatKey)) {
+                            openSubcategories.delete(subcatKey);
+                        } else {
+                            openSubcategories.add(subcatKey);
+                        }
+                        renderAccordion();
                     }
-                });
-                lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
-                subcatContent.appendChild(lockMsg);
-                return;
+                };
+                subcatNav.appendChild(subButton);
             }
 
-            // Render story block content...renderStoryBlockContent(subcat, subcatContent, subcatKey);
-            if (subcat.type === "storyBlock") {
-                if (subcat.text && subcat.text.trim() !== "") {
-                    const storyText = document.createElement("div");
-                    storyText.className = "story-block";
-                    setMultilineText(storyText, subcat.text);
-                    subcatContent.appendChild(storyText);
-                }
-                const subcatHasDiscounts = hasDiscountConfig(subcat);
-                const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
-                const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+            // Render content if open
+            if (openSubcategories.has(subcatKey)) {
+                const subcatItem = document.createElement("div");
+                subcatItem.className = "subcategory-item";
 
-                if (subcatHasDiscounts && subcat.discountRequiresMessage) {
-                    const note = document.createElement("div");
-                    note.className = "subcategory-discount-requirement";
-                    note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
-                    subcatContent.appendChild(note);
-                }
+                const subcatContent = document.createElement("div");
+                subcatContent.className = "subcategory-content tab-active";
 
-                if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
-                    const discountInfo = document.createElement("div");
-                    discountInfo.className = "subcategory-discount-info";
-                    const subMap = getSubcategoryDiscountMap(subcatKey);
-                    const usedSlots = getDiscountTotalCount(subMap);
-                    const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
-                    discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
-                    subcatContent.appendChild(discountInfo);
-                } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
-                    const discountInfo = document.createElement("div");
-                    discountInfo.className = "subcategory-discount-info";
-                    const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
-                    discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
-                    subcatContent.appendChild(discountInfo);
-                }
-                if (subcat.input) {
-                    const inputWrapper = document.createElement("div");
-                    inputWrapper.className = "story-input-wrapper";
+                // Add subcategory title as a separator/label
+                const subcatTitle = document.createElement("h3");
+                subcatTitle.className = "subcategory-content-title";
+                subcatTitle.textContent = subcat.name || `Options ${subIndex + 1}`;
+                subcatContent.appendChild(subcatTitle);
 
-                    if (subcat.input.label) {
-                        const label = document.createElement("label");
-                        label.textContent = subcat.input.label;
-                        label.setAttribute("for", subcat.input.id);
-                        inputWrapper.appendChild(label);
-                    }
+                subcatItem.appendChild(subcatContent);
+                content.appendChild(subcatItem);
 
-                    const input = document.createElement("input");
-                    input.type = "text";
-                    input.id = subcat.input.id;
-                    input.placeholder = subcat.input.placeholder || "";
-                    input.maxLength = subcat.input.maxLength || 20;
-                    input.value = storyInputs[subcat.input.id] || "";
-                    input.addEventListener("input", (e) => {
-                        storyInputs[subcat.input.id] = e.target.value;
+                if (!subcatUnlocked) {
+                    const lockMsg = document.createElement("div");
+                    lockMsg.style.padding = "8px";
+                    lockMsg.style.color = "#666";
+                    const lines = [];
+                    subcatReqItems.forEach(req => {
+                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+                            const rawExpr = req;
+                            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+                            let human = rawExpr;
+                            const seen = new Set();
+                            tokens.forEach(tok => {
+                                if (seen.has(tok)) return;
+                                seen.add(tok);
+                                const [id] = tok.split('__');
+                                const label = getSubcategoryOptionLabel(id) || id;
+                                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+                            });
+                            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+                            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; } })();
+                            const symbol = satisfied ? '✅' : '❌';
+                            lines.push(`${symbol} ${human}`);
+                        } else {
+                            const id = req;
+                            const label = getSubcategoryOptionLabel(id);
+                            const isSelected = selectedOptions[id];
+                            const symbol = isSelected ? "✅" : "❌";
+                            lines.push(`${symbol} ${label}`);
+                        }
                     });
-                    inputWrapper.appendChild(input);
-                    subcatContent.appendChild(inputWrapper);
+                    lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
+                    subcatContent.appendChild(lockMsg);
+                } else {
+                    if (subcat.type === "storyBlock") {
+                        if (subcat.text && subcat.text.trim() !== "") {
+                            const storyText = document.createElement("div");
+                            storyText.className = "story-block";
+                            setMultilineText(storyText, subcat.text);
+                            subcatContent.appendChild(storyText);
+                        }
+                        const subcatHasDiscounts = hasDiscountConfig(subcat);
+                        const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+                        const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+
+                        if (subcatHasDiscounts && subcat.discountRequiresMessage) {
+                            const note = document.createElement("div");
+                            note.className = "subcategory-discount-requirement";
+                            note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
+                            subcatContent.appendChild(note);
+                        }
+
+                        if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
+                            const discountInfo = document.createElement("div");
+                            discountInfo.className = "subcategory-discount-info";
+                            const subMap = getSubcategoryDiscountMap(subcatKey);
+                            const usedSlots = getDiscountTotalCount(subMap);
+                            const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                            discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
+                            subcatContent.appendChild(discountInfo);
+                        } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
+                            const discountInfo = document.createElement("div");
+                            discountInfo.className = "subcategory-discount-info";
+                            const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+                            discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
+                            subcatContent.appendChild(discountInfo);
+                        }
+                        if (subcat.input) {
+                            const inputWrapper = document.createElement("div");
+                            inputWrapper.className = "story-input-wrapper";
+
+                            if (subcat.input.label) {
+                                const label = document.createElement("label");
+                                label.textContent = subcat.input.label;
+                                label.setAttribute("for", subcat.input.id);
+                                inputWrapper.appendChild(label);
+                            }
+
+                            const input = document.createElement("input");
+                            input.type = "text";
+                            input.id = subcat.input.id;
+                            input.placeholder = subcat.input.placeholder || "";
+                            input.maxLength = subcat.input.maxLength || 20;
+                            input.value = storyInputs[subcat.input.id] || "";
+                            input.addEventListener("input", (e) => {
+                                storyInputs[subcat.input.id] = e.target.value;
+                            });
+                            inputWrapper.appendChild(input);
+                            subcatContent.appendChild(inputWrapper);
+                        }
+                    }
+
+                    // Render options...
+                    renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll);
                 }
             }
-
-            // Render options...
-            renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll);
         });
     }
 

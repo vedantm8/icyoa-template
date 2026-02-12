@@ -930,7 +930,7 @@
             "font-description": "#cyoaDescription",
             "font-tab": ".tab-navigation .tab-button",
             "font-accordion": ".accordion-header",
-            "font-subcategory": ".subcategory-header",
+            "font-subcategory": ".subcategory-content-title",
             "font-option-title": ".option-content strong",
             "font-option-req": ".option-requirements",
             "font-option-desc": ".option-description",
