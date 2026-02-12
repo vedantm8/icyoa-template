@@ -227,7 +227,7 @@ button:disabled {
 
 .options-grid {
     display: grid;
-    grid-template-columns: repeat(var(--columns-per-row, 2), 1fr);
+    grid-template-columns: repeat(var(--columns-per-row-effective, var(--columns-per-row, 2)), minmax(0, 1fr));
     gap: 24px 16px;
     margin-top: 12px;
     width: 100%;
@@ -236,6 +236,7 @@ button:disabled {
 .option-wrapper {
     display: flex;
     flex-direction: column;
+    min-width: 0;
     align-items: center;
     gap: 12px;
     padding: 16px;

@@ -19,6 +19,10 @@ let originalAttributeRanges = {}; // Stores the initial, base ranges from input.
 const subcategoryDiscountSelections = {};
 const categoryDiscountSelections = {};
 const selectionHistory = [];
+const optionGridLayouts = new Set();
+const OPTION_CARD_MIN_WIDTH = 280;
+let optionGridResizeListenerBound = false;
+let optionGridResizeQueued = false;
 
 // Theme State
 let isDarkMode = localStorage.getItem('cyoa-dark-mode') === 'true';
@@ -40,6 +44,60 @@ const DARK_THEME_VARS = {
 function clearObject(obj) {
     if (!obj) return;
     Object.keys(obj).forEach(key => delete obj[key]);
+}
+
+function calculateResponsiveColumnCount(containerWidth, requestedColumns, minCardWidth, columnGap) {
+    const requested = Math.max(1, requestedColumns);
+    for (let cols = requested; cols >= 1; cols--) {
+        const perColumnWidth = (containerWidth - (columnGap * (cols - 1))) / cols;
+        if (perColumnWidth >= minCardWidth) return cols;
+    }
+    return 1;
+}
+
+function updateOptionGridColumns(grid) {
+    if (!grid || !grid.isConnected) return;
+    const requested = Number.parseInt(grid.dataset.maxColumns || "2", 10);
+    const requestedColumns = Number.isFinite(requested) && requested > 0 ? requested : 2;
+    const width = grid.clientWidth;
+    if (width <= 0) return;
+
+    const styles = window.getComputedStyle(grid);
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
+    const effectiveColumns = calculateResponsiveColumnCount(width, requestedColumns, OPTION_CARD_MIN_WIDTH, gap);
+    grid.style.setProperty("--columns-per-row-effective", String(effectiveColumns));
+}
+
+function updateAllOptionGridColumns() {
+    optionGridLayouts.forEach(grid => {
+        if (!grid.isConnected) {
+            optionGridLayouts.delete(grid);
+            return;
+        }
+        updateOptionGridColumns(grid);
+    });
+}
+
+function queueOptionGridResize() {
+    if (optionGridResizeQueued) return;
+    optionGridResizeQueued = true;
+    window.requestAnimationFrame(() => {
+        optionGridResizeQueued = false;
+        updateAllOptionGridColumns();
+    });
+}
+
+function registerOptionGrid(grid, maxColumns) {
+    const normalizedMax = Number.isFinite(maxColumns) && maxColumns > 0 ? Math.floor(maxColumns) : 2;
+    grid.dataset.maxColumns = String(normalizedMax);
+    grid.style.setProperty("--columns-per-row", String(normalizedMax));
+    optionGridLayouts.add(grid);
+    updateOptionGridColumns(grid);
+
+    if (!optionGridResizeListenerBound) {
+        window.addEventListener("resize", queueOptionGridResize);
+        optionGridResizeListenerBound = true;
+    }
 }
 
 function resetGlobalState() {
@@ -1770,6 +1828,7 @@ function renderAccordion() {
     const tabContentContainer = document.getElementById("tabContent");
     tabNav.innerHTML = "";
     tabContentContainer.innerHTML = "";
+    optionGridLayouts.clear();
 
     // Get all non-special categories
     const visibleCategories = categories.filter(cat => !["points", "headerImage", "title", "description", "formulas"].includes(cat.type));
@@ -2086,8 +2145,9 @@ function renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catInde
 
     const grid = document.createElement("div");
     grid.className = "options-grid";
-    const columnsPerRow = subcat.columnsPerRow || 2;
-    grid.style.setProperty('--columns-per-row', columnsPerRow);
+    const rawColumns = Number.parseInt(subcat.columnsPerRow, 10);
+    const columnsPerRow = Number.isFinite(rawColumns) && rawColumns > 0 ? rawColumns : 2;
+    registerOptionGrid(grid, columnsPerRow);
     subcatContent.appendChild(grid);
 
     (subcat.options || []).forEach(opt => {
