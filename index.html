@@ -73,6 +73,18 @@
         </div>
     </div>
 
+    <!-- Asset Loading Overlay -->
+    <div id="assetLoadingOverlay" class="asset-loading-overlay" aria-live="polite" aria-busy="true">
+        <div class="asset-loading-card">
+            <h3 id="assetLoadingTitle">Preparing your CYOA</h3>
+            <p id="assetLoadingMessage">Loading configuration and pre-caching images...</p>
+            <div class="asset-loading-progress-track">
+                <div id="assetLoadingBar" class="asset-loading-progress-bar"></div>
+            </div>
+            <div id="assetLoadingPercent" class="asset-loading-percent">0%</div>
+        </div>
+    </div>
+
     <script src="logicExpr.js"></script>
     <script src="script.js"></script>
 </body>

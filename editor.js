@@ -1,6 +1,6 @@
 (function () {
     const CORE_TYPES_ORDER = ["title", "description", "headerImage", "points"];
-    const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost"]);
+    const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost", "prerequisites", "conflictsWith", "discounts", "discountGrants"]);
 
     const state = {
         data: [],
@@ -239,6 +239,245 @@
             }
         });
         return ids;
+    }
+
+    function normalizeIdList(value) {
+        if (!value) return [];
+        const raw = Array.isArray(value) ? value : String(value).split(/[,\n]/g);
+        return Array.from(new Set(raw.map(id => String(id || "").trim()).filter(Boolean)));
+    }
+
+    const RESERVED_EXPR_IDENTIFIERS = new Set([
+        "true", "false", "null", "undefined", "if", "else", "return", "let", "var", "const",
+        "function", "while", "for", "do", "switch", "case", "break", "continue", "default",
+        "new", "this", "typeof", "instanceof", "void", "delete", "in", "of", "with", "try",
+        "catch", "finally", "throw", "class", "extends", "super", "import", "export", "from",
+        "as", "await", "async", "yield"
+    ]);
+
+    function formatPrerequisiteValue(value) {
+        if (value == null || value === "") return "";
+        if (typeof value === "string") return value;
+        if (Array.isArray(value)) return value.join(", ");
+        if (typeof value === "object") return JSON.stringify(value);
+        return String(value);
+    }
+
+    function parsePrerequisiteValue(raw) {
+        const text = String(raw || "").trim();
+        if (!text) return { value: null, error: null };
+
+        if ((text.startsWith("{") && text.endsWith("}")) || (text.startsWith("[") && text.endsWith("]"))) {
+            try {
+                return { value: JSON.parse(text), error: null };
+            } catch (err) {
+                return { value: null, error: `Prerequisite JSON is invalid: ${err.message}` };
+            }
+        }
+
+        if (/[()!&|]/.test(text)) {
+            return { value: text, error: null };
+        }
+
+        const ids = normalizeIdList(text);
+        if (!ids.length) return { value: null, error: null };
+        return { value: ids.length === 1 ? ids[0] : ids, error: null };
+    }
+
+    function extractReferencedIds(value) {
+        const ids = new Set();
+        if (!value) return ids;
+
+        if (typeof value === "string") {
+            const tokens = value.match(/!?[A-Za-z_][A-Za-z0-9_]*(?:__\d+)?/g) || [];
+            tokens.forEach(token => {
+                const core = token.startsWith("!") ? token.slice(1) : token;
+                const [id] = core.split("__");
+                if (id && !RESERVED_EXPR_IDENTIFIERS.has(id)) ids.add(id);
+            });
+            return ids;
+        }
+
+        if (Array.isArray(value)) {
+            normalizeIdList(value).forEach(id => {
+                const [base] = String(id).split("__");
+                if (base) ids.add(base);
+            });
+            return ids;
+        }
+
+        if (typeof value === "object") {
+            const fromAnd = normalizeIdList(value.and || []);
+            const fromOr = normalizeIdList(value.or || []);
+            [...fromAnd, ...fromOr].forEach(id => {
+                const [base] = String(id).split("__");
+                if (base) ids.add(base);
+            });
+        }
+
+        return ids;
+    }
+
+    function getOptionValidationWarnings(option) {
+        const warnings = [];
+        const allIds = collectOptionIds();
+        const selfId = String(option?.id || "").trim();
+
+        const prereqIds = Array.from(extractReferencedIds(option?.prerequisites));
+        prereqIds.forEach(id => {
+            if (id === selfId && selfId) warnings.push("Prerequisite references this option itself.");
+            if (!allIds.has(id)) warnings.push(`Prerequisite references unknown option ID "${id}".`);
+        });
+
+        const rawConflicts = Array.isArray(option?.conflictsWith) ? option.conflictsWith : [];
+        const conflicts = normalizeIdList(rawConflicts);
+        if (rawConflicts.length !== conflicts.length) {
+            warnings.push("Incompatible option list contains duplicates or blank IDs.");
+        }
+        conflicts.forEach(id => {
+            if (id === selfId && selfId) warnings.push("Incompatible option list contains this option itself.");
+            if (!allIds.has(id)) warnings.push(`Incompatible option ID "${id}" does not exist.`);
+        });
+
+        const rules = Array.isArray(option?.discounts) ? option.discounts : [];
+        rules.forEach((rule, index) => {
+            const ruleNo = index + 1;
+            const ids = normalizeIdList(rule?.idsAny || rule?.ids || (rule?.id ? [rule.id] : []));
+            if (!ids.length) warnings.push(`Rule ${ruleNo}: add at least one trigger option ID.`);
+            ids.forEach(id => {
+                if (id === selfId && selfId) warnings.push(`Rule ${ruleNo}: trigger list includes this option itself.`);
+                if (!allIds.has(id)) warnings.push(`Rule ${ruleNo}: trigger ID "${id}" does not exist.`);
+            });
+            if (Array.isArray(rule?.idsAny)) {
+                const min = Math.max(1, Number(rule?.minSelected) || 1);
+                if (min > ids.length && ids.length > 0) {
+                    warnings.push(`Rule ${ruleNo}: "Min selected" (${min}) is greater than trigger IDs (${ids.length}).`);
+                }
+            }
+            if (!rule?.cost || !Object.keys(rule.cost).length) {
+                warnings.push(`Rule ${ruleNo}: discounted cost map is empty.`);
+            }
+        });
+
+        const grantRules = Array.isArray(option?.discountGrants) ? option.discountGrants : [];
+        grantRules.forEach((rule, index) => {
+            const ruleNo = index + 1;
+            const targets = normalizeIdList(rule?.targetIds || rule?.targets || (rule?.targetId ? [rule.targetId] : []));
+            if (!targets.length) {
+                warnings.push(`Grant rule ${ruleNo}: add at least one target option ID.`);
+            }
+            targets.forEach(id => {
+                if (id === selfId && selfId) warnings.push(`Grant rule ${ruleNo}: target list includes this option itself.`);
+                if (!allIds.has(id)) warnings.push(`Grant rule ${ruleNo}: target option ID "${id}" does not exist.`);
+            });
+            const slots = Number(rule?.slots) || 0;
+            if (slots < 1) {
+                warnings.push(`Grant rule ${ruleNo}: slots must be at least 1.`);
+            }
+        });
+
+        return Array.from(new Set(warnings));
+    }
+
+    function getSortedOptionIds(excludeIds = []) {
+        const exclude = new Set(normalizeIdList(excludeIds));
+        return Array.from(collectOptionIds())
+            .filter(id => id && !exclude.has(id))
+            .sort((a, b) => a.localeCompare(b));
+    }
+
+    let optionDatalistCounter = 0;
+
+    function mountIdListEditor(container, {
+        ids = [],
+        excludeIds = [],
+        emptyText = "No option IDs selected yet.",
+        onChange
+    } = {}) {
+        if (!container) return;
+        const normalized = normalizeIdList(ids);
+        container.innerHTML = "";
+
+        const list = document.createElement("div");
+        list.className = "list-stack";
+        if (!normalized.length) {
+            const empty = document.createElement("div");
+            empty.className = "empty-state";
+            empty.textContent = emptyText;
+            list.appendChild(empty);
+        } else {
+            normalized.forEach(id => {
+                const row = document.createElement("div");
+                row.className = "option-rule-row";
+
+                const input = document.createElement("input");
+                input.type = "text";
+                input.value = id;
+                input.readOnly = true;
+
+                const removeBtn = document.createElement("button");
+                removeBtn.type = "button";
+                removeBtn.className = "button-icon danger";
+                removeBtn.title = "Remove";
+                removeBtn.textContent = "✕";
+                removeBtn.addEventListener("click", () => {
+                    const next = normalized.filter(entry => entry !== id);
+                    onChange?.(next);
+                });
+
+                row.appendChild(input);
+                row.appendChild(removeBtn);
+                list.appendChild(row);
+            });
+        }
+        container.appendChild(list);
+
+        const addRow = document.createElement("div");
+        addRow.className = "option-rule-row";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.placeholder = "Add option ID";
+
+        const datalist = document.createElement("datalist");
+        const datalistId = `option-id-list-${++optionDatalistCounter}`;
+        datalist.id = datalistId;
+        getSortedOptionIds([...excludeIds, ...normalized]).forEach(id => {
+            const opt = document.createElement("option");
+            opt.value = id;
+            datalist.appendChild(opt);
+        });
+        input.setAttribute("list", datalistId);
+
+        const addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "button-subtle";
+        addBtn.textContent = "Add";
+        const commit = () => {
+            const nextId = input.value.trim();
+            if (!nextId) return;
+            if (normalized.includes(nextId)) {
+                showEditorMessage(`"${nextId}" is already in this list.`, "warning", 3000);
+                return;
+            }
+            if (excludeIds.includes(nextId)) {
+                showEditorMessage(`"${nextId}" is not allowed here.`, "warning", 3000);
+                return;
+            }
+            onChange?.([...normalized, nextId]);
+        };
+        addBtn.addEventListener("click", commit);
+        input.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                commit();
+            }
+        });
+
+        addRow.appendChild(input);
+        addRow.appendChild(addBtn);
+        container.appendChild(addRow);
+        container.appendChild(datalist);
     }
 
     function slugifyLabel(label) {
@@ -1391,6 +1630,26 @@
                 subNameField.appendChild(subNameInput);
                 subBody.appendChild(subNameField);
 
+                const subRequiresField = document.createElement("div");
+                subRequiresField.className = "field";
+                const subRequiresLabel = document.createElement("label");
+                subRequiresLabel.textContent = "Requires Option (Optional)";
+                const subRequiresInput = document.createElement("input");
+                subRequiresInput.type = "text";
+                subRequiresInput.value = subcat.requiresOption || "";
+                subRequiresInput.placeholder = "e.g. some_id && !another_id";
+                subRequiresInput.addEventListener("input", () => {
+                    if (subRequiresInput.value.trim()) {
+                        subcat.requiresOption = subRequiresInput.value.trim();
+                    } else {
+                        delete subcat.requiresOption;
+                    }
+                    schedulePreviewUpdate();
+                });
+                subRequiresField.appendChild(subRequiresLabel);
+                subRequiresField.appendChild(subRequiresInput);
+                subBody.appendChild(subRequiresField);
+
                 const typeField = document.createElement("div");
                 typeField.className = "field-inline";
                 const typeLabel = document.createElement("label");
@@ -1748,6 +2007,25 @@
             const body = document.createElement("div");
             body.className = "option-body";
 
+            const validationBox = document.createElement("div");
+            validationBox.className = "inline-warning-list";
+            const refreshOptionWarnings = (extraWarnings = []) => {
+                const warnings = [...extraWarnings, ...getOptionValidationWarnings(option)];
+                validationBox.innerHTML = "";
+                if (!warnings.length) {
+                    validationBox.style.display = "none";
+                    return;
+                }
+                validationBox.style.display = "block";
+                warnings.forEach(text => {
+                    const row = document.createElement("div");
+                    row.className = "inline-warning";
+                    row.textContent = `⚠ ${text}`;
+                    validationBox.appendChild(row);
+                });
+            };
+            body.appendChild(validationBox);
+
             const idField = document.createElement("div");
             idField.className = "field";
             const idLabel = document.createElement("label");
@@ -1760,6 +2038,7 @@
                 option.id = idInput.value.trim();
                 optionIdAutoMap.set(option, false);
                 summaryLabel.textContent = formatOptionSummary(option);
+                refreshOptionWarnings();
                 schedulePreviewUpdate();
             });
             idInput.addEventListener("blur", () => {
@@ -1784,6 +2063,7 @@
                     idInput.value = uniqueId;
                 }
                 summaryLabel.textContent = formatOptionSummary(option);
+                refreshOptionWarnings();
                 schedulePreviewUpdate();
             });
             idField.appendChild(idLabel);
@@ -1896,6 +2176,415 @@
             costSection.appendChild(costLabel);
             costSection.appendChild(costContainer);
             body.appendChild(costSection);
+
+            const prereqSection = document.createElement("div");
+            prereqSection.className = "field";
+            const prereqLabel = document.createElement("label");
+            prereqLabel.textContent = "Prerequisites (optional)";
+            const prereqHint = document.createElement("div");
+            prereqHint.className = "field-help";
+            prereqHint.textContent = "Use comma-separated IDs, expression syntax (&&, ||, !), or JSON (array/object).";
+            const prereqInput = document.createElement("textarea");
+            prereqInput.value = formatPrerequisiteValue(option.prerequisites);
+            prereqInput.placeholder = "e.g. powerCore, focusTraining OR powerCore && !villainPath";
+            let prereqParseError = null;
+            const syncPrereqFromInput = () => {
+                const parsed = parsePrerequisiteValue(prereqInput.value);
+                prereqParseError = parsed.error;
+                if (parsed.error) {
+                    prereqInput.classList.add("field-error");
+                } else {
+                    prereqInput.classList.remove("field-error");
+                    if (parsed.value == null) {
+                        delete option.prerequisites;
+                    } else {
+                        option.prerequisites = parsed.value;
+                    }
+                }
+                refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                schedulePreviewUpdate();
+            };
+            prereqInput.addEventListener("input", syncPrereqFromInput);
+            prereqInput.addEventListener("blur", syncPrereqFromInput);
+            prereqSection.appendChild(prereqLabel);
+            prereqSection.appendChild(prereqHint);
+            prereqSection.appendChild(prereqInput);
+            body.appendChild(prereqSection);
+
+            const conflictSection = document.createElement("div");
+            conflictSection.className = "field";
+            const conflictLabel = document.createElement("label");
+            conflictLabel.textContent = "Incompatible with options";
+            const conflictHint = document.createElement("div");
+            conflictHint.className = "field-help";
+            conflictHint.textContent = "If any selected option appears here, this option becomes unavailable (and vice versa).";
+            const conflictContainer = document.createElement("div");
+            const updateConflicts = (next) => {
+                if (next.length) {
+                    option.conflictsWith = next;
+                } else {
+                    delete option.conflictsWith;
+                }
+                mountIdListEditor(conflictContainer, {
+                    ids: option.conflictsWith || [],
+                    excludeIds: [option.id || ""],
+                    emptyText: "No incompatible options set.",
+                    onChange: updateConflicts
+                });
+                refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                schedulePreviewUpdate();
+            };
+            mountIdListEditor(conflictContainer, {
+                ids: option.conflictsWith || [],
+                excludeIds: [option.id || ""],
+                emptyText: "No incompatible options set.",
+                onChange: updateConflicts
+            });
+            conflictSection.appendChild(conflictLabel);
+            conflictSection.appendChild(conflictHint);
+            conflictSection.appendChild(conflictContainer);
+            body.appendChild(conflictSection);
+
+            const discountSection = document.createElement("div");
+            discountSection.className = "field";
+            const discountLabel = document.createElement("label");
+            discountLabel.textContent = "Conditional discounts";
+            const discountHint = document.createElement("div");
+            discountHint.className = "field-help";
+            discountHint.textContent = "Create rules that change this option's cost when required option IDs are selected.";
+            const discountContainer = document.createElement("div");
+            discountContainer.className = "list-stack";
+
+            function renderDiscountRulesEditor() {
+                discountContainer.innerHTML = "";
+                const rules = Array.isArray(option.discounts) ? option.discounts : [];
+                if (!rules.length) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-state";
+                    empty.textContent = "No conditional discount rules yet.";
+                    discountContainer.appendChild(empty);
+                }
+
+                rules.forEach((rule, ruleIndex) => {
+                    const ruleCard = document.createElement("div");
+                    ruleCard.className = "discount-rule-card";
+
+                    const header = document.createElement("div");
+                    header.className = "discount-rule-header";
+                    const title = document.createElement("strong");
+                    title.textContent = `Rule ${ruleIndex + 1}`;
+                    const removeBtn = document.createElement("button");
+                    removeBtn.type = "button";
+                    removeBtn.className = "button-icon danger";
+                    removeBtn.textContent = "✕";
+                    removeBtn.title = "Delete rule";
+                    removeBtn.addEventListener("click", () => {
+                        rules.splice(ruleIndex, 1);
+                        if (rules.length) {
+                            option.discounts = rules;
+                        } else {
+                            delete option.discounts;
+                        }
+                        renderDiscountRulesEditor();
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+                    header.appendChild(title);
+                    header.appendChild(removeBtn);
+                    ruleCard.appendChild(header);
+
+                    const modeRow = document.createElement("div");
+                    modeRow.className = "field-inline field-inline-three";
+                    const modeLabel = document.createElement("label");
+                    modeLabel.textContent = "Trigger mode";
+                    const modeInput = document.createElement("select");
+                    const modeAll = document.createElement("option");
+                    modeAll.value = "all";
+                    modeAll.textContent = "Require all listed IDs";
+                    const modeAny = document.createElement("option");
+                    modeAny.value = "any";
+                    modeAny.textContent = "Require at least N IDs";
+                    modeInput.appendChild(modeAll);
+                    modeInput.appendChild(modeAny);
+
+                    const isAnyMode = Array.isArray(rule.idsAny) && rule.idsAny.length > 0;
+                    modeInput.value = isAnyMode ? "any" : "all";
+
+                    const minLabel = document.createElement("label");
+                    minLabel.textContent = "Min selected";
+                    const minInput = document.createElement("input");
+                    minInput.type = "number";
+                    minInput.min = "1";
+                    minInput.value = Number.isFinite(rule.minSelected) && rule.minSelected > 0 ? String(rule.minSelected) : "1";
+                    minInput.disabled = modeInput.value !== "any";
+
+                    modeInput.addEventListener("change", () => {
+                        const triggerIds = normalizeIdList(modeInput.value === "any"
+                            ? rule.idsAny
+                            : (Array.isArray(rule.ids) ? rule.ids : (rule.id ? [rule.id] : [])));
+                        if (modeInput.value === "any") {
+                            rule.idsAny = triggerIds;
+                            rule.minSelected = Math.max(1, Number(rule.minSelected) || 1);
+                            delete rule.ids;
+                            delete rule.id;
+                        } else {
+                            rule.ids = triggerIds;
+                            delete rule.idsAny;
+                            delete rule.minSelected;
+                            delete rule.id;
+                        }
+                        minInput.disabled = modeInput.value !== "any";
+                        renderDiscountRulesEditor();
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+
+                    minInput.addEventListener("input", () => {
+                        const parsed = Math.max(1, Number(minInput.value) || 1);
+                        rule.minSelected = parsed;
+                        minInput.value = String(parsed);
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+
+                    modeRow.appendChild(modeLabel);
+                    modeRow.appendChild(modeInput);
+                    modeRow.appendChild(minLabel);
+                    modeRow.appendChild(minInput);
+                    ruleCard.appendChild(modeRow);
+
+                    const idsField = document.createElement("div");
+                    idsField.className = "field";
+                    const idsLabel = document.createElement("label");
+                    idsLabel.textContent = "Trigger option IDs";
+                    const idsContainer = document.createElement("div");
+                    const setTriggerIds = (nextIds) => {
+                        if (modeInput.value === "any") {
+                            rule.idsAny = nextIds;
+                            rule.minSelected = Math.max(1, Number(rule.minSelected) || 1);
+                            delete rule.ids;
+                            delete rule.id;
+                        } else {
+                            rule.ids = nextIds;
+                            delete rule.idsAny;
+                            delete rule.minSelected;
+                            delete rule.id;
+                        }
+                        mountIdListEditor(idsContainer, {
+                            ids: modeInput.value === "any" ? rule.idsAny : rule.ids,
+                            emptyText: "No trigger IDs added yet.",
+                            onChange: setTriggerIds
+                        });
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    };
+                    mountIdListEditor(idsContainer, {
+                        ids: modeInput.value === "any" ? rule.idsAny : rule.ids,
+                        emptyText: "No trigger IDs added yet.",
+                        onChange: setTriggerIds
+                    });
+                    idsField.appendChild(idsLabel);
+                    idsField.appendChild(idsContainer);
+                    ruleCard.appendChild(idsField);
+
+                    const ruleCostField = document.createElement("div");
+                    ruleCostField.className = "field";
+                    const ruleCostLabel = document.createElement("label");
+                    ruleCostLabel.textContent = "Discounted cost when triggered";
+                    const ruleCostContainer = document.createElement("div");
+                    ruleCostContainer.className = "cost-list";
+                    renderPointMapEditor(ruleCostContainer, rule.cost || {}, (nextCost) => {
+                        if (nextCost) {
+                            rule.cost = nextCost;
+                        } else {
+                            delete rule.cost;
+                        }
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+                    ruleCostField.appendChild(ruleCostLabel);
+                    ruleCostField.appendChild(ruleCostContainer);
+                    ruleCard.appendChild(ruleCostField);
+
+                    discountContainer.appendChild(ruleCard);
+                });
+
+                const addRuleBtn = document.createElement("button");
+                addRuleBtn.type = "button";
+                addRuleBtn.className = "button-subtle";
+                addRuleBtn.textContent = "Add discount rule";
+                addRuleBtn.addEventListener("click", () => {
+                    const nextRule = {
+                        ids: [],
+                        cost: {}
+                    };
+                    if (!Array.isArray(option.discounts)) {
+                        option.discounts = [];
+                    }
+                    option.discounts.push(nextRule);
+                    renderDiscountRulesEditor();
+                    refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                    schedulePreviewUpdate();
+                });
+                discountContainer.appendChild(addRuleBtn);
+            }
+
+            renderDiscountRulesEditor();
+            discountSection.appendChild(discountLabel);
+            discountSection.appendChild(discountHint);
+            discountSection.appendChild(discountContainer);
+            body.appendChild(discountSection);
+
+            const grantsSection = document.createElement("div");
+            grantsSection.className = "field";
+            const grantsLabel = document.createElement("label");
+            grantsLabel.textContent = "Grants discounts (x of y)";
+            const grantsHint = document.createElement("div");
+            grantsHint.className = "field-help";
+            grantsHint.textContent = "When this option is selected, grant discount slots that can be assigned across target options.";
+            const grantsContainer = document.createElement("div");
+            grantsContainer.className = "list-stack";
+
+            function renderGrantRulesEditor() {
+                grantsContainer.innerHTML = "";
+                const grantRules = Array.isArray(option.discountGrants) ? option.discountGrants : [];
+                if (!grantRules.length) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-state";
+                    empty.textContent = "No grant rules yet.";
+                    grantsContainer.appendChild(empty);
+                }
+
+                grantRules.forEach((rule, ruleIndex) => {
+                    const card = document.createElement("div");
+                    card.className = "discount-rule-card";
+
+                    const header = document.createElement("div");
+                    header.className = "discount-rule-header";
+                    const title = document.createElement("strong");
+                    title.textContent = `Grant Rule ${ruleIndex + 1}`;
+                    const removeBtn = document.createElement("button");
+                    removeBtn.type = "button";
+                    removeBtn.className = "button-icon danger";
+                    removeBtn.textContent = "✕";
+                    removeBtn.title = "Delete grant rule";
+                    removeBtn.addEventListener("click", () => {
+                        grantRules.splice(ruleIndex, 1);
+                        if (grantRules.length) {
+                            option.discountGrants = grantRules;
+                        } else {
+                            delete option.discountGrants;
+                        }
+                        renderGrantRulesEditor();
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+                    header.appendChild(title);
+                    header.appendChild(removeBtn);
+                    card.appendChild(header);
+
+                    const settingsRow = document.createElement("div");
+                    settingsRow.className = "field-inline field-inline-three";
+                    const slotsLabel = document.createElement("label");
+                    slotsLabel.textContent = "Slots (x)";
+                    const slotsInput = document.createElement("input");
+                    slotsInput.type = "number";
+                    slotsInput.min = "1";
+                    slotsInput.value = String(Math.max(1, Number(rule.slots) || 1));
+                    const modeLabel = document.createElement("label");
+                    modeLabel.textContent = "Discount mode";
+                    const modeInput = document.createElement("select");
+                    const halfMode = document.createElement("option");
+                    halfMode.value = "half";
+                    halfMode.textContent = "Half cost";
+                    const freeMode = document.createElement("option");
+                    freeMode.value = "free";
+                    freeMode.textContent = "Free";
+                    modeInput.appendChild(halfMode);
+                    modeInput.appendChild(freeMode);
+                    modeInput.value = rule.mode === "free" ? "free" : "half";
+
+                    slotsInput.addEventListener("input", () => {
+                        const parsed = Math.max(1, Number(slotsInput.value) || 1);
+                        rule.slots = parsed;
+                        slotsInput.value = String(parsed);
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+                    modeInput.addEventListener("change", () => {
+                        rule.mode = modeInput.value === "free" ? "free" : "half";
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    });
+
+                    settingsRow.appendChild(slotsLabel);
+                    settingsRow.appendChild(slotsInput);
+                    settingsRow.appendChild(modeLabel);
+                    settingsRow.appendChild(modeInput);
+                    card.appendChild(settingsRow);
+
+                    const targetsField = document.createElement("div");
+                    targetsField.className = "field";
+                    const targetsLabel = document.createElement("label");
+                    targetsLabel.textContent = "Target option IDs (y)";
+                    const targetsContainer = document.createElement("div");
+                    const setTargets = (nextIds) => {
+                        rule.targetIds = nextIds;
+                        delete rule.targets;
+                        delete rule.targetId;
+                        mountIdListEditor(targetsContainer, {
+                            ids: rule.targetIds,
+                            excludeIds: [option.id || ""],
+                            emptyText: "No target IDs set.",
+                            onChange: setTargets
+                        });
+                        refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                        schedulePreviewUpdate();
+                    };
+                    const initialTargets = normalizeIdList(rule.targetIds || rule.targets || (rule.targetId ? [rule.targetId] : []));
+                    rule.targetIds = initialTargets;
+                    delete rule.targets;
+                    delete rule.targetId;
+                    mountIdListEditor(targetsContainer, {
+                        ids: rule.targetIds,
+                        excludeIds: [option.id || ""],
+                        emptyText: "No target IDs set.",
+                        onChange: setTargets
+                    });
+                    targetsField.appendChild(targetsLabel);
+                    targetsField.appendChild(targetsContainer);
+                    card.appendChild(targetsField);
+
+                    grantsContainer.appendChild(card);
+                });
+
+                const addGrantBtn = document.createElement("button");
+                addGrantBtn.type = "button";
+                addGrantBtn.className = "button-subtle";
+                addGrantBtn.textContent = "Add grant rule";
+                addGrantBtn.addEventListener("click", () => {
+                    const nextRule = {
+                        slots: 1,
+                        mode: "half",
+                        targetIds: []
+                    };
+                    if (!Array.isArray(option.discountGrants)) {
+                        option.discountGrants = [];
+                    }
+                    option.discountGrants.push(nextRule);
+                    renderGrantRulesEditor();
+                    refreshOptionWarnings(prereqParseError ? [prereqParseError] : []);
+                    schedulePreviewUpdate();
+                });
+                grantsContainer.appendChild(addGrantBtn);
+            }
+
+            renderGrantRulesEditor();
+            grantsSection.appendChild(grantsLabel);
+            grantsSection.appendChild(grantsHint);
+            grantsSection.appendChild(grantsContainer);
+            body.appendChild(grantsSection);
+            refreshOptionWarnings();
 
             const advancedKeys = Object.keys(option).filter(key => !BASE_OPTION_KEYS.has(key));
             const advancedSection = document.createElement("div");
@@ -2018,6 +2707,82 @@
             schedulePreviewUpdate();
         });
 
+        container.appendChild(addBtn);
+    }
+
+    function renderPointMapEditor(container, map, onChange) {
+        container.innerHTML = "";
+        const valueMap = map && typeof map === "object" ? { ...map } : {};
+
+        Object.entries(valueMap).forEach(([pointType, amount]) => {
+            const row = document.createElement("div");
+            row.className = "cost-row";
+
+            const nameInput = document.createElement("input");
+            nameInput.type = "text";
+            nameInput.value = pointType;
+            nameInput.placeholder = "Point type";
+
+            const valueInput = document.createElement("input");
+            valueInput.type = "number";
+            valueInput.value = typeof amount === "number" ? amount : Number(amount) || 0;
+
+            const removeBtn = document.createElement("button");
+            removeBtn.type = "button";
+            removeBtn.className = "button-icon danger";
+            removeBtn.textContent = "✕";
+            removeBtn.title = "Remove entry";
+
+            valueInput.addEventListener("input", () => {
+                valueMap[pointType] = Number(valueInput.value) || 0;
+                onChange(Object.keys(valueMap).length ? { ...valueMap } : null);
+            });
+
+            nameInput.addEventListener("blur", () => {
+                const newName = nameInput.value.trim();
+                if (!newName || newName === pointType) {
+                    nameInput.value = pointType;
+                    return;
+                }
+                if (Object.prototype.hasOwnProperty.call(valueMap, newName)) {
+                    showEditorMessage(`Duplicate key "${newName}"`, "warning", 4000);
+                    nameInput.value = pointType;
+                    return;
+                }
+                const existingValue = valueMap[pointType];
+                delete valueMap[pointType];
+                valueMap[newName] = existingValue;
+                onChange(Object.keys(valueMap).length ? { ...valueMap } : null);
+                renderPointMapEditor(container, valueMap, onChange);
+            });
+
+            removeBtn.addEventListener("click", () => {
+                delete valueMap[pointType];
+                onChange(Object.keys(valueMap).length ? { ...valueMap } : null);
+                renderPointMapEditor(container, valueMap, onChange);
+            });
+
+            row.appendChild(nameInput);
+            row.appendChild(valueInput);
+            row.appendChild(removeBtn);
+            container.appendChild(row);
+        });
+
+        const addBtn = document.createElement("button");
+        addBtn.type = "button";
+        addBtn.className = "button-subtle";
+        addBtn.textContent = "Add point type";
+        addBtn.addEventListener("click", () => {
+            let candidate = "Point";
+            let suffix = 1;
+            while (Object.prototype.hasOwnProperty.call(valueMap, candidate)) {
+                suffix += 1;
+                candidate = `Point ${suffix}`;
+            }
+            valueMap[candidate] = 0;
+            onChange({ ...valueMap });
+            renderPointMapEditor(container, valueMap, onChange);
+        });
         container.appendChild(addBtn);
     }
 

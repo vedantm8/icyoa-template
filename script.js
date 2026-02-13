@@ -18,10 +18,13 @@ let attributeRanges = {}; // Will be updated by dynamic effects
 let originalAttributeRanges = {}; // Stores the initial, base ranges from input.json
 const subcategoryDiscountSelections = {};
 const categoryDiscountSelections = {};
+const optionGrantDiscountSelections = {};
 const selectionHistory = [];
 const optionGridLayouts = new Set();
 const OPTION_CARD_MIN_WIDTH = 280;
 const MOBILE_SINGLE_COLUMN_BREAKPOINT = 768;
+const IMAGE_PRELOAD_TIMEOUT_MS = 10000;
+const preloadedImageCache = new Map();
 let optionGridResizeListenerBound = false;
 let optionGridResizeQueued = false;
 
@@ -45,6 +48,101 @@ const DARK_THEME_VARS = {
 function clearObject(obj) {
     if (!obj) return;
     Object.keys(obj).forEach(key => delete obj[key]);
+}
+
+function normalizeAssetUrl(url) {
+    if (!url || typeof url !== "string") return null;
+    const trimmed = url.trim();
+    if (!trimmed) return null;
+    try {
+        return new URL(trimmed, window.location.href).href;
+    } catch (_) {
+        return null;
+    }
+}
+
+function collectImageAssetUrls(rawData) {
+    if (!Array.isArray(rawData)) return [];
+    const urls = new Set();
+
+    rawData.forEach(entry => {
+        if (entry?.type === "headerImage") {
+            const headerUrl = normalizeAssetUrl(entry.url);
+            if (headerUrl) urls.add(headerUrl);
+        }
+
+        const subcats = entry?.subcategories || [{ options: entry?.options || [] }];
+        subcats.forEach(subcat => {
+            (subcat?.options || []).forEach(opt => {
+                const imageUrl = normalizeAssetUrl(opt?.image || opt?.img);
+                if (imageUrl) urls.add(imageUrl);
+            });
+        });
+    });
+
+    return Array.from(urls);
+}
+
+function preloadImage(url, timeoutMs = IMAGE_PRELOAD_TIMEOUT_MS) {
+    return new Promise(resolve => {
+        const img = new Image();
+        let settled = false;
+
+        const settle = () => {
+            if (settled) return;
+            settled = true;
+            img.onload = null;
+            img.onerror = null;
+            resolve(img);
+        };
+
+        const timer = setTimeout(settle, timeoutMs);
+        img.onload = () => {
+            clearTimeout(timer);
+            if (typeof img.decode === "function") {
+                img.decode().catch(() => { }).finally(settle);
+            } else {
+                settle();
+            }
+        };
+        img.onerror = () => {
+            clearTimeout(timer);
+            settle();
+        };
+        img.loading = "eager";
+        img.decoding = "sync";
+        img.src = url;
+    });
+}
+
+async function preloadCyoaAssets(rawData, {
+    onProgress
+} = {}) {
+    const urls = collectImageAssetUrls(rawData);
+    preloadedImageCache.clear();
+    if (!urls.length) {
+        if (onProgress) onProgress(100, "No image assets to cache.");
+        return;
+    }
+
+    if (onProgress) onProgress(0, `Caching image assets (0/${urls.length})...`);
+    let loadedCount = 0;
+
+    await Promise.allSettled(urls.map(url =>
+        preloadImage(url)
+            .then(img => {
+                if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+                    preloadedImageCache.set(url, img);
+                }
+            })
+            .finally(() => {
+                loadedCount += 1;
+                const pct = (loadedCount / urls.length) * 100;
+                if (onProgress) onProgress(pct, `Caching image assets (${loadedCount}/${urls.length})...`);
+            })
+    ));
+
+    if (onProgress) onProgress(100, "Image cache primed. Finalizing...");
 }
 
 function calculateResponsiveColumnCount(containerWidth, requestedColumns, minCardWidth, columnGap, minColumns = 1) {
@@ -116,6 +214,7 @@ function resetGlobalState() {
     clearObject(dynamicSelections);
     clearObject(subcategoryDiscountSelections);
     clearObject(categoryDiscountSelections);
+    clearObject(optionGrantDiscountSelections);
     openCategories.clear();
     openSubcategories.clear();
     animateMainTab = false;
@@ -188,6 +287,23 @@ function getOptionEffectiveCost(option, {
         if (total < bestTotal) {
             bestTotal = total;
             bestCost = mergedCost;
+        }
+    });
+
+    const grantContexts = getActiveOptionGrantContexts(option.id);
+    const alreadySelectedThis = selectedOptions[option.id] || 0;
+    grantContexts.forEach(ctx => {
+        const assignedForThis = ctx.map[option.id] || 0;
+        const totalAssigned = getDiscountTotalCount(ctx.map);
+        const totalOthers = totalAssigned - assignedForThis;
+        const allowedForThis = Math.max(0, Math.min(assignedForThis, ctx.limit - totalOthers));
+        if (allowedForThis <= alreadySelectedThis) return;
+
+        const candidate = applyDiscountCost(bestCost, ctx.mode);
+        const candidateTotal = Object.entries(candidate).reduce((sum, [_, val]) => val > 0 ? sum + val : sum, 0);
+        if (candidateTotal < bestTotal) {
+            bestTotal = candidateTotal;
+            bestCost = candidate;
         }
     });
 
@@ -415,6 +531,10 @@ const modalTextarea = document.getElementById("modalTextarea");
 const modalConfirmBtn = document.getElementById("modalConfirmBtn");
 const modalClose = document.getElementById("modalClose");
 let modalMode = null;
+const assetLoadingOverlay = document.getElementById("assetLoadingOverlay");
+const assetLoadingMessage = document.getElementById("assetLoadingMessage");
+const assetLoadingBar = document.getElementById("assetLoadingBar");
+const assetLoadingPercent = document.getElementById("assetLoadingPercent");
 const initialTitleText = document.getElementById("cyoaTitle")?.textContent || "";
 const initialDescriptionHTML = document.getElementById("cyoaDescription")?.innerHTML || "";
 const initialHeaderImageHTML = document.getElementById("headerImageContainer")?.innerHTML || "";
@@ -498,7 +618,7 @@ document.getElementById("resetBtn").onclick = () => {
     for (let key in dynamicSelections) delete dynamicSelections[key];
     for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
     for (let key in categoryDiscountSelections) delete categoryDiscountSelections[key];
-    for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
+    for (let key in optionGrantDiscountSelections) delete optionGrantDiscountSelections[key];
 
 
     // Reset points and attribute ranges to their original states from input.json
@@ -534,7 +654,7 @@ modalConfirmBtn.onclick = () => {
         for (let key in dynamicSelections) delete dynamicSelections[key];
         for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
         for (let key in categoryDiscountSelections) delete categoryDiscountSelections[key];
-        for (let key in subcategoryDiscountSelections) delete subcategoryDiscountSelections[key];
+        for (let key in optionGrantDiscountSelections) delete optionGrantDiscountSelections[key];
 
         // Apply imported states
         points = {
@@ -587,6 +707,16 @@ modalConfirmBtn.onclick = () => {
                 categoryDiscountSelections[key] = map;
             }
         });
+        Object.entries(importedData.optionGrantDiscountSelections || {}).forEach(([key, val]) => {
+            if (val && typeof val === 'object') {
+                const map = {};
+                Object.entries(val).forEach(([id, count]) => {
+                    const num = Number(count) || 0;
+                    if (num > 0) map[id] = num;
+                });
+                optionGrantDiscountSelections[key] = map;
+            }
+        });
 
         // Reset attribute ranges to original before re-applying dynamic effects
         attributeRanges = JSON.parse(JSON.stringify(originalAttributeRanges));
@@ -616,6 +746,7 @@ function openModal(mode) {
             dynamicSelections,
             subcategoryDiscountSelections,
             categoryDiscountSelections,
+            optionGrantDiscountSelections,
 
         }, null, 2);
         modalConfirmBtn.style.display = "none";
@@ -630,6 +761,24 @@ function closeModal() {
     modal.style.display = "none";
     modalTextarea.value = "";
     modalMode = null;
+}
+
+function setLoadingOverlayVisible(visible) {
+    if (!assetLoadingOverlay) return;
+    assetLoadingOverlay.classList.toggle("is-visible", !!visible);
+}
+
+function updateLoadingOverlay(percent, message) {
+    const clamped = Math.max(0, Math.min(100, Math.round(percent)));
+    if (assetLoadingBar) {
+        assetLoadingBar.style.width = `${clamped}%`;
+    }
+    if (assetLoadingPercent) {
+        assetLoadingPercent.textContent = `${clamped}%`;
+    }
+    if (assetLoadingMessage && message) {
+        assetLoadingMessage.textContent = message;
+    }
 }
 
 
@@ -673,7 +822,51 @@ function validateInputJson(data, pointsEntry) {
                     prerequisites: prereqSet,
                     conflicts: new Set(opt.conflictsWith || [])
                 });
+
+                (opt.discountGrants || []).forEach((rule, idx) => {
+                    const targets = Array.isArray(rule?.targetIds)
+                        ? rule.targetIds
+                        : (Array.isArray(rule?.targets) ? rule.targets : (rule?.targetId ? [rule.targetId] : []));
+                    if (!Array.isArray(targets) || targets.length === 0) {
+                        errors.push(`Option "${opt.id}" has discountGrants[${idx}] with no target option IDs.`);
+                    }
+                    const slots = Number(rule?.slots) || 0;
+                    if (slots <= 0) {
+                        errors.push(`Option "${opt.id}" has discountGrants[${idx}] with invalid slots value.`);
+                    }
+                });
             });
+
+            // Handle subcategory-level requiresOption applying to all options in this subcategory
+            if (subcat.requiresOption) {
+                const requiredItems = Array.isArray(subcat.requiresOption) ? subcat.requiresOption : [subcat.requiresOption];
+                (subcat.options || []).forEach(opt => {
+                    const node = dependencyGraph.get(opt.id);
+                    if (!node) return;
+                    requiredItems.forEach(req => {
+                        const looksLikeExpr = (typeof req === 'string') && /[()!&|\s]/.test(req);
+                        if (looksLikeExpr) {
+                            const existing = node.prerequisites;
+                            if (typeof existing === 'string') {
+                                node.prerequisites = `(${existing}) && (${req})`;
+                            } else {
+                                const arr = Array.from(existing || []);
+                                if (arr.length === 0) {
+                                    node.prerequisites = req;
+                                } else {
+                                    node.prerequisites = `(${arr.join(' && ')}) && (${req})`;
+                                }
+                            }
+                        } else {
+                            if (typeof node.prerequisites === 'string') {
+                                node.prerequisites = `(${node.prerequisites}) && (${req})`;
+                            } else {
+                                node.prerequisites.add(req);
+                            }
+                        }
+                    });
+                });
+            }
         });
 
         // Handle category-level requiresOption applying to all its options
@@ -787,6 +980,19 @@ function validateInputJson(data, pointsEntry) {
 
     for (let id of optionMap.keys()) {
         validateOption(id);
+    }
+
+    for (let [id, opt] of optionMap.entries()) {
+        (opt.discountGrants || []).forEach((rule, idx) => {
+            const targets = Array.isArray(rule?.targetIds)
+                ? rule.targetIds
+                : (Array.isArray(rule?.targets) ? rule.targets : (rule?.targetId ? [rule.targetId] : []));
+            targets.forEach(targetId => {
+                if (!optionMap.has(targetId)) {
+                    errors.push(`Option "${id}" has discountGrants[${idx}] target "${targetId}" that does not exist.`);
+                }
+            });
+        });
     }
 
     if (errors.length > 0) {
@@ -1000,15 +1206,33 @@ async function loadConfiguration() {
     const selectedCyoa = urlParams.get('cyoa');
 
     if (selectedCyoa) {
+        setLoadingOverlayVisible(true);
+        updateLoadingOverlay(5, "Loading CYOA configuration...");
+        let loadedSuccessfully = false;
         try {
             const res = await fetch(`CYOAs/${selectedCyoa}`);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
+            updateLoadingOverlay(20, "Configuration loaded. Preparing assets...");
+            await preloadCyoaAssets(data, {
+                onProgress: (pct, message) => {
+                    const mapped = 20 + Math.round((pct / 100) * 70);
+                    updateLoadingOverlay(mapped, message);
+                }
+            });
+            updateLoadingOverlay(95, "Rendering CYOA interface...");
             if (applyCyoaData(data)) {
+                loadedSuccessfully = true;
+                updateLoadingOverlay(100, "Ready.");
+                setTimeout(() => setLoadingOverlayVisible(false), 150);
                 return;
             }
         } catch (err) {
             console.error(`Failed to load CYOA ${selectedCyoa}:`, err);
+        } finally {
+            if (!loadedSuccessfully) {
+                setLoadingOverlayVisible(false);
+            }
         }
     }
 
@@ -1719,6 +1943,60 @@ function getDiscountTotalCount(map) {
     return Object.values(map || {}).reduce((sum, val) => sum + (Number(val) || 0), 0);
 }
 
+function buildOptionGrantKey(providerId, ruleIndex) {
+    return `${providerId}::${ruleIndex}`;
+}
+
+function getOptionGrantMap(key) {
+    return getDiscountMap(optionGrantDiscountSelections, key) || {};
+}
+
+function getGrantTargetIds(rule) {
+    if (!rule) return [];
+    if (Array.isArray(rule.targetIds)) return rule.targetIds.filter(Boolean);
+    if (Array.isArray(rule.targets)) return rule.targets.filter(Boolean);
+    if (rule.targetId) return [rule.targetId];
+    return [];
+}
+
+function getAllOptions() {
+    const all = [];
+    categories.forEach(cat => {
+        (cat.options || []).forEach(opt => all.push(opt));
+        (cat.subcategories || []).forEach(subcat => {
+            (subcat.options || []).forEach(opt => all.push(opt));
+        });
+    });
+    return all;
+}
+
+function getActiveOptionGrantContexts(targetOptionId) {
+    const contexts = [];
+    getAllOptions().forEach(provider => {
+        const providerSelections = selectedOptions[provider.id] || 0;
+        if (providerSelections <= 0) return;
+        (provider.discountGrants || []).forEach((rule, ruleIndex) => {
+            const slotsPerSelection = Math.max(0, Number(rule?.slots) || 0);
+            if (slotsPerSelection <= 0) return;
+            const targetIds = getGrantTargetIds(rule);
+            if (!targetIds.includes(targetOptionId)) return;
+            const key = buildOptionGrantKey(provider.id, ruleIndex);
+            const map = getOptionGrantMap(key);
+            contexts.push({
+                provider,
+                rule,
+                ruleIndex,
+                key,
+                map,
+                targetIds,
+                limit: providerSelections * slotsPerSelection,
+                mode: rule.mode === 'free' ? 'free' : 'half'
+            });
+        });
+    });
+    return contexts;
+}
+
 function hasDiscountAmount(entity) {
     return !!(entity && entity.discountAmount && typeof entity.discountAmount === 'object' && Object.keys(entity.discountAmount).length > 0);
 }
@@ -2037,15 +2315,13 @@ function renderCategoryContent(cat) {
                     subButton.textContent = "🔒 " + (subcat.name || `Options ${subIndex + 1}`);
                 }
                 subButton.onclick = () => {
-                    if (subcatUnlocked) {
-                        if (openSubcategories.has(subcatKey)) {
-                            openSubcategories.delete(subcatKey);
-                        } else {
-                            openSubcategories.add(subcatKey);
-                            subcategoriesToAnimate.add(subcatKey); // Only animate when opening
-                        }
-                        renderAccordion();
+                    if (openSubcategories.has(subcatKey)) {
+                        openSubcategories.delete(subcatKey);
+                    } else {
+                        openSubcategories.add(subcatKey);
+                        subcategoriesToAnimate.add(subcatKey); // Only animate when opening
                     }
+                    renderAccordion();
                 };
                 subcatNav.appendChild(subButton);
             }
@@ -2229,8 +2505,14 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
 
     const imageUrl = opt.image || opt.img;
     if (imageUrl) {
-        const img = document.createElement("img");
-        img.src = imageUrl;
+        const normalizedImageUrl = normalizeAssetUrl(imageUrl);
+        const cachedImg = normalizedImageUrl ? preloadedImageCache.get(normalizedImageUrl) : null;
+        const img = cachedImg ? cachedImg.cloneNode(true) : document.createElement("img");
+        img.loading = "eager";
+        img.decoding = "sync";
+        if (!cachedImg) {
+            img.src = imageUrl;
+        }
         img.alt = opt.label;
         wrapper.appendChild(img);
     }
@@ -2492,6 +2774,65 @@ function renderOption(opt, grid, subcat, subcatKey, cat, catIndex, catKey, catDi
             renderAccordion();
         };
         requirements.appendChild(discountBtn);
+    });
+
+    const optionGrantContexts = getActiveOptionGrantContexts(opt.id);
+    optionGrantContexts.forEach(ctx => {
+        const assignedCount = ctx.map[opt.id] || 0;
+        const totalAssigned = getDiscountTotalCount(ctx.map);
+        const totalOthers = totalAssigned - assignedCount;
+        const maxAllowed = Math.max(0, ctx.limit - totalOthers);
+        const alreadySelected = selectedOptions[opt.id] || 0;
+        const providerLabel = ctx.provider?.label || ctx.provider?.id || "Option";
+
+        if (assignedCount > 0) {
+            const remaining = Math.max(0, assignedCount - alreadySelected);
+            const remainingText = remaining > 0 ? ` (remaining ${remaining})` : "";
+            const slotText = ctx.mode === 'free' ? "Free slots" : "Discount slots";
+            requirements.innerHTML += `${slotText} assigned by ${providerLabel}: ${assignedCount}${remainingText}<br>`;
+        }
+
+        const btn = document.createElement("button");
+        btn.className = "discount-toggle";
+        btn.textContent = ctx.mode === 'free'
+            ? `Use Free Slot (${providerLabel})`
+            : `Use Discount Slot (${providerLabel})`;
+        if (assignedCount > 0) {
+            btn.textContent = ctx.mode === 'free'
+                ? `Free Slot Applied (${assignedCount}) – ${providerLabel}`
+                : `Discount Applied (${assignedCount}) – ${providerLabel}`;
+        }
+
+        const canIncrease = maxAllowed > assignedCount;
+        btn.disabled = alreadySelected > 0 || (assignedCount === 0 && !canIncrease);
+        if (alreadySelected > 0) {
+            btn.title = `Remove and re-select this item to change slots from ${providerLabel}.`;
+        } else if (assignedCount === 0 && !canIncrease) {
+            btn.title = `${providerLabel} has no slots left to assign (${ctx.limit} max).`;
+        } else {
+            btn.title = `Cycle assigned slots from ${providerLabel}.`;
+        }
+
+        btn.onclick = () => {
+            if ((selectedOptions[opt.id] || 0) > 0) return;
+            const current = ctx.map[opt.id] || 0;
+            const freshTotal = getDiscountTotalCount(ctx.map) - current;
+            const allowed = Math.max(0, ctx.limit - freshTotal);
+            if (allowed === 0 && current === 0) {
+                alert(`${providerLabel} has no slots left to assign.`);
+                return;
+            }
+            let next = current + 1;
+            if (next > allowed) next = 0;
+            if (next > 0) {
+                ctx.map[opt.id] = next;
+            } else {
+                delete ctx.map[opt.id];
+            }
+            renderAccordion();
+        };
+
+        requirements.appendChild(btn);
     });
 
     contentWrapper.appendChild(label);

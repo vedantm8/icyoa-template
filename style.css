@@ -196,7 +196,7 @@ button:disabled {
 
 .subcategory-tab-button.locked {
     opacity: 0.6;
-    cursor: not-allowed;
+    cursor: pointer;
     background: #eee;
     color: #999;
 }
@@ -719,4 +719,64 @@ div {
     .options-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.asset-loading-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.65);
+}
+
+.asset-loading-overlay.is-visible {
+    display: flex;
+}
+
+.asset-loading-card {
+    width: min(560px, 100%);
+    background: var(--container-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 16px 40px var(--shadow-color);
+    padding: 20px;
+}
+
+.asset-loading-card h3 {
+    margin: 0 0 10px;
+    font-size: var(--font-accordion);
+}
+
+.asset-loading-card p {
+    margin: 0 0 14px;
+    color: var(--text-muted);
+    font-size: var(--font-description);
+}
+
+.asset-loading-progress-track {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    background: var(--item-bg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.asset-loading-progress-bar {
+    width: 0;
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    transition: width 0.18s ease-out;
+}
+
+.asset-loading-percent {
+    margin-top: 10px;
+    text-align: right;
+    font-weight: 700;
+    font-size: var(--font-label);
+    color: var(--text-color);
 }
