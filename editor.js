@@ -1,6 +1,6 @@
 (function () {
     const CORE_TYPES_ORDER = ["title", "description", "headerImage", "points"];
-    const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost", "prerequisites", "conflictsWith", "discounts", "discountGrants"]);
+    const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost", "maxSelections", "prerequisites", "conflictsWith", "discounts", "discountGrants"]);
 
     const state = {
         data: [],
@@ -2165,6 +2165,30 @@
             inputTypeField.appendChild(inputLabelLabel);
             inputTypeField.appendChild(inputLabelInput);
             body.appendChild(inputTypeField);
+
+            const optionLimitField = document.createElement("div");
+            optionLimitField.className = "field-inline";
+            const optionLimitLabel = document.createElement("label");
+            optionLimitLabel.textContent = "Max selections";
+            const optionLimitInput = document.createElement("input");
+            optionLimitInput.type = "number";
+            optionLimitInput.min = "1";
+            optionLimitInput.value = option.maxSelections ?? "";
+            optionLimitInput.placeholder = "Default: 1";
+            optionLimitInput.addEventListener("input", () => {
+                const raw = optionLimitInput.value.trim();
+                if (!raw) {
+                    delete option.maxSelections;
+                } else {
+                    const parsed = Math.max(1, Number(raw) || 1);
+                    option.maxSelections = parsed;
+                    optionLimitInput.value = String(parsed);
+                }
+                schedulePreviewUpdate();
+            });
+            optionLimitField.appendChild(optionLimitLabel);
+            optionLimitField.appendChild(optionLimitInput);
+            body.appendChild(optionLimitField);
 
             const costSection = document.createElement("div");
             costSection.className = "field";
