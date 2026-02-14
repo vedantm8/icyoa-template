@@ -54,7 +54,9 @@
     const importJsonBtn = document.getElementById("importJsonBtn");
     const exportJsonBtn = document.getElementById("exportJsonBtn");
     const selectCyoaBtn = document.getElementById("selectCyoaBtn");
+    const editorThemeToggleBtn = document.getElementById("editorThemeToggle");
     const importFileInput = document.getElementById("importFileInput");
+    const EDITOR_THEME_STORAGE_KEY = "cyoa-editor-theme";
 
     let previewUpdateHandle = null;
     let pendingPreviewData = null;
@@ -90,6 +92,29 @@
                 }
             }, timeout);
         }
+    }
+
+    function getPreferredTheme() {
+        const storedTheme = localStorage.getItem(EDITOR_THEME_STORAGE_KEY);
+        if (storedTheme === "light" || storedTheme === "dark") {
+            return storedTheme;
+        }
+        return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+
+    function applyEditorTheme(theme) {
+        const mode = theme === "dark" ? "dark" : "light";
+        document.documentElement.dataset.theme = mode;
+        if (editorThemeToggleBtn) {
+            const nextMode = mode === "dark" ? "Light Mode" : "Dark Mode";
+            editorThemeToggleBtn.textContent = nextMode;
+            editorThemeToggleBtn.title = `Switch to ${nextMode.toLowerCase()}`;
+            editorThemeToggleBtn.setAttribute("aria-label", `Switch to ${nextMode.toLowerCase()}`);
+        }
+    }
+
+    function initializeEditorTheme() {
+        applyEditorTheme(getPreferredTheme());
     }
 
     function queueTempSave(data) {
@@ -2980,6 +3005,13 @@
     }
 
     function setupEventListeners() {
+        editorThemeToggleBtn?.addEventListener("click", () => {
+            const current = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+            const next = current === "dark" ? "light" : "dark";
+            localStorage.setItem(EDITOR_THEME_STORAGE_KEY, next);
+            applyEditorTheme(next);
+        });
+
         selectCyoaBtn?.addEventListener("click", () => {
             showSelectionModal();
         });
@@ -3051,6 +3083,7 @@
         });
     }
 
+    initializeEditorTheme();
     setupEventListeners();
     loadInitialData();
 })();
