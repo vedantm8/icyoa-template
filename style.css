@@ -321,6 +321,35 @@ button:disabled {
     opacity: 0.6;
 }
 
+.option-controls {
+    margin-top: 12px;
+}
+
+.option-stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.option-stepper .stepper-btn {
+    align-self: auto;
+    margin-top: 0;
+    width: 42px;
+    min-width: 42px;
+    padding: 8px 0;
+    font-size: 18px;
+    line-height: 1;
+}
+
+.stepper-count {
+    min-width: 52px;
+    text-align: center;
+    font-weight: 700;
+    font-size: var(--font-option-title);
+    color: var(--text-color);
+}
+
 .option-requirements {
     font-size: var(--font-option-req);
     color: var(--text-muted);

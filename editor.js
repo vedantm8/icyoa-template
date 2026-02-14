@@ -1,6 +1,6 @@
 (function () {
     const CORE_TYPES_ORDER = ["title", "description", "headerImage", "points"];
-    const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost", "maxSelections", "prerequisites", "conflictsWith", "discounts", "discountGrants"]);
+    const BASE_OPTION_KEYS = new Set(["id", "label", "description", "image", "inputType", "inputLabel", "cost", "maxSelections", "countsAsOneSelection", "prerequisites", "conflictsWith", "discounts", "discountGrants"]);
 
     const state = {
         data: [],
@@ -49,6 +49,7 @@
     const categoryListEl = document.getElementById("categoryList");
     const previewFrame = document.getElementById("previewFrame");
     const previewStatusEl = document.getElementById("previewStatus");
+    const reloadPreviewBtn = document.getElementById("reloadPreviewBtn");
     const openPreviewTabBtn = document.getElementById("openPreviewTabBtn");
     const editorMessageEl = document.getElementById("editorMessage");
     const addCategoryBtn = document.getElementById("addCategoryBtn");
@@ -2255,6 +2256,28 @@
             optionLimitField.appendChild(optionLimitInput);
             body.appendChild(optionLimitField);
 
+            const countAsOneField = document.createElement("div");
+            countAsOneField.className = "field";
+            const countAsOneToggle = document.createElement("label");
+            countAsOneToggle.className = "checkbox-option";
+            const countAsOneInput = document.createElement("input");
+            countAsOneInput.type = "checkbox";
+            countAsOneInput.checked = option.countsAsOneSelection === true;
+            const countAsOneText = document.createElement("span");
+            countAsOneText.textContent = "Count repeated picks as 1 toward subcategory max selections";
+            countAsOneInput.addEventListener("change", () => {
+                if (countAsOneInput.checked) {
+                    option.countsAsOneSelection = true;
+                } else {
+                    delete option.countsAsOneSelection;
+                }
+                schedulePreviewUpdate();
+            });
+            countAsOneToggle.appendChild(countAsOneInput);
+            countAsOneToggle.appendChild(countAsOneText);
+            countAsOneField.appendChild(countAsOneToggle);
+            body.appendChild(countAsOneField);
+
             const costSection = document.createElement("div");
             costSection.className = "field";
             const costLabel = document.createElement("label");
@@ -3066,6 +3089,18 @@
             }, 450);
         });
 
+        reloadPreviewBtn?.addEventListener("click", () => {
+            state.previewReady = false;
+            pendingPreviewData = cloneData(state.data);
+            if (previewStatusEl) {
+                previewStatusEl.textContent = "Reloading preview…";
+                previewStatusEl.dataset.state = "pending";
+            }
+            if (previewFrame) {
+                previewFrame.src = getPreviewUrl();
+            }
+        });
+
         selectCyoaBtn?.addEventListener("click", () => {
             showSelectionModal();
         });
@@ -3114,6 +3149,8 @@
                 previewStatusEl.textContent = "Preview ready";
                 previewStatusEl.dataset.state = "ready";
             }
+            // Ensure the iframe gets the latest in-memory editor state after a hard reload.
+            postPreviewUpdate(previewFrame.contentWindow, cloneData(state.data));
             flushPreviewUpdate();
         });
 

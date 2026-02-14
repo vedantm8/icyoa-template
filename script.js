@@ -1729,7 +1729,7 @@ function canSelect(option) {
     // Check subcategory limits
     const subcat = findSubcategoryOfOption(option.id);
     const subcatOptions = subcat?.options || [];
-    const subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+    const subcatCount = getSubcategorySelectionCount(subcat, option.id);
     const subcatMax = subcat?.maxSelections || Infinity; // Default to no limit
     // Allow selecting even if at limit, provided there IS a limit (so we can auto-unselect)
     const underSubcatLimit = (subcatCount < subcatMax) || (subcatMax !== Infinity);
@@ -1780,6 +1780,24 @@ function findSubcategoryOfOption(optionId) {
         }
     }
     return null;
+}
+
+function getOptionCountForSubcategoryLimit(option, rawCount) {
+    const count = Number(rawCount) || 0;
+    if (count <= 0) return 0;
+    if (option?.countsAsOneSelection === true) return 1;
+    return count;
+}
+
+function getSubcategorySelectionCount(subcat, optionIdToIncrement = null) {
+    const subcatOptions = subcat?.options || [];
+    let total = 0;
+    subcatOptions.forEach(opt => {
+        const current = selectedOptions[opt.id] || 0;
+        const adjustedCount = optionIdToIncrement && opt.id === optionIdToIncrement ? current + 1 : current;
+        total += getOptionCountForSubcategoryLimit(opt, adjustedCount);
+    });
+    return total;
 }
 
 function getCategorySelectionCount(optionId) {
@@ -1842,24 +1860,49 @@ function ensureSubcategoryLimit(option) {
     if (!subcat || subcat.maxSelections === Infinity) return;
 
     const subcatOptions = subcat.options || [];
-    let subcatCount = subcatOptions.reduce((sum, o) => sum + (selectedOptions[o.id] || 0), 0);
+    let subcatCount = getSubcategorySelectionCount(subcat, option.id);
     const subcatMax = subcat.maxSelections;
+    const subcatOptionIds = new Set(subcatOptions.map(o => o.id));
 
-    if (subcatCount >= subcatMax) {
-        // Find oldest in this subcategory from history
-        const subcatOptionIds = new Set(subcatOptions.map(o => o.id));
+    while (subcatCount > subcatMax) {
+        let removed = false;
+
+        // Prefer removing an instance that immediately reduces subcategory usage.
         for (let i = 0; i < selectionHistory.length; i++) {
             const id = selectionHistory[i];
-            if (subcatOptionIds.has(id)) {
+            if (!subcatOptionIds.has(id)) continue;
+
+            const oldestOption = findOptionById(id);
+            const currentCount = selectedOptions[id] || 0;
+            if (!oldestOption || currentCount <= 0) continue;
+
+            const before = getOptionCountForSubcategoryLimit(oldestOption, currentCount);
+            const after = getOptionCountForSubcategoryLimit(oldestOption, currentCount - 1);
+            if (after >= before) continue;
+
+            removeSelection(oldestOption);
+            removed = true;
+            break;
+        }
+
+        // Fallback: remove oldest in subcategory even if this step doesn't immediately reduce usage.
+        if (!removed) {
+            for (let i = 0; i < selectionHistory.length; i++) {
+                const id = selectionHistory[i];
+                if (!subcatOptionIds.has(id)) continue;
                 const oldestOption = findOptionById(id);
-                if (oldestOption) {
-                    removeSelection(oldestOption);
-                    subcatCount--;
-                    // Re-calculate loop if needed, but we break when under limit
-                    if (subcatCount < subcatMax) break;
-                }
+                if (!oldestOption) continue;
+                removeSelection(oldestOption);
+                removed = true;
+                break;
             }
         }
+
+        if (!removed) {
+            break;
+        }
+
+        subcatCount = getSubcategorySelectionCount(subcat, option.id);
     }
 }
 
@@ -2985,44 +3028,62 @@ function renderSelectionButton(opt, contentWrapper) {
 
     const count = selectedOptions[opt.id] || 0;
     const max = opt.maxSelections || 1;
-
-    const btn = document.createElement("button");
-    if (count > 0) {
-        const maxLabel = max === Infinity ? "" : ` / ${max}`;
-        btn.textContent = `✓ Selected (${count}${maxLabel})`;
-    } else {
-        btn.textContent = "Select";
-    }
-
     const canAdd = canSelect(opt);
-    btn.disabled = (!canAdd && count === 0) || (count >= max && max !== Infinity);
 
-    if (count > 0) {
-        const removeBtn = document.createElement("button");
-        removeBtn.textContent = "Remove";
-        removeBtn.classList.add("remove-btn");
-        removeBtn.onclick = (e) => {
+    if (max > 1) {
+        const stepper = document.createElement("div");
+        stepper.className = "option-stepper";
+
+        const incrementBtn = document.createElement("button");
+        incrementBtn.type = "button";
+        incrementBtn.className = "stepper-btn";
+        incrementBtn.textContent = "+";
+        incrementBtn.disabled = (!canAdd && count === 0) || (count >= max && max !== Infinity);
+        incrementBtn.onclick = (e) => {
             e.stopPropagation();
-            removeSelection(opt);
-        };
-        controls.appendChild(removeBtn);
-    }
-
-    btn.onclick = () => {
-        if (count > 0 && max === 1) {
-            removeSelection(opt);
-        } else if (count > 0 && max > 1) {
-            // Options with max > 1 should probably use the remove button, 
-            // but we'll allow clicking to remove the first instance if clicking happens here.
-            removeSelection(opt);
-        } else {
             ensureSubcategoryLimit(opt);
             if (canSelect(opt)) {
                 addSelection(opt);
             }
-        }
-    };
-    controls.appendChild(btn);
+        };
+
+        const countDisplay = document.createElement("span");
+        countDisplay.className = "stepper-count";
+        countDisplay.textContent = String(count);
+        const maxLabel = max === Infinity ? "∞" : String(max);
+        countDisplay.title = `Selected ${count} of ${maxLabel}`;
+
+        const decrementBtn = document.createElement("button");
+        decrementBtn.type = "button";
+        decrementBtn.className = "stepper-btn remove-btn";
+        decrementBtn.textContent = "-";
+        decrementBtn.disabled = count <= 0;
+        decrementBtn.onclick = (e) => {
+            e.stopPropagation();
+            removeSelection(opt);
+        };
+
+        stepper.appendChild(decrementBtn);
+        stepper.appendChild(countDisplay);
+        stepper.appendChild(incrementBtn);
+        controls.appendChild(stepper);
+    } else {
+        const btn = document.createElement("button");
+        btn.textContent = count > 0 ? "✓ Selected" : "Select";
+        btn.disabled = !canAdd && count === 0;
+        btn.onclick = () => {
+            if (count > 0) {
+                removeSelection(opt);
+            } else {
+                ensureSubcategoryLimit(opt);
+                if (canSelect(opt)) {
+                    addSelection(opt);
+                }
+            }
+        };
+        controls.appendChild(btn);
+    }
+
     contentWrapper.appendChild(controls);
 }
 
