@@ -2194,6 +2194,13 @@ function renderCategoryContent(cat) {
     const content = document.createElement("div");
     content.className = "category-content";
 
+    if (typeof cat.description === "string" && cat.description.trim() !== "") {
+        const catDescription = document.createElement("div");
+        catDescription.className = "category-description";
+        setMultilineText(catDescription, cat.description);
+        content.appendChild(catDescription);
+    }
+
     // Check category-level requirements
     const requires = cat.requiresOption;
     const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];

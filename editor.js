@@ -1563,6 +1563,25 @@
             nameField.appendChild(nameInput);
             body.appendChild(nameField);
 
+            const descriptionField = document.createElement("div");
+            descriptionField.className = "field";
+            const descriptionLabel = document.createElement("label");
+            descriptionLabel.textContent = "Description (Optional)";
+            const descriptionInput = document.createElement("textarea");
+            descriptionInput.value = category.description || "";
+            descriptionInput.placeholder = "Shown below the category tab title.";
+            descriptionInput.addEventListener("input", () => {
+                if (descriptionInput.value.trim()) {
+                    category.description = descriptionInput.value;
+                } else {
+                    delete category.description;
+                }
+                schedulePreviewUpdate();
+            });
+            descriptionField.appendChild(descriptionLabel);
+            descriptionField.appendChild(descriptionInput);
+            body.appendChild(descriptionField);
+
             const requiresField = document.createElement("div");
             requiresField.className = "field";
             const requiresLabel = document.createElement("label");
