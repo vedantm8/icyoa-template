@@ -49,6 +49,7 @@
     const categoryListEl = document.getElementById("categoryList");
     const previewFrame = document.getElementById("previewFrame");
     const previewStatusEl = document.getElementById("previewStatus");
+    const openPreviewTabBtn = document.getElementById("openPreviewTabBtn");
     const editorMessageEl = document.getElementById("editorMessage");
     const addCategoryBtn = document.getElementById("addCategoryBtn");
     const importJsonBtn = document.getElementById("importJsonBtn");
@@ -60,6 +61,7 @@
 
     let previewUpdateHandle = null;
     let pendingPreviewData = null;
+    let detachedPreviewWindow = null;
 
     function cloneData(data) {
         return JSON.parse(JSON.stringify(data));
@@ -92,6 +94,12 @@
                 }
             }, timeout);
         }
+    }
+
+    function getPreviewUrl() {
+        return state.selectedFile
+            ? `index.html?cyoa=${encodeURIComponent(state.selectedFile)}`
+            : "index.html";
     }
 
     function getPreferredTheme() {
@@ -591,18 +599,31 @@
         }, 250);
     }
 
+    function postPreviewUpdate(targetWindow, payload) {
+        if (!targetWindow || targetWindow.closed) return false;
+        targetWindow.postMessage({
+            type: "cyoa-data-update",
+            payload
+        }, "*");
+        return true;
+    }
+
     function flushPreviewUpdate() {
-        if (!state.previewReady || !pendingPreviewData) return;
+        if (!pendingPreviewData) return;
+        const hasDetachedPreview = !!(detachedPreviewWindow && !detachedPreviewWindow.closed);
+        if (!state.previewReady && !hasDetachedPreview) return;
         const payload = pendingPreviewData;
         if (previewStatusEl) {
             previewStatusEl.textContent = "Updating preview…";
             previewStatusEl.dataset.state = "pending";
         }
         queueTempSave(payload);
-        previewFrame.contentWindow.postMessage({
-            type: "cyoa-data-update",
-            payload
-        }, "*");
+        if (state.previewReady && previewFrame?.contentWindow) {
+            postPreviewUpdate(previewFrame.contentWindow, payload);
+        }
+        if (hasDetachedPreview) {
+            postPreviewUpdate(detachedPreviewWindow, payload);
+        }
         pendingPreviewData = null;
     }
 
@@ -2892,7 +2913,7 @@
 
         // Update preview iframe to load the correct CYOA
         if (previewFrame) {
-            previewFrame.src = `index.html?cyoa=${encodeURIComponent(state.selectedFile)}`;
+            previewFrame.src = getPreviewUrl();
         }
 
         const config = await loadSelectedConfig();
@@ -3031,6 +3052,20 @@
             applyEditorTheme(next);
         });
 
+        openPreviewTabBtn?.addEventListener("click", () => {
+            const opened = window.open(getPreviewUrl(), "_blank");
+            if (!opened) {
+                showEditorMessage("Could not open preview tab. Please allow pop-ups for this site.", "warning", 5000);
+                return;
+            }
+            detachedPreviewWindow = opened;
+            // Push current state to the detached preview once it has had time to initialize.
+            setTimeout(() => {
+                if (!detachedPreviewWindow || detachedPreviewWindow.closed) return;
+                postPreviewUpdate(detachedPreviewWindow, cloneData(state.data));
+            }, 450);
+        });
+
         selectCyoaBtn?.addEventListener("click", () => {
             showSelectionModal();
         });
@@ -3085,6 +3120,9 @@
         window.addEventListener("message", (event) => {
             if (!event.data) return;
             if (event.data.type === "cyoa-data-update-result") {
+                if (detachedPreviewWindow && detachedPreviewWindow.closed) {
+                    detachedPreviewWindow = null;
+                }
                 if (event.data.success) {
                     state.lastPreviewError = null;
                     if (previewStatusEl) {

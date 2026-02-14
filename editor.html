@@ -51,7 +51,10 @@
         <section class="preview-panel">
             <div class="preview-header">
                 <div class="preview-title">Live Preview</div>
-                <div id="previewStatus" class="preview-status" data-state="pending">Loading preview…</div>
+                <div class="preview-header-actions">
+                    <button id="openPreviewTabBtn" type="button" class="button-subtle preview-open-btn">Open in New Tab</button>
+                    <div id="previewStatus" class="preview-status" data-state="pending">Loading preview…</div>
+                </div>
             </div>
             <iframe id="previewFrame" class="preview-frame" title="CYOA Preview" src="index.html"></iframe>
         </section>
