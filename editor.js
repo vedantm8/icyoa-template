@@ -872,21 +872,21 @@
             "points-bg": "#f0f0f0",
             "points-border": "#cccccc",
             "shadow-color": "rgba(0,0,0,0.1)",
-            "font-base": "16px",
-            "font-title": "28px",
-            "font-description": "16px",
-            "font-tab": "15px",
-            "font-accordion": "16px",
-            "font-subcategory": "16px",
-            "font-option-title": "15px",
-            "font-option-req": "13px",
-            "font-option-desc": "13px",
-            "font-story": "15px",
-            "font-story-input": "14px",
-            "font-points": "14px",
-            "font-points-value": "14px",
-            "font-prereq-help": "12px",
-            "font-label": "14px"
+            "font-base": "20px",
+            "font-title": "44px",
+            "font-description": "22px",
+            "font-tab": "20px",
+            "font-accordion": "22px",
+            "font-subcategory": "24px",
+            "font-option-title": "21px",
+            "font-option-req": "18px",
+            "font-option-desc": "19px",
+            "font-story": "21px",
+            "font-story-input": "20px",
+            "font-points": "20px",
+            "font-points-value": "20px",
+            "font-prereq-help": "17px",
+            "font-label": "19px"
         }), {
             mergeDefaults: true
         }).entry;
@@ -1304,21 +1304,21 @@
             input.step = "1";
 
             const defaults = {
-                "font-base": 16,
-                "font-title": 28,
-                "font-description": 16,
-                "font-tab": 15,
-                "font-accordion": 16,
-                "font-subcategory": 16,
-                "font-option-title": 15,
-                "font-option-req": 13,
-                "font-option-desc": 13,
-                "font-story": 15,
-                "font-story-input": 14,
-                "font-points": 14,
-                "font-points-value": 14,
-                "font-prereq-help": 12,
-                "font-label": 14
+                "font-base": 20,
+                "font-title": 44,
+                "font-description": 22,
+                "font-tab": 20,
+                "font-accordion": 22,
+                "font-subcategory": 24,
+                "font-option-title": 21,
+                "font-option-req": 18,
+                "font-option-desc": 19,
+                "font-story": 21,
+                "font-story-input": 20,
+                "font-points": 20,
+                "font-points-value": 20,
+                "font-prereq-help": 17,
+                "font-label": 19
             };
 
             const raw = themeEntry[key];

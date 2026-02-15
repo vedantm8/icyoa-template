@@ -17,21 +17,21 @@
     --points-bg: #f0f0f0;
     --points-border: #cccccc;
     --shadow-color: rgba(0, 0, 0, 0.1);
-    --font-base: 16px;
-    --font-title: 28px;
-    --font-description: 16px;
-    --font-tab: 15px;
-    --font-accordion: 16px;
-    --font-subcategory: 28px;
-    --font-option-title: 15px;
-    --font-option-req: 13px;
-    --font-option-desc: 13px;
-    --font-story: 15px;
-    --font-story-input: 14px;
-    --font-points: 14px;
-    --font-points-value: 14px;
-    --font-prereq-help: 12px;
-    --font-label: 14px;
+    --font-base: 20px;
+    --font-title: 44px;
+    --font-description: 22px;
+    --font-tab: 20px;
+    --font-accordion: 22px;
+    --font-subcategory: 24px;
+    --font-option-title: 21px;
+    --font-option-req: 18px;
+    --font-option-desc: 19px;
+    --font-story: 21px;
+    --font-story-input: 20px;
+    --font-points: 20px;
+    --font-points-value: 20px;
+    --font-prereq-help: 17px;
+    --font-label: 19px;
 }
 
 body {
