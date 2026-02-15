@@ -2200,9 +2200,9 @@ function renderAccordion() {
     // Get all non-special categories
     const visibleCategories = categories.filter(cat => !["points", "headerImage", "title", "description", "formulas"].includes(cat.type));
 
-    // Initialize currentTab to first category if not set
-    if (!currentTab && visibleCategories.length > 0) {
-        currentTab = visibleCategories[0].name;
+    // If selected category no longer exists, clear it.
+    if (currentTab && !visibleCategories.some(cat => cat.name === currentTab)) {
+        currentTab = null;
     }
 
     // Create tabs
@@ -2214,8 +2214,13 @@ function renderAccordion() {
         }
         tab.textContent = cat.name;
         tab.onclick = () => {
-            currentTab = cat.name;
-            animateMainTab = true; // Trigger animation on tab switch
+            if (currentTab === cat.name) {
+                currentTab = null;
+                animateMainTab = false;
+            } else {
+                currentTab = cat.name;
+                animateMainTab = true; // Trigger animation on tab switch
+            }
             renderAccordion();
         };
         tabNav.appendChild(tab);
@@ -2414,11 +2419,8 @@ function renderSubcategoryLevel(parentEntity, children, container, {
         return { child, idx, path, key, unlocked };
     });
 
-    if (mode === "tabs" && !childMeta.some(meta => openSubcategories.has(meta.key))) {
-        openSubcategories.add(childMeta[0].key);
-    }
-
-    if (mode === "tabs" && (children.length > 1 || children.some(child => child?.name))) {
+    const hasTabbedNav = mode === "tabs" && (children.length > 1 || children.some(child => child?.name));
+    if (hasTabbedNav) {
         const nav = document.createElement("div");
         nav.className = "subcategory-navigation";
         childMeta.forEach((meta) => {
@@ -2448,7 +2450,9 @@ function renderSubcategoryLevel(parentEntity, children, container, {
 
     const toRender = mode === "all"
         ? childMeta
-        : childMeta.filter(meta => openSubcategories.has(meta.key));
+        : hasTabbedNav
+            ? childMeta.filter(meta => openSubcategories.has(meta.key))
+            : childMeta;
 
     toRender.forEach((meta) => {
         renderSubcategoryTreeNode(meta.child, container, {

@@ -244,6 +244,14 @@ button:disabled {
     width: 100%;
 }
 
+/* Keep consistent spacing when options and nested subcategories coexist in the same level */
+.category-content > .options-grid + .subcategory-navigation,
+.subcategory-content > .options-grid + .subcategory-navigation,
+.category-content > .options-grid + .subcategory-item,
+.subcategory-content > .options-grid + .subcategory-item {
+    margin-top: 24px;
+}
+
 .option-wrapper {
     display: flex;
     flex-direction: column;
