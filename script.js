@@ -61,6 +61,24 @@ function normalizeAssetUrl(url) {
     }
 }
 
+function walkSubcategoryTree(subcategories, callback, path = []) {
+    if (!Array.isArray(subcategories)) return;
+    subcategories.forEach((subcat, index) => {
+        const nextPath = path.concat([{ index, name: subcat?.name || "" }]);
+        callback(subcat, nextPath);
+        if (Array.isArray(subcat?.subcategories) && subcat.subcategories.length) {
+            walkSubcategoryTree(subcat.subcategories, callback, nextPath);
+        }
+    });
+}
+
+function forEachCategoryOption(category, callback) {
+    (category?.options || []).forEach(opt => callback(opt, null));
+    walkSubcategoryTree(category?.subcategories || [], subcat => {
+        (subcat?.options || []).forEach(opt => callback(opt, subcat));
+    });
+}
+
 function collectImageAssetUrls(rawData) {
     if (!Array.isArray(rawData)) return [];
     const urls = new Set();
@@ -71,12 +89,9 @@ function collectImageAssetUrls(rawData) {
             if (headerUrl) urls.add(headerUrl);
         }
 
-        const subcats = entry?.subcategories || [{ options: entry?.options || [] }];
-        subcats.forEach(subcat => {
-            (subcat?.options || []).forEach(opt => {
-                const imageUrl = normalizeAssetUrl(opt?.image || opt?.img);
-                if (imageUrl) urls.add(imageUrl);
-            });
+        forEachCategoryOption(entry, opt => {
+            const imageUrl = normalizeAssetUrl(opt?.image || opt?.img);
+            if (imageUrl) urls.add(imageUrl);
         });
     });
 
@@ -416,12 +431,19 @@ function getOptionEffectiveCost(option, {
         }
     }
 
+    const getCategoryOptionSelectionCount = (category) => {
+        if (!category) return 0;
+        let total = 0;
+        forEachCategoryOption(category, opt => {
+            total += selectedOptions[opt.id] || 0;
+        });
+        return total;
+    };
+
     if (includeFirstNPreview) {
         // Support category-level "first N" display even when discount config flags aren't present
         if (!discountApplied && info.cat && typeof info.cat.discountFirstN === 'number' && info.cat.discountFirstN > 0) {
-            const catSelectionsCount = (info.cat.subcategories || []).reduce((sum, sc) => {
-                return sum + ((sc.options || []).reduce((s, o) => s + (selectedOptions[o.id] || 0), 0));
-            }, 0);
+            const catSelectionsCount = getCategoryOptionSelectionCount(info.cat);
             const remaining = Math.max(0, info.cat.discountFirstN - catSelectionsCount);
             if (remaining > 0) {
                 const alreadySelectedThis = selectedOptions[option.id] || 0;
@@ -482,9 +504,7 @@ function getOptionEffectiveCost(option, {
 
         // Category-level first-N display behavior (if not already applied)
         if (!discountApplied && typeof info.cat.discountFirstN === 'number' && info.cat.discountFirstN > 0) {
-            const catSelectionsCount = (info.cat.subcategories || []).reduce((sum, sc) => {
-                return sum + ((sc.options || []).reduce((s, o) => s + (selectedOptions[o.id] || 0), 0));
-            }, 0);
+            const catSelectionsCount = getCategoryOptionSelectionCount(info.cat);
             const remaining = Math.max(0, info.cat.discountFirstN - catSelectionsCount);
             if (remaining > 0) {
                 const alreadySelectedThis = selectedOptions[option.id] || 0;
@@ -792,13 +812,17 @@ function validateInputJson(data, pointsEntry) {
     const optionMap = new Map(); // Stores all options by ID for quick lookup
     const dependencyGraph = new Map(); // Stores prerequisites and conflicts for each option
     const errors = [];
+    const collectSubcategoryTreeOptions = (subcat) => {
+        const list = [];
+        walkSubcategoryTree([subcat], node => {
+            (node.options || []).forEach(opt => list.push(opt));
+        });
+        return list;
+    };
 
     // Populate optionMap and dependencyGraph
     data.forEach(entry => {
-        (entry.subcategories || [{
-            options: entry.options || []
-        }]).forEach(subcat => {
-            (subcat.options || []).forEach(opt => {
+        forEachCategoryOption(entry, (opt) => {
                 if (optionMap.has(opt.id)) {
                     errors.push(`Duplicate option ID found: "${opt.id}"`);
                 }
@@ -837,10 +861,11 @@ function validateInputJson(data, pointsEntry) {
                 });
             });
 
-            // Handle subcategory-level requiresOption applying to all options in this subcategory
-            if (subcat.requiresOption) {
+        walkSubcategoryTree(entry.subcategories || [], (subcat) => {
+            // Handle subcategory-level requiresOption applying to all options in this subcategory tree
+            if (subcat?.requiresOption) {
                 const requiredItems = Array.isArray(subcat.requiresOption) ? subcat.requiresOption : [subcat.requiresOption];
-                (subcat.options || []).forEach(opt => {
+                collectSubcategoryTreeOptions(subcat).forEach(opt => {
                     const node = dependencyGraph.get(opt.id);
                     if (!node) return;
                     requiredItems.forEach(req => {
@@ -872,10 +897,7 @@ function validateInputJson(data, pointsEntry) {
         // Handle category-level requiresOption applying to all its options
         if (entry.requiresOption) {
             const requiredItems = Array.isArray(entry.requiresOption) ? entry.requiresOption : [entry.requiresOption];
-            (entry.subcategories || [{
-                options: entry.options || []
-            }]).forEach(subcat => {
-                (subcat.options || []).forEach(opt => {
+            forEachCategoryOption(entry, opt => {
                     const node = dependencyGraph.get(opt.id);
                     if (!node) return;
                     requiredItems.forEach(req => {
@@ -903,7 +925,6 @@ function validateInputJson(data, pointsEntry) {
                             }
                         }
                     });
-                });
             });
         }
     });
@@ -1002,10 +1023,7 @@ function validateInputJson(data, pointsEntry) {
     // Validate slider attributes against defined points
     const knownAttributes = Object.keys(pointsEntry?.values || {});
     for (const cat of data.filter(e => e.name)) { // Filter for actual categories
-        for (const subcat of cat.subcategories || [{
-            options: cat.options || []
-        }]) {
-            for (const opt of subcat.options || []) {
+        forEachCategoryOption(cat, opt => {
                 if (opt.inputType === "slider") {
                     // Find the attribute name that is not "Attribute Points" (if it exists)
                     const attr = Object.keys(opt.costPerPoint || {}).find(t => t !== "Attribute Points");
@@ -1013,8 +1031,7 @@ function validateInputJson(data, pointsEntry) {
                         errors.push(`Slider option "${opt.id}" references unknown attribute "${attr}" in its costPerPoint.`);
                     }
                 }
-            }
-        }
+        });
     }
 
     if (errors.length > 0) {
@@ -1328,22 +1345,12 @@ window.loadCyoaData = (data, options = {}) => applyCyoaData(data, options);
  */
 function removeDependentOptions(deselectedId) {
     for (const cat of categories) {
-        // Check options directly in category
-        for (const opt of cat.options || []) {
+        forEachCategoryOption(cat, opt => {
             if (prereqReferencesId(opt.prerequisites, deselectedId) && selectedOptions[opt.id]) {
                 removeSelection(opt);
                 removeDependentOptions(opt.id); // Recursively remove dependents
             }
-        }
-        // Check options within subcategories
-        for (const subcat of cat.subcategories || []) {
-            for (const opt of subcat.options || []) {
-                if (prereqReferencesId(opt.prerequisites, deselectedId) && selectedOptions[opt.id]) {
-                    removeSelection(opt);
-                    removeDependentOptions(opt.id); // Recursively remove dependents
-                }
-            }
-        }
+        });
     }
 }
 
@@ -1352,68 +1359,53 @@ function removeDependentOptions(deselectedId) {
  * This handles the case where a conditional category becomes inactive.
  */
 function removeOptionsFromInactiveCategoriesAndSubcategories() {
+    const isRequirementMet = (requirement) => {
+        if (typeof requirement === 'string' && /[()!&|\s]/.test(requirement)) {
+            try {
+                return !!window.evaluatePrereqExpr(requirement, id => selectedOptions[id] || 0);
+            } catch (e) {
+                return false;
+            }
+        }
+        return !!selectedOptions[requirement];
+    };
+
+    const removeSelectionsInSubtree = (subcat) => {
+        walkSubcategoryTree([subcat], node => {
+            (node.options || []).forEach(opt => {
+                if (selectedOptions[opt.id]) {
+                    removeSelection(opt);
+                }
+            });
+        });
+    };
+
+    const enforceSubcategoryRequirements = (subcat) => {
+        const subcatRequires = subcat.requiresOption;
+        const subcatRequiredItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+        const subcategoryUnlocked = subcatRequiredItems.every(isRequirementMet);
+        if (!subcategoryUnlocked) {
+            removeSelectionsInSubtree(subcat);
+            return;
+        }
+        (subcat.subcategories || []).forEach(child => enforceSubcategoryRequirements(child));
+    };
+
     for (const cat of categories) {
         // Check if category-level requirements are met
         const requires = cat.requiresOption;
         const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];
-        let categoryUnlocked = true;
-        if (requiredItems.length) {
-            categoryUnlocked = requiredItems.every(req => {
-                if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                    try {
-                        return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
-                    } catch (e) {
-                        return false;
-                    }
-                }
-                return !!selectedOptions[req];
-            });
-        }
+        const categoryUnlocked = requiredItems.every(isRequirementMet);
 
         // If category is locked, remove all selected options from it
         if (!categoryUnlocked) {
-            // Check options directly in category
-            for (const opt of cat.options || []) {
+            forEachCategoryOption(cat, opt => {
                 if (selectedOptions[opt.id]) {
                     removeSelection(opt);
                 }
-            }
-            // Check options within subcategories
-            for (const subcat of cat.subcategories || []) {
-                for (const opt of subcat.options || []) {
-                    if (selectedOptions[opt.id]) {
-                        removeSelection(opt);
-                    }
-                }
-            }
+            });
         } else {
-            // Category is unlocked, but check subcategories
-            for (const subcat of cat.subcategories || []) {
-                const subcatRequires = subcat.requiresOption;
-                const subcatRequiredItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
-                let subcategoryUnlocked = true;
-                if (subcatRequiredItems.length) {
-                    subcategoryUnlocked = subcatRequiredItems.every(req => {
-                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                            try {
-                                return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
-                            } catch (e) {
-                                return false;
-                            }
-                        }
-                        return !!selectedOptions[req];
-                    });
-                }
-
-                // If subcategory is locked, remove all selected options from it
-                if (!subcategoryUnlocked) {
-                    for (const opt of subcat.options || []) {
-                        if (selectedOptions[opt.id]) {
-                            removeSelection(opt);
-                        }
-                    }
-                }
-            }
+            (cat.subcategories || []).forEach(subcat => enforceSubcategoryRequirements(subcat));
         }
     }
 }
@@ -1772,12 +1764,14 @@ function findSubcategoryOfOption(optionId) {
                 maxSelections: cat.maxSelections
             }; // Return a mock subcategory object
         }
-        // If subcategories exist
-        for (const subcat of cat.subcategories || []) {
+        let foundSubcategory = null;
+        walkSubcategoryTree(cat.subcategories || [], subcat => {
+            if (foundSubcategory) return;
             if ((subcat.options || []).some(opt => opt.id === optionId)) {
-                return subcat;
+                foundSubcategory = subcat;
             }
-        }
+        });
+        if (foundSubcategory) return foundSubcategory;
     }
     return null;
 }
@@ -1809,7 +1803,7 @@ function getCategorySelectionCount(optionId) {
     (cat.options || []).forEach(opt => {
         total += selectedOptions[opt.id] || 0;
     });
-    (cat.subcategories || []).forEach(subcat => {
+    walkSubcategoryTree(cat.subcategories || [], subcat => {
         (subcat.options || []).forEach(opt => {
             total += selectedOptions[opt.id] || 0;
         });
@@ -1841,12 +1835,18 @@ function findOptionById(id) {
         for (const opt of cat.options || []) {
             if (opt.id === id) return opt;
         }
-        // Check options within subcategories
-        for (const subcat of cat.subcategories || []) {
+        // Check options recursively within subcategories
+        let found = null;
+        walkSubcategoryTree(cat.subcategories || [], subcat => {
+            if (found) return;
             for (const opt of subcat.options || []) {
-                if (opt.id === id) return opt;
+                if (opt.id === id) {
+                    found = opt;
+                    return;
+                }
             }
-        }
+        });
+        if (found) return found;
     }
     return null;
 }
@@ -1929,8 +1929,16 @@ function slugifyKey(str) {
     return String(str || "").replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_\-]/g, '');
 }
 
-function buildSubcategoryKey(catIndex, catName, subIndex, subName) {
+function buildSubcategoryKey(catIndex, catName, subIndex, subName, subPath = null) {
     const catPart = `${catIndex}-${slugifyKey(catName || `Category${catIndex}`)}`;
+    if (Array.isArray(subPath)) {
+        if (!subPath.length) return `${catPart}__-1-root`;
+        const pathPart = subPath.map(({ index, name }, depth) => {
+            const idx = Number.isFinite(index) ? index : depth;
+            return `${idx}-${slugifyKey(name || `Sub${idx}`)}`;
+        }).join("__");
+        return `${catPart}__${pathPart}`;
+    }
     const subPart = `${subIndex}-${slugifyKey(subName || `Sub${subIndex}`)}`;
     return `${catPart}__${subPart}`;
 }
@@ -1947,18 +1955,19 @@ function findSubcategoryInfo(optionId) {
                 catKey: buildCategoryKey(c, cat.name)
             };
         }
-        const subs = cat.subcategories || [];
-        for (let s = 0; s < subs.length; s++) {
-            const sub = subs[s];
+        let result = null;
+        walkSubcategoryTree(cat.subcategories || [], (sub, path) => {
+            if (result) return;
             if ((sub.options || []).some(opt => opt.id === optionId)) {
-                return {
+                result = {
                     cat,
                     subcat: sub,
-                    key: buildSubcategoryKey(c, cat.name, s, sub.name),
+                    key: buildSubcategoryKey(c, cat.name, null, null, path),
                     catKey: buildCategoryKey(c, cat.name)
                 };
             }
-        }
+        });
+        if (result) return result;
     }
     return {
         cat: null,
@@ -2005,10 +2014,7 @@ function getGrantTargetIds(rule) {
 function getAllOptions() {
     const all = [];
     categories.forEach(cat => {
-        (cat.options || []).forEach(opt => all.push(opt));
-        (cat.subcategories || []).forEach(subcat => {
-            (subcat.options || []).forEach(opt => all.push(opt));
-        });
+        forEachCategoryOption(cat, opt => all.push(opt));
     });
     return all;
 }
@@ -2230,6 +2236,232 @@ function renderAccordion() {
     }
 }
 
+function evaluateRequirementList(requiredItems = []) {
+    return requiredItems.every(req => {
+        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+            try {
+                return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
+            } catch (e) {
+                return false;
+            }
+        }
+        return !!selectedOptions[req];
+    });
+}
+
+function buildRequirementsMarkup(requiredItems = []) {
+    const lines = [];
+    requiredItems.forEach(req => {
+        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
+            const rawExpr = req;
+            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
+            let human = rawExpr;
+            const seen = new Set();
+            tokens.forEach(tok => {
+                if (seen.has(tok)) return;
+                seen.add(tok);
+                const [id] = tok.split('__');
+                const label = getOptionLabel(id) || id;
+                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
+            });
+            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
+            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (_) { return false; } })();
+            lines.push(`${satisfied ? '✅' : '❌'} ${human}`);
+        } else {
+            const id = req;
+            const label = getOptionLabel(id);
+            lines.push(`${selectedOptions[id] ? "✅" : "❌"} ${label}`);
+        }
+    });
+    return `🔒 Requires:<br>${lines.join("<br>")}`;
+}
+
+function getSubcategoryDisplayMode(entity) {
+    return entity?.subcategoryDisplayMode === "all" ? "all" : "tabs";
+}
+
+function getSubcategoryPathKey(catIndex, catName, path, subcat) {
+    return buildSubcategoryKey(catIndex, catName, null, null, path.concat([{ index: path.length ? path[path.length - 1].index : 0, name: subcat?.name || "" }]));
+}
+
+function buildChildPath(path, index, child) {
+    return path.concat([{ index, name: child?.name || "" }]);
+}
+
+function renderSubcategoryTreeNode(subcat, parentContainer, {
+    cat,
+    catIndex,
+    catKey,
+    catDiscountUnlocked,
+    catAutoApplyAll,
+    path
+}) {
+    const subcatKey = buildSubcategoryKey(catIndex, cat.name, null, null, path);
+    const subcatItem = document.createElement("div");
+    subcatItem.className = "subcategory-item";
+
+    const subcatContent = document.createElement("div");
+    subcatContent.className = "subcategory-content tab-active";
+
+    const subcatTitle = document.createElement("h3");
+    subcatTitle.className = "subcategory-content-title";
+    subcatTitle.textContent = subcat.name || `Options ${path[path.length - 1]?.index + 1 || 1}`;
+    subcatContent.appendChild(subcatTitle);
+    subcatItem.appendChild(subcatContent);
+    parentContainer.appendChild(subcatItem);
+
+    const subcatRequires = subcat.requiresOption;
+    const subcatReqItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+    const subcatUnlocked = evaluateRequirementList(subcatReqItems);
+
+    if (!subcatUnlocked) {
+        const lockMsg = document.createElement("div");
+        lockMsg.style.padding = "8px";
+        lockMsg.style.color = "#666";
+        lockMsg.innerHTML = buildRequirementsMarkup(subcatReqItems);
+        subcatContent.appendChild(lockMsg);
+        return;
+    }
+
+    if (subcat.type === "storyBlock" && subcat.text && subcat.text.trim() !== "") {
+        const storyText = document.createElement("div");
+        storyText.className = "story-block";
+        setMultilineText(storyText, subcat.text);
+        subcatContent.appendChild(storyText);
+    }
+
+    const subcatHasDiscounts = hasDiscountConfig(subcat);
+    const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
+    const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
+
+    if (subcatHasDiscounts && subcat.discountRequiresMessage) {
+        const note = document.createElement("div");
+        note.className = "subcategory-discount-requirement";
+        note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
+        subcatContent.appendChild(note);
+    }
+
+    if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
+        const discountInfo = document.createElement("div");
+        discountInfo.className = "subcategory-discount-info";
+        const subMap = getSubcategoryDiscountMap(subcatKey);
+        const usedSlots = getDiscountTotalCount(subMap);
+        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+        discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
+        subcatContent.appendChild(discountInfo);
+    } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
+        const discountInfo = document.createElement("div");
+        discountInfo.className = "subcategory-discount-info";
+        const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
+        discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
+        subcatContent.appendChild(discountInfo);
+    }
+
+    if (subcat.input) {
+        const inputWrapper = document.createElement("div");
+        inputWrapper.className = "story-input-wrapper";
+
+        if (subcat.input.label) {
+            const label = document.createElement("label");
+            label.textContent = subcat.input.label;
+            label.setAttribute("for", subcat.input.id);
+            inputWrapper.appendChild(label);
+        }
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = subcat.input.id;
+        input.placeholder = subcat.input.placeholder || "";
+        input.maxLength = subcat.input.maxLength || 20;
+        input.value = storyInputs[subcat.input.id] || "";
+        input.addEventListener("input", (e) => {
+            storyInputs[subcat.input.id] = e.target.value;
+        });
+        inputWrapper.appendChild(input);
+        subcatContent.appendChild(inputWrapper);
+    }
+
+    renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll);
+
+    renderSubcategoryLevel(subcat, subcat.subcategories || [], subcatContent, {
+        cat,
+        catIndex,
+        catKey,
+        catDiscountUnlocked,
+        catAutoApplyAll,
+        parentPath: path
+    });
+}
+
+function renderSubcategoryLevel(parentEntity, children, container, {
+    cat,
+    catIndex,
+    catKey,
+    catDiscountUnlocked,
+    catAutoApplyAll,
+    parentPath = []
+}) {
+    if (!Array.isArray(children) || children.length === 0) return;
+
+    const mode = getSubcategoryDisplayMode(parentEntity);
+    const childMeta = children.map((child, idx) => {
+        const path = buildChildPath(parentPath, idx, child);
+        const key = buildSubcategoryKey(catIndex, cat.name, null, null, path);
+        const subcatRequires = child?.requiresOption;
+        const reqItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
+        const unlocked = evaluateRequirementList(reqItems);
+        return { child, idx, path, key, unlocked };
+    });
+
+    if (mode === "tabs" && !childMeta.some(meta => openSubcategories.has(meta.key))) {
+        openSubcategories.add(childMeta[0].key);
+    }
+
+    if (mode === "tabs" && (children.length > 1 || children.some(child => child?.name))) {
+        const nav = document.createElement("div");
+        nav.className = "subcategory-navigation";
+        childMeta.forEach((meta) => {
+            const subButton = document.createElement("button");
+            subButton.className = "subcategory-tab-button";
+            if (openSubcategories.has(meta.key)) {
+                subButton.classList.add("active");
+            }
+            subButton.textContent = meta.child?.name || `Options ${meta.idx + 1}`;
+            if (!meta.unlocked) {
+                subButton.classList.add("locked");
+                subButton.textContent = `🔒 ${meta.child?.name || `Options ${meta.idx + 1}`}`;
+            }
+            subButton.onclick = () => {
+                if (openSubcategories.has(meta.key)) {
+                    openSubcategories.delete(meta.key);
+                } else {
+                    openSubcategories.add(meta.key);
+                    subcategoriesToAnimate.add(meta.key);
+                }
+                renderAccordion();
+            };
+            nav.appendChild(subButton);
+        });
+        container.appendChild(nav);
+    }
+
+    const toRender = mode === "all"
+        ? childMeta
+        : childMeta.filter(meta => openSubcategories.has(meta.key));
+
+    toRender.forEach((meta) => {
+        renderSubcategoryTreeNode(meta.child, container, {
+            cat,
+            catIndex,
+            catKey,
+            catDiscountUnlocked,
+            catAutoApplyAll,
+            path: meta.path
+        });
+    });
+}
+
 function renderCategoryContent(cat) {
     const tabContentContainer = document.getElementById("tabContent");
     const catIndex = categories.indexOf(cat);
@@ -2244,261 +2476,59 @@ function renderCategoryContent(cat) {
         content.appendChild(catDescription);
     }
 
-    // Check category-level requirements
     const requires = cat.requiresOption;
     const requiredItems = Array.isArray(requires) ? requires : requires ? [requires] : [];
-    let categoryUnlocked = true;
-    if (requiredItems.length) {
-        categoryUnlocked = requiredItems.every(req => {
-            if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                try {
-                    return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
-                } catch (e) {
-                    return false;
-                }
-            }
-            return !!selectedOptions[req];
-        });
-    }
+    const categoryUnlocked = evaluateRequirementList(requiredItems);
 
     if (!categoryUnlocked) {
         const lockMsg = document.createElement("div");
         lockMsg.style.padding = "8px";
         lockMsg.style.color = "#666";
-        const lines = [];
-        requiredItems.forEach(req => {
-            if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                const rawExpr = req;
-                const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
-                let human = rawExpr;
-                const seen = new Set();
-                tokens.forEach(tok => {
-                    if (seen.has(tok)) return;
-                    seen.add(tok);
-                    const [id] = tok.split('__');
-                    const label = getOptionLabel(id) || id;
-                    const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                    human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
-                });
-                human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                const satisfied = (() => {
-                    try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; }
-                })();
-                const symbol = satisfied ? '✅' : '❌';
-                lines.push(`${symbol} ${human}`);
-            } else {
-                const id = req;
-                const label = getOptionLabel(id);
-                const isSelected = selectedOptions[id];
-                const symbol = isSelected ? "✅" : "❌";
-                lines.push(`${symbol} ${label}`);
-            }
-        });
-        lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
+        lockMsg.innerHTML = buildRequirementsMarkup(requiredItems);
         content.appendChild(lockMsg);
-    } else {
-        const subcats = cat.subcategories || [{
-            options: cat.options || [],
-            name: ""
-        }];
-
-        const catKey = buildCategoryKey(catIndex, cat.name);
-        const catHasDiscounts = hasDiscountConfig(cat);
-        const catDiscountUnlocked = catHasDiscounts && isDiscountUnlocked(cat);
-        const catAutoApplyAll = catDiscountUnlocked && shouldAutoApplyDiscount(cat);
-
-        if (catHasDiscounts && cat.discountRequiresMessage) {
-            const note = document.createElement("div");
-            note.className = "category-discount-requirement";
-            note.textContent = `${catDiscountUnlocked ? '✅' : '🔒'} ${cat.discountRequiresMessage}`;
-            content.appendChild(note);
-        }
-
-        if (catDiscountUnlocked) {
-            const catInfo = document.createElement("div");
-            catInfo.className = "category-discount-info";
-            if (catAutoApplyAll) {
-                const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
-                catInfo.textContent = `Category discount auto-applies to eligible items (${catModeLabel}).`;
-            } else {
-                const catMap = getCategoryDiscountMap(catKey);
-                const used = getDiscountTotalCount(catMap);
-                const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
-                const eligibleLabel = getDiscountTypeLabel(cat, 'IP');
-                catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} ${eligibleLabel}, ${catModeLabel})`;
-            }
-            content.appendChild(catInfo);
-        }
-
-        const subcatNav = document.createElement("div");
-        subcatNav.className = "subcategory-navigation";
-        content.appendChild(subcatNav);
-
-        subcats.forEach((subcat, subIndex) => {
-            const subcatKey = buildSubcategoryKey(catIndex, cat.name, subIndex, subcat.name);
-            const subcatRequires = subcat.requiresOption;
-            const subcatReqItems = Array.isArray(subcatRequires) ? subcatRequires : subcatRequires ? [subcatRequires] : [];
-            let subcatUnlocked = true;
-            if (subcatReqItems.length) {
-                subcatUnlocked = subcatReqItems.every(req => {
-                    if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                        try {
-                            return !!window.evaluatePrereqExpr(req, id => selectedOptions[id] || 0);
-                        } catch (e) {
-                            return false;
-                        }
-                    }
-                    return !!selectedOptions[req];
-                });
-            }
-
-            // Create subcategory toggle button
-            if (subcats.length > 1 || subcat.name) {
-                const subButton = document.createElement("button");
-                subButton.className = "subcategory-tab-button";
-                if (openSubcategories.has(subcatKey)) {
-                    subButton.classList.add("active");
-                }
-                subButton.textContent = subcat.name || `Options ${subIndex + 1}`;
-                if (!subcatUnlocked) {
-                    subButton.classList.add("locked");
-                    subButton.textContent = "🔒 " + (subcat.name || `Options ${subIndex + 1}`);
-                }
-                subButton.onclick = () => {
-                    if (openSubcategories.has(subcatKey)) {
-                        openSubcategories.delete(subcatKey);
-                    } else {
-                        openSubcategories.add(subcatKey);
-                        subcategoriesToAnimate.add(subcatKey); // Only animate when opening
-                    }
-                    renderAccordion();
-                };
-                subcatNav.appendChild(subButton);
-            }
-
-            // Render content if open
-            if (openSubcategories.has(subcatKey)) {
-                const subcatItem = document.createElement("div");
-                subcatItem.className = "subcategory-item";
-
-                const subcatContent = document.createElement("div");
-                subcatContent.className = "subcategory-content tab-active";
-
-                if (subcategoriesToAnimate.has(subcatKey)) {
-                    subcatContent.classList.add("animate-fade-in");
-                    subcatContent.addEventListener("animationend", () => {
-                        subcatContent.classList.remove("animate-fade-in");
-                    }, { once: true });
-                    subcategoriesToAnimate.delete(subcatKey);
-                }
-
-                // Add subcategory title as a separator/label
-                const subcatTitle = document.createElement("h3");
-                subcatTitle.className = "subcategory-content-title";
-                subcatTitle.textContent = subcat.name || `Options ${subIndex + 1}`;
-                subcatContent.appendChild(subcatTitle);
-
-                subcatItem.appendChild(subcatContent);
-                content.appendChild(subcatItem);
-
-                if (!subcatUnlocked) {
-                    const lockMsg = document.createElement("div");
-                    lockMsg.style.padding = "8px";
-                    lockMsg.style.color = "#666";
-                    const lines = [];
-                    subcatReqItems.forEach(req => {
-                        if (typeof req === 'string' && /[()!&|\s]/.test(req)) {
-                            const rawExpr = req;
-                            const tokens = rawExpr.match(/\b[a-zA-Z_][a-zA-Z0-9_]*(?:__\d+)?\b/g) || [];
-                            let human = rawExpr;
-                            const seen = new Set();
-                            tokens.forEach(tok => {
-                                if (seen.has(tok)) return;
-                                seen.add(tok);
-                                const [id] = tok.split('__');
-                                const label = getSubcategoryOptionLabel(id) || id;
-                                const esc = tok.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                                human = human.replace(new RegExp('\\b' + esc + '\\b', 'g'), `"${label}"`);
-                            });
-                            human = human.replace(/\|\|/g, ' OR ').replace(/&&/g, ' AND ').replace(/!/g, 'NOT ');
-                            const satisfied = (() => { try { return !!window.evaluatePrereqExpr(rawExpr, id => selectedOptions[id] || 0); } catch (e) { return false; } })();
-                            const symbol = satisfied ? '✅' : '❌';
-                            lines.push(`${symbol} ${human}`);
-                        } else {
-                            const id = req;
-                            const label = getSubcategoryOptionLabel(id);
-                            const isSelected = selectedOptions[id];
-                            const symbol = isSelected ? "✅" : "❌";
-                            lines.push(`${symbol} ${label}`);
-                        }
-                    });
-                    lockMsg.innerHTML = `🔒 Requires:<br>${lines.join("<br>")}`;
-                    subcatContent.appendChild(lockMsg);
-                } else {
-                    if (subcat.type === "storyBlock") {
-                        if (subcat.text && subcat.text.trim() !== "") {
-                            const storyText = document.createElement("div");
-                            storyText.className = "story-block";
-                            setMultilineText(storyText, subcat.text);
-                            subcatContent.appendChild(storyText);
-                        }
-                        const subcatHasDiscounts = hasDiscountConfig(subcat);
-                        const subcatDiscountUnlocked = subcatHasDiscounts && isDiscountUnlocked(subcat);
-                        const subcatAutoApplyAll = subcatDiscountUnlocked && shouldAutoApplyDiscount(subcat);
-
-                        if (subcatHasDiscounts && subcat.discountRequiresMessage) {
-                            const note = document.createElement("div");
-                            note.className = "subcategory-discount-requirement";
-                            note.textContent = `${subcatDiscountUnlocked ? '✅' : '🔒'} ${subcat.discountRequiresMessage}`;
-                            subcatContent.appendChild(note);
-                        }
-
-                        if (subcatDiscountUnlocked && !subcatAutoApplyAll) {
-                            const discountInfo = document.createElement("div");
-                            discountInfo.className = "subcategory-discount-info";
-                            const subMap = getSubcategoryDiscountMap(subcatKey);
-                            const usedSlots = getDiscountTotalCount(subMap);
-                            const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
-                            discountInfo.textContent = `Discount slots used: ${usedSlots}/${subcat.discountSelectionLimit} (${subModeLabel})`;
-                            subcatContent.appendChild(discountInfo);
-                        } else if (subcatDiscountUnlocked && subcatAutoApplyAll) {
-                            const discountInfo = document.createElement("div");
-                            discountInfo.className = "subcategory-discount-info";
-                            const subModeLabel = subcat.discountMode === 'free' ? 'free' : 'half-cost';
-                            discountInfo.textContent = `Discount auto-applies to eligible items (${subModeLabel}).`;
-                            subcatContent.appendChild(discountInfo);
-                        }
-                        if (subcat.input) {
-                            const inputWrapper = document.createElement("div");
-                            inputWrapper.className = "story-input-wrapper";
-
-                            if (subcat.input.label) {
-                                const label = document.createElement("label");
-                                label.textContent = subcat.input.label;
-                                label.setAttribute("for", subcat.input.id);
-                                inputWrapper.appendChild(label);
-                            }
-
-                            const input = document.createElement("input");
-                            input.type = "text";
-                            input.id = subcat.input.id;
-                            input.placeholder = subcat.input.placeholder || "";
-                            input.maxLength = subcat.input.maxLength || 20;
-                            input.value = storyInputs[subcat.input.id] || "";
-                            input.addEventListener("input", (e) => {
-                                storyInputs[subcat.input.id] = e.target.value;
-                            });
-                            inputWrapper.appendChild(input);
-                            subcatContent.appendChild(inputWrapper);
-                        }
-                    }
-
-                    // Render options...
-                    renderSubcategoryOptions(subcat, subcatContent, subcatKey, cat, catIndex, catKey, catDiscountUnlocked, catAutoApplyAll);
-                }
-            }
-        });
+        tabContentContainer.appendChild(content);
+        return;
     }
+
+    const catKey = buildCategoryKey(catIndex, cat.name);
+    const catHasDiscounts = hasDiscountConfig(cat);
+    const catDiscountUnlocked = catHasDiscounts && isDiscountUnlocked(cat);
+    const catAutoApplyAll = catDiscountUnlocked && shouldAutoApplyDiscount(cat);
+
+    if (catHasDiscounts && cat.discountRequiresMessage) {
+        const note = document.createElement("div");
+        note.className = "category-discount-requirement";
+        note.textContent = `${catDiscountUnlocked ? '✅' : '🔒'} ${cat.discountRequiresMessage}`;
+        content.appendChild(note);
+    }
+
+    if (catDiscountUnlocked) {
+        const catInfo = document.createElement("div");
+        catInfo.className = "category-discount-info";
+        if (catAutoApplyAll) {
+            const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+            catInfo.textContent = `Category discount auto-applies to eligible items (${catModeLabel}).`;
+        } else {
+            const catMap = getCategoryDiscountMap(catKey);
+            const used = getDiscountTotalCount(catMap);
+            const catModeLabel = cat.discountMode === 'free' ? 'free' : 'half-cost';
+            const eligibleLabel = getDiscountTypeLabel(cat, 'IP');
+            catInfo.textContent = `Category discount slots used: ${used}/${cat.discountSelectionLimit} (eligible items ≤ ${cat.discountEligibleUnder} ${eligibleLabel}, ${catModeLabel})`;
+        }
+        content.appendChild(catInfo);
+    }
+
+    const topLevelSubcats = Array.isArray(cat.subcategories) && cat.subcategories.length
+        ? cat.subcategories
+        : [{ options: cat.options || [], name: "" }];
+    renderSubcategoryLevel(cat, topLevelSubcats, content, {
+        cat,
+        catIndex,
+        catKey,
+        catDiscountUnlocked,
+        catAutoApplyAll,
+        parentPath: []
+    });
 
     tabContentContainer.appendChild(content);
 }
@@ -3207,13 +3237,10 @@ function openBackpackModal() {
         const catName = cat.name;
         const selectedInCat = [];
 
-        const subcats = cat.subcategories || [{ options: cat.options || [], name: "" }];
-        subcats.forEach((subcat) => {
-            (subcat.options || []).forEach((opt) => {
-                if (selectedOptions[opt.id] > 0) {
-                    selectedInCat.push(opt);
-                }
-            });
+        forEachCategoryOption(cat, (opt) => {
+            if (selectedOptions[opt.id] > 0) {
+                selectedInCat.push(opt);
+            }
         });
 
         if (selectedInCat.length > 0) {

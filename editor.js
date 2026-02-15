@@ -22,6 +22,24 @@
     const optionIdAutoMap = new WeakMap();
     const optionOpenState = new WeakMap();
 
+    function walkEditorSubcategories(subcategories, callback, path = []) {
+        if (!Array.isArray(subcategories)) return;
+        subcategories.forEach((subcat, index) => {
+            const nextPath = path.concat([{ index, name: subcat?.name || "" }]);
+            callback(subcat, nextPath);
+            if (Array.isArray(subcat?.subcategories) && subcat.subcategories.length) {
+                walkEditorSubcategories(subcat.subcategories, callback, nextPath);
+            }
+        });
+    }
+
+    function ensureSubcategoryDefaults(subcat) {
+        if (!subcat || typeof subcat !== "object") return;
+        if (!Array.isArray(subcat.options)) subcat.options = [];
+        if (!Array.isArray(subcat.subcategories)) subcat.subcategories = [];
+        subcat.subcategories.forEach(child => ensureSubcategoryDefaults(child));
+    }
+
     function snapshotOpenStates(categorySnapshots) {
         const existingCategoryEls = categoryListEl?.querySelectorAll?.(".category-card");
         if (!existingCategoryEls || !existingCategoryEls.length) return;
@@ -29,13 +47,15 @@
             const catEl = existingCategoryEls[idx];
             if (!catEl) return;
             categoryOpenState.set(category, catEl.open);
-            const subEls = catEl.querySelectorAll(".subcategory-item");
-            (category.subcategories || []).forEach((subcat, subIdx) => {
-                const subEl = subEls[subIdx];
+            const subEls = Array.from(catEl.querySelectorAll(".subcategory-item"));
+            let subElIndex = 0;
+            walkEditorSubcategories(category.subcategories || [], (subcat) => {
+                const subEl = subEls[subElIndex++];
                 if (!subEl) return;
                 subcategoryOpenState.set(subcat, subEl.open);
 
-                const optEls = subEl.querySelectorAll(".option-item");
+                const directOptionList = subEl.querySelector(":scope > .subcategory-body > .option-list");
+                const optEls = directOptionList ? directOptionList.querySelectorAll(":scope > .option-item") : [];
                 (subcat.options || []).forEach((opt, optIdx) => {
                     const optEl = optEls[optIdx];
                     if (!optEl) return;
@@ -252,6 +272,7 @@
                 if (!Array.isArray(entry.subcategories)) {
                     entry.subcategories = [];
                 }
+                entry.subcategories.forEach(sub => ensureSubcategoryDefaults(sub));
                 result.push({
                     entry,
                     index
@@ -265,7 +286,7 @@
         const ids = new Set();
         state.data.forEach(entry => {
             if (!entry.type && Array.isArray(entry.subcategories)) {
-                entry.subcategories.forEach(sub => {
+                walkEditorSubcategories(entry.subcategories, sub => {
                     (sub.options || []).forEach(opt => {
                         if (opt.id) ids.add(opt.id);
                     });
@@ -536,24 +557,6 @@
         return normalized;
     }
 
-    function shouldAutoManageId(option, path = []) {
-        if (!option) return false;
-        if (!option.id) return true;
-        if (/^option/i.test(option.id)) return true;
-
-        // Check if current ID matches what generateOptionId would produce (without uniqueness attempt)
-        const fullParts = [...path, option.label || ""].filter(Boolean);
-        const expectedBase = fullParts.map((p, i) => {
-            const s = slugifyLabel(p);
-            return i === 0 ? s : s.charAt(0).toUpperCase() + s.slice(1);
-        }).join("");
-
-        const normalized = normalizeIdBase(expectedBase);
-        // It's auto-managed if it matches the pattern or any number-suffixed version of the pattern (case-insensitive)
-        const regex = new RegExp(`^${normalized}\\d*$`, "i");
-        return regex.test(option.id);
-    }
-
     function generateOptionId(label = "option", {
         path = [],
         skipOption = null
@@ -584,10 +587,25 @@
     function syncOptionIds(path, options = []) {
         if (!Array.isArray(options)) return;
         options.forEach(opt => {
-            if (optionIdAutoMap.get(opt) || shouldAutoManageId(opt, path)) {
-                optionIdAutoMap.set(opt, true);
-                opt.id = generateOptionId(opt.label, { path, skipOption: opt });
-            }
+            optionIdAutoMap.set(opt, true);
+            opt.id = generateOptionId(opt.label, { path, skipOption: opt });
+        });
+    }
+
+    function syncSubcategoryTreeOptionIds(basePath, subcategories = []) {
+        if (!Array.isArray(subcategories)) return;
+        subcategories.forEach(subcat => {
+            const nextPath = [...basePath, subcat?.name || ""].filter(Boolean);
+            syncOptionIds(nextPath, subcat?.options || []);
+            syncSubcategoryTreeOptionIds(nextPath, subcat?.subcategories || []);
+        });
+    }
+
+    function regenerateAllOptionIds() {
+        const categories = getCategorySnapshots();
+        categories.forEach(({ entry: category }) => {
+            const basePath = [category?.name || ""].filter(Boolean);
+            syncSubcategoryTreeOptionIds(basePath, category?.subcategories || []);
         });
     }
 
@@ -697,7 +715,8 @@
             name: "New Section",
             type: "storyBlock",
             text: "",
-            options: []
+            options: [],
+            subcategories: []
         };
     }
 
@@ -708,8 +727,16 @@
             cost: {}
         };
         const path = [];
-        if (categoryName) path.push(categoryName);
-        if (subcategoryName) path.push(subcategoryName);
+        if (Array.isArray(categoryName)) {
+            categoryName.filter(Boolean).forEach(part => path.push(part));
+        } else if (categoryName) {
+            path.push(categoryName);
+        }
+        if (Array.isArray(subcategoryName)) {
+            subcategoryName.filter(Boolean).forEach(part => path.push(part));
+        } else if (subcategoryName) {
+            path.push(subcategoryName);
+        }
 
         option.id = generateOptionId(option.label, { path });
         optionIdAutoMap.set(option, true);
@@ -1575,9 +1602,7 @@
                 summaryLabel.textContent = nameInput.value.trim() ? nameInput.value : `Category ${position + 1}`;
 
                 // Sync all options in this category
-                (category.subcategories || []).forEach(sub => {
-                    syncOptionIds([category.name, sub.name], sub.options);
-                });
+                syncSubcategoryTreeOptionIds([category.name], category.subcategories || []);
 
                 schedulePreviewUpdate();
             });
@@ -1654,9 +1679,31 @@
             categoryMaxRow.appendChild(categoryMaxInput);
             body.appendChild(categoryMaxRow);
 
-            const subcategoriesContainer = document.createElement("div");
-            subcategoriesContainer.className = "subcategory-list";
-            category.subcategories.forEach((subcat, subIndex) => {
+            const categorySubviewField = document.createElement("div");
+            categorySubviewField.className = "field-inline";
+            const categorySubviewLabel = document.createElement("label");
+            categorySubviewLabel.textContent = "Subcategory view";
+            const categorySubviewSelect = document.createElement("select");
+            categorySubviewSelect.innerHTML = `
+                <option value="tabs">Tabbed list</option>
+                <option value="all">Show all content</option>
+            `;
+            categorySubviewSelect.value = category.subcategoryDisplayMode === "all" ? "all" : "tabs";
+            categorySubviewSelect.addEventListener("change", () => {
+                if (categorySubviewSelect.value === "all") {
+                    category.subcategoryDisplayMode = "all";
+                } else {
+                    delete category.subcategoryDisplayMode;
+                }
+                schedulePreviewUpdate();
+            });
+            categorySubviewField.appendChild(categorySubviewLabel);
+            categorySubviewField.appendChild(categorySubviewSelect);
+            body.appendChild(categorySubviewField);
+
+            const renderSubcategoryEditor = (parentArray, subcat, subIndex, container, namePath = []) => {
+                ensureSubcategoryDefaults(subcat);
+
                 const subDetails = document.createElement("details");
                 subDetails.className = "subcategory-item";
                 const storedSubOpen = subcategoryOpenState.has(subcat) ? subcategoryOpenState.get(subcat) : subIndex === 0;
@@ -1686,10 +1733,7 @@
                 subNameInput.addEventListener("input", () => {
                     subcat.name = subNameInput.value;
                     subSummaryLabel.textContent = subcat.name || `Subcategory ${subIndex + 1}`;
-
-                    // Sync all options in this subcategory
-                    syncOptionIds([category.name, subcat.name], subcat.options);
-
+                    syncSubcategoryTreeOptionIds([category.name], [subcat]);
                     schedulePreviewUpdate();
                 });
                 subNameField.appendChild(subNameLabel);
@@ -1736,9 +1780,30 @@
                 typeField.appendChild(typeInput);
                 subBody.appendChild(typeField);
 
+                const nestedViewField = document.createElement("div");
+                nestedViewField.className = "field-inline";
+                const nestedViewLabel = document.createElement("label");
+                nestedViewLabel.textContent = "Nested subcategory view";
+                const nestedViewSelect = document.createElement("select");
+                nestedViewSelect.innerHTML = `
+                    <option value="tabs">Tabbed list</option>
+                    <option value="all">Show all content</option>
+                `;
+                nestedViewSelect.value = subcat.subcategoryDisplayMode === "all" ? "all" : "tabs";
+                nestedViewSelect.addEventListener("change", () => {
+                    if (nestedViewSelect.value === "all") {
+                        subcat.subcategoryDisplayMode = "all";
+                    } else {
+                        delete subcat.subcategoryDisplayMode;
+                    }
+                    schedulePreviewUpdate();
+                });
+                nestedViewField.appendChild(nestedViewLabel);
+                nestedViewField.appendChild(nestedViewSelect);
+                subBody.appendChild(nestedViewField);
+
                 const maxRow = document.createElement("div");
                 maxRow.className = "field-inline";
-
                 const maxLabel = document.createElement("label");
                 maxLabel.textContent = "Max selections";
                 const maxInput = document.createElement("input");
@@ -1770,25 +1835,20 @@
                     }
                     schedulePreviewUpdate();
                 });
-
                 maxRow.appendChild(maxLabel);
                 maxRow.appendChild(maxInput);
                 maxRow.appendChild(minLabel);
                 maxRow.appendChild(minInput);
                 subBody.appendChild(maxRow);
 
-                // Discount controls
                 const discountRow = document.createElement("div");
                 discountRow.className = "field-inline";
-
                 const discountFirstLabel = document.createElement("label");
                 discountFirstLabel.textContent = "Discount: first N";
                 const discountFirstInput = document.createElement("input");
                 discountFirstInput.type = "number";
                 discountFirstInput.value = subcat.discountFirstN ?? "";
                 discountFirstInput.placeholder = "e.g. 1";
-
-
                 discountFirstInput.addEventListener("input", () => {
                     const value = discountFirstInput.value.trim();
                     if (value === "") {
@@ -1798,7 +1858,6 @@
                     }
                     schedulePreviewUpdate();
                 });
-
                 discountRow.appendChild(discountFirstLabel);
                 discountRow.appendChild(discountFirstInput);
                 subBody.appendChild(discountRow);
@@ -1807,33 +1866,22 @@
                     labelPrefix: "Discount Amount",
                     getMap: () => subcat.discountAmount,
                     setMap: (next) => {
-                        if (next) {
-                            subcat.discountAmount = next;
-                        } else {
-                            delete subcat.discountAmount;
-                        }
+                        if (next) subcat.discountAmount = next;
+                        else delete subcat.discountAmount;
                     }
                 });
 
-                // Default cost (subcategory) controls
                 renderPointTypeAmountControls(subBody, {
                     labelPrefix: "Default cost",
                     getMap: () => subcat.defaultCost,
                     setMap: (next) => {
-                        if (next) {
-                            subcat.defaultCost = next;
-                        } else {
-                            delete subcat.defaultCost;
-                        }
+                        if (next) subcat.defaultCost = next;
+                        else delete subcat.defaultCost;
                     }
                 });
 
                 const columnsRow = document.createElement("div");
                 columnsRow.className = "field-inline";
-
-
-
-
                 const columnsLabel = document.createElement("label");
                 columnsLabel.textContent = "Columns per row";
                 const columnsInput = document.createElement("input");
@@ -1852,7 +1900,6 @@
                     }
                     schedulePreviewUpdate();
                 });
-
                 columnsRow.appendChild(columnsLabel);
                 columnsRow.appendChild(columnsInput);
                 subBody.appendChild(columnsRow);
@@ -1874,7 +1921,6 @@
 
                 const subActions = document.createElement("div");
                 subActions.className = "inline-actions";
-
                 const subUpBtn = document.createElement("button");
                 subUpBtn.type = "button";
                 subUpBtn.className = "button-icon";
@@ -1882,27 +1928,25 @@
                 subUpBtn.title = "Move section up";
                 subUpBtn.textContent = "↑";
                 subUpBtn.addEventListener("click", () => {
-                    if (moveArrayItem(category.subcategories, subIndex, -1)) {
+                    if (moveArrayItem(parentArray, subIndex, -1)) {
                         keepPanelOpen(category, subcat);
                         renderCategories();
                         schedulePreviewUpdate();
                     }
                 });
-
                 const subDownBtn = document.createElement("button");
                 subDownBtn.type = "button";
                 subDownBtn.className = "button-icon";
-                subDownBtn.disabled = subIndex === category.subcategories.length - 1;
+                subDownBtn.disabled = subIndex === parentArray.length - 1;
                 subDownBtn.title = "Move section down";
                 subDownBtn.textContent = "↓";
                 subDownBtn.addEventListener("click", () => {
-                    if (moveArrayItem(category.subcategories, subIndex, 1)) {
+                    if (moveArrayItem(parentArray, subIndex, 1)) {
                         keepPanelOpen(category, subcat);
                         renderCategories();
                         schedulePreviewUpdate();
                     }
                 });
-
                 const subRemoveBtn = document.createElement("button");
                 subRemoveBtn.type = "button";
                 subRemoveBtn.className = "button-icon danger";
@@ -1910,13 +1954,12 @@
                 subRemoveBtn.textContent = "✕";
                 subRemoveBtn.addEventListener("click", () => {
                     if (!confirm(`Delete section "${subcat.name || ""}"?`)) return;
-                    category.subcategories.splice(subIndex, 1);
+                    parentArray.splice(subIndex, 1);
                     keepPanelOpen(category);
                     subcategoryOpenState.delete(subcat);
                     renderCategories();
                     schedulePreviewUpdate();
                 });
-
                 subActions.appendChild(subUpBtn);
                 subActions.appendChild(subDownBtn);
                 subActions.appendChild(subRemoveBtn);
@@ -1929,7 +1972,13 @@
 
                 const optionsContainer = document.createElement("div");
                 optionsContainer.className = "option-list";
-                renderOptionsList(optionsContainer, category, subcat, subIndex);
+                renderOptionsList(
+                    optionsContainer,
+                    category,
+                    subcat,
+                    subIndex,
+                    [category.name, ...namePath, subcat.name]
+                );
                 subBody.appendChild(optionsContainer);
 
                 const addOptionBtn = document.createElement("button");
@@ -1938,15 +1987,43 @@
                 addOptionBtn.textContent = "Add option";
                 addOptionBtn.addEventListener("click", () => {
                     subcat.options = subcat.options || [];
-                    subcat.options.push(createDefaultOption(category.name, subcat.name));
+                    subcat.options.push(createDefaultOption([category.name, ...namePath, subcat.name]));
                     keepPanelOpen(category, subcat);
                     renderCategories();
                     schedulePreviewUpdate();
                 });
                 subBody.appendChild(addOptionBtn);
 
+                const nestedContainer = document.createElement("div");
+                nestedContainer.className = "subcategory-list";
+                (subcat.subcategories || []).forEach((childSubcat, childIdx) => {
+                    renderSubcategoryEditor(subcat.subcategories, childSubcat, childIdx, nestedContainer, [...namePath, subcat.name || `Subcategory${subIndex + 1}`]);
+                });
+                subBody.appendChild(nestedContainer);
+
+                const addNestedBtn = document.createElement("button");
+                addNestedBtn.type = "button";
+                addNestedBtn.className = "button-subtle";
+                addNestedBtn.textContent = "Add nested subcategory";
+                addNestedBtn.addEventListener("click", () => {
+                    subcat.subcategories = subcat.subcategories || [];
+                    const newSub = createDefaultSubcategory();
+                    subcat.subcategories.push(newSub);
+                    keepPanelOpen(category, subcat);
+                    keepPanelOpen(category, newSub);
+                    renderCategories();
+                    schedulePreviewUpdate();
+                });
+                subBody.appendChild(addNestedBtn);
+
                 subDetails.appendChild(subBody);
-                subcategoriesContainer.appendChild(subDetails);
+                container.appendChild(subDetails);
+            };
+
+            const subcategoriesContainer = document.createElement("div");
+            subcategoriesContainer.className = "subcategory-list";
+            (category.subcategories || []).forEach((subcat, subIndex) => {
+                renderSubcategoryEditor(category.subcategories, subcat, subIndex, subcategoriesContainer);
             });
 
             body.appendChild(subcategoriesContainer);
@@ -1975,9 +2052,12 @@
         return `${label}${id}`;
     }
 
-    function renderOptionsList(container, category, subcategory, subIndex) {
+    function renderOptionsList(container, category, subcategory, subIndex, fullPathParts = []) {
         container.innerHTML = "";
         subcategory.options = subcategory.options || [];
+        const normalizedPath = Array.isArray(fullPathParts) && fullPathParts.length
+            ? fullPathParts.filter(Boolean)
+            : [category.name, subcategory.name].filter(Boolean);
         subcategory.options.forEach((option, optionIndex) => {
             const details = document.createElement("details");
             details.className = "option-item";
@@ -1996,9 +2076,7 @@
             summaryLabel.textContent = formatOptionSummary(option);
             summary.appendChild(summaryLabel);
 
-            if (!optionIdAutoMap.has(option)) {
-                optionIdAutoMap.set(option, shouldAutoManageId(option));
-            }
+            optionIdAutoMap.set(option, true);
 
             const toolbar = document.createElement("div");
             toolbar.className = "option-toolbar";
@@ -2040,7 +2118,7 @@
                 const copy = cloneData(option);
                 const baseId = option.id ? `${option.id}_copy` : (option.label || "option");
                 copy.id = generateOptionId(baseId, {
-                    path: [category.name, subcategory.name]
+                    path: normalizedPath
                 });
                 optionIdAutoMap.set(copy, true);
                 subcategory.options.splice(optionIndex + 1, 0, copy);
@@ -2099,39 +2177,9 @@
             const idInput = document.createElement("input");
             idInput.type = "text";
             idInput.value = option.id || "";
-            idInput.placeholder = "Unique identifier";
-            idInput.addEventListener("input", () => {
-                option.id = idInput.value.trim();
-                optionIdAutoMap.set(option, false);
-                summaryLabel.textContent = formatOptionSummary(option);
-                refreshOptionWarnings();
-                schedulePreviewUpdate();
-            });
-            idInput.addEventListener("blur", () => {
-                const trimmed = idInput.value.trim();
-                const path = [category.name, subcategory.name];
-                if (!trimmed) {
-                    optionIdAutoMap.set(option, true);
-                    const autoId = generateOptionId(option.label || "option", {
-                        path,
-                        skipOption: option
-                    });
-                    option.id = autoId;
-                    idInput.value = autoId;
-                } else {
-                    const uniqueId = generateOptionId(trimmed, {
-                        skipOption: option
-                    });
-                    if (uniqueId !== trimmed) {
-                        showEditorMessage(`ID "${trimmed}" already exists. Renamed to "${uniqueId}".`, "warning", 6000);
-                    }
-                    option.id = uniqueId;
-                    idInput.value = uniqueId;
-                }
-                summaryLabel.textContent = formatOptionSummary(option);
-                refreshOptionWarnings();
-                schedulePreviewUpdate();
-            });
+            idInput.placeholder = "Auto-generated";
+            idInput.readOnly = true;
+            idInput.title = "Auto-generated from the option path and label";
             idField.appendChild(idLabel);
             idField.appendChild(idInput);
             body.appendChild(idField);
@@ -2146,15 +2194,15 @@
             labelInput.placeholder = "Displayed choice text";
             labelInput.addEventListener("input", () => {
                 option.label = labelInput.value;
-                if (optionIdAutoMap.get(option)) {
-                    const newId = generateOptionId(option.label, {
-                        path: [category.name, subcategory.name],
-                        skipOption: option
-                    });
-                    option.id = newId;
-                    idInput.value = newId;
-                }
+                const newId = generateOptionId(option.label, {
+                    path: normalizedPath,
+                    skipOption: option
+                });
+                option.id = newId;
+                optionIdAutoMap.set(option, true);
+                idInput.value = newId;
                 summaryLabel.textContent = formatOptionSummary(option);
+                refreshOptionWarnings();
                 schedulePreviewUpdate();
             });
             labelField.appendChild(labelLabel);
@@ -2919,6 +2967,7 @@
             const parsed = JSON.parse(text);
             if (!Array.isArray(parsed)) throw new Error("Imported JSON must be an array.");
             state.data = parsed;
+            regenerateAllOptionIds();
             renderGlobalSettings();
             renderCategories();
             schedulePreviewUpdate();
@@ -2942,8 +2991,10 @@
         const config = await loadSelectedConfig();
         if (config.ok) {
             state.data = config.data;
+            regenerateAllOptionIds();
             renderGlobalSettings();
             renderCategories();
+            schedulePreviewUpdate();
             showEditorMessage(`Loaded ${state.selectedFile}`, "success");
             return;
         }
